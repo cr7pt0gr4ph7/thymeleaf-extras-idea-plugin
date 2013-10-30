@@ -10,13 +10,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescriptorsProvider {
+
     @Override
     public XmlAttributeDescriptor[] getAttributeDescriptors(XmlTag context) {
-        List<XmlAttributeDescriptor> result = new ArrayList<XmlAttributeDescriptor>();
+        final String nsPrefix = context.getPrefixByNamespace("http://www.thymeleaf.org");
 
-        result.add(new XmlAttributeDescriptorWithEmptyDefaultValue("some-attribute"));
+        if (nsPrefix == null) {
+            // Thymeleaf XML namespace does not exist
+            return XmlAttributeDescriptor.EMPTY;
+        } else {
+            final String prefix = nsPrefix + ":";
 
-        return result.toArray(new XmlAttributeDescriptor[result.size()]);
+            List<XmlAttributeDescriptor> result = new ArrayList<XmlAttributeDescriptor>();
+
+            result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "errorclass"));
+            result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "if"));
+            result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "unless"));
+            result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "each"));
+
+            return result.toArray(new XmlAttributeDescriptor[result.size()]);
+        }
     }
 
     @Nullable
@@ -24,10 +37,25 @@ public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescri
     public XmlAttributeDescriptor getAttributeDescriptor(String attributeName, XmlTag context) {
         System.out.println(attributeName);
 
-        if(attributeName == "some-attribute")
-            return new XmlAttributeDescriptorWithEmptyDefaultValue("some-attribute");
+        final String nsPrefix = context.getPrefixByNamespace("http://www.thymeleaf.org");
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if (nsPrefix == null) {
+            // Thymeleaf XML namespace does not exist
+            return null;
+        } else {
+            final String prefix = nsPrefix + ":";
+
+            if ((nsPrefix + "errorclass").equals(attributeName))
+                return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "errorclass");
+            else if ((nsPrefix + "if").equals(attributeName))
+                return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "if");
+            else if ((nsPrefix + "unless").equals(attributeName))
+                return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "unless");
+            else if ((nsPrefix + "each").equals(attributeName))
+                return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "each");
+
+            return null;
+        }
     }
 
     private static class XmlAttributeDescriptorWithEmptyDefaultValue extends AnyXmlAttributeDescriptor {
