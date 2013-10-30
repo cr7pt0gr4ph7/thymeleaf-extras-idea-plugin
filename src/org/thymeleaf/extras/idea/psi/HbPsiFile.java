@@ -8,7 +8,7 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.impl.PsiFileEx;
 import org.jetbrains.annotations.NotNull;
 
-public class HbPsiFile extends PsiFileBase implements PsiFileEx {
+public class HbPsiFile extends PsiFileBase implements PsiFileEx, HbExecutionScope {
 
     public HbPsiFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, HbLanguage.INSTANCE);

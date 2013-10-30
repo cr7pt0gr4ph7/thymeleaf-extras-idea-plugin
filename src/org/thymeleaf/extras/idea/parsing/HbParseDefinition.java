@@ -1,20 +1,7 @@
 package org.thymeleaf.extras.idea.parsing;
 
 import org.thymeleaf.extras.idea.psi.HbPsiFile;
-import org.thymeleaf.extras.idea.psi.impl.HbBlockWrapperImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbCloseBlockMustacheImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbCommentImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbDataImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbOpenBlockMustacheImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbOpenInverseBlockMustacheImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbParamImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbPartialImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbPartialNameImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbPathImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbPsiElementImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbSimpleInverseImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbSimpleMustacheImpl;
-import org.thymeleaf.extras.idea.psi.impl.HbStatementsImpl;
+import org.thymeleaf.extras.idea.psi.impl.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
@@ -108,6 +95,10 @@ public class HbParseDefinition implements ParserDefinition {
 
         if (node.getElementType() == HbTokenTypes.COMMENT) {
             return new HbCommentImpl(node);
+        }
+
+        if (node.getElementType() == HbTokenTypes.EMBEDDED_CONTENT) {
+            return new HbEmbeddedContentImpl(node);
         }
 
         return new HbPsiElementImpl(node);

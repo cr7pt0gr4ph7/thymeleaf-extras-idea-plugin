@@ -59,5 +59,7 @@
                                       implementationClass="org.thymeleaf.extras.idea.structure.HbStructureViewFactory"/>
         <annotator language="Handlebars"
                    implementationClass="org.thymeleaf.extras.idea.inspections.HbBlockMismatchInspection"/>
+        <html.scriptContentProvider language="Handlebars" implementationClass="org.thymeleaf.extras.idea.HbScriptContentProvider"/>
+        <languageInjector implementation="org.thymeleaf.extras.idea.psi.HbLanguageInjector"/>
     </extensions>
 </idea-plugin>

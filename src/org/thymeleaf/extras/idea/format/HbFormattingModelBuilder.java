@@ -1,14 +1,9 @@
 package org.thymeleaf.extras.idea.format;
 
+import com.intellij.formatting.*;
 import org.thymeleaf.extras.idea.config.HbConfig;
 import org.thymeleaf.extras.idea.parsing.HbTokenTypes;
 import org.thymeleaf.extras.idea.psi.HbPsiUtil;
-import com.intellij.formatting.Alignment;
-import com.intellij.formatting.Block;
-import com.intellij.formatting.ChildAttributes;
-import com.intellij.formatting.FormattingModel;
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.Wrap;
 import com.intellij.formatting.templateLanguages.BlockWithParent;
 import com.intellij.formatting.templateLanguages.DataLanguageBlockWrapper;
 import com.intellij.formatting.templateLanguages.TemplateLanguageBlock;
@@ -67,6 +62,8 @@ public class HbFormattingModelBuilder extends TemplateLanguageFormattingModelBui
             // If we're looking at a HbTokenTypes.OUTER_ELEMENT_TYPE element, then we've been invoked by our templated
             // language.  Make a dummy block to allow that formatter to continue
             return new SimpleTemplateLanguageFormattingModelBuilder().createModel(element, settings);
+        } else if (node.getElementType() == HbTokenTypes.EMBEDDED_CONTENT) {
+            rootBlock = createTemplateLanguageBlock(node, Wrap.createWrap(WrapType.NONE, false), Alignment.createAlignment(), null, settings);
         } else {
             rootBlock = getRootBlock(file, file.getViewProvider(), settings);
         }
@@ -75,8 +72,9 @@ public class HbFormattingModelBuilder extends TemplateLanguageFormattingModelBui
 
     /**
      * Do format my model!
+     *
      * @return false all the time to tell the {@link com.intellij.formatting.templateLanguages.TemplateLanguageFormattingModelBuilder}
-     *              to not-not format our model (i.e. yes please!  Format away!)
+     *         to not-not format our model (i.e. yes please!  Format away!)
      */
     @Override
     public boolean dontFormatMyModel() {
@@ -86,7 +84,7 @@ public class HbFormattingModelBuilder extends TemplateLanguageFormattingModelBui
     private static class HandlebarsBlock extends TemplateLanguageBlock {
 
         HandlebarsBlock(@NotNull TemplateLanguageBlockFactory blockFactory, @NotNull CodeStyleSettings settings,
-                                        @NotNull ASTNode node, @Nullable List<DataLanguageBlockWrapper> foreignChildren) {
+                        @NotNull ASTNode node, @Nullable List<DataLanguageBlockWrapper> foreignChildren) {
             super(blockFactory, settings, node, foreignChildren);
         }
 
@@ -115,12 +113,12 @@ public class HbFormattingModelBuilder extends TemplateLanguageFormattingModelBui
          *          INDENTED_CONTENT
          *      {{/if}}
          * </pre>
-         *
+         * <p/>
          * This naturally maps to any "statements" expression in the grammar which is not a child of the
          * root "program" element.  See {@link org.thymeleaf.extras.idea.parsing.HbParsing#parseProgram} and
          * {@link org.thymeleaf.extras.idea.parsing.HbParsing#parseStatement(com.intellij.lang.PsiBuilder)} for the
          * relevant parts of the parser.
-         *
+         * <p/>
          * To understand the approach in this method, consider the following:
          * <pre>
          * {{#foo}}
@@ -129,7 +127,7 @@ public class HbFormattingModelBuilder extends TemplateLanguageFormattingModelBui
          * END_STATEMENTS
          * {{/foo}}
          * </pre>
-         *
+         * <p/>
          * then formatting looks easy. Simply apply an indent (represented here by "[hb_indent]") to the STATEMENTS and call it a day:
          * <pre>
          * {{#foo}}
@@ -138,10 +136,10 @@ public class HbFormattingModelBuilder extends TemplateLanguageFormattingModelBui
          * [hb_indent]END_STATEMENTS
          * {{/foo}}
          * </pre>
-         *
+         * <p/>
          * However, if we're contained in templated language block, it's going to provide some indents of its own
          * (call them "[tl_indent]") which quickly leads to undesirable double-indenting:
-         *
+         * <p/>
          * <pre>
          * &lt;div>
          * {{#foo}}
@@ -186,13 +184,17 @@ public class HbFormattingModelBuilder extends TemplateLanguageFormattingModelBui
                 return Indent.getNormalIndent();
             }
 
+            if (myNode.getElementType() == HbTokenTypes.EMBEDDED_CONTENT) {
+                return Indent.getNormalIndent();
+            }
+
             return Indent.getNoneIndent();
         }
 
         /**
          * TODO implement alignment for "stacked" mustache content.  i.e.:
-         *      {{foo bar="baz"
-         *            bat="bam"}} <- note the alignment here
+         * {{foo bar="baz"
+         * bat="bam"}} <- note the alignment here
          */
         @Override
         public Alignment getAlignment() {
@@ -213,7 +215,7 @@ public class HbFormattingModelBuilder extends TemplateLanguageFormattingModelBui
 
         /**
          * TODO if/when we implement alignment, update this method to do alignment properly
-         *
+         * <p/>
          * This method handles indent and alignment on Enter.
          */
         @NotNull
@@ -227,11 +229,11 @@ public class HbFormattingModelBuilder extends TemplateLanguageFormattingModelBui
              */
             if (myNode.getElementType() == HbTokenTypes.BLOCK_WRAPPER
                     || (getParent() instanceof DataLanguageBlockWrapper
-                        // hack alert: the following check opportunistically fixes org.thymeleaf.extras.idea.format.HbFormatOnEnterTest#testSimpleBlockInDiv8
-                        //      and org.thymeleaf.extras.idea.format.HbFormatOnEnterTest#testSimpleBlockInDiv8
-                        //      but isn't really based on solid logic (why do these checks work?), so when there's inevitably a
-                        //      format-on-enter bug, this is the first bit of code to be suspicious of
-                        && (myNode.getElementType() != HbTokenTypes.STATEMENTS || myNode.getTreeNext() instanceof PsiErrorElement))) {
+                    // hack alert: the following check opportunistically fixes org.thymeleaf.extras.idea.format.HbFormatOnEnterTest#testSimpleBlockInDiv8
+                    //      and org.thymeleaf.extras.idea.format.HbFormatOnEnterTest#testSimpleBlockInDiv8
+                    //      but isn't really based on solid logic (why do these checks work?), so when there's inevitably a
+                    //      format-on-enter bug, this is the first bit of code to be suspicious of
+                    && (myNode.getElementType() != HbTokenTypes.STATEMENTS || myNode.getTreeNext() instanceof PsiErrorElement))) {
                 return new ChildAttributes(Indent.getNormalIndent(), null);
             } else {
                 return new ChildAttributes(Indent.getNoneIndent(), null);
