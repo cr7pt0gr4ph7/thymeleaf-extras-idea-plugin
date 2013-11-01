@@ -1,5 +1,6 @@
 package org.thymeleaf.extras.idea;
 
+import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.xml.XmlAttributeDescriptor;
 import com.intellij.xml.XmlAttributeDescriptorsProvider;
@@ -27,6 +28,7 @@ public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescri
             result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "if"));
             result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "unless"));
             result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "each"));
+            result.add(new ThymeleafInlineXmlAttributeDescriptor(prefix + "inline"));
 
             return result.toArray(new XmlAttributeDescriptor[result.size()]);
         }
@@ -53,6 +55,8 @@ public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescri
                 return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "unless");
             else if ((prefix + "each").equals(attributeName))
                 return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "each");
+            else if ((prefix + "inline").equals(attributeName))
+                return new ThymeleafInlineXmlAttributeDescriptor(prefix + "inline");
 
             return null;
         }
@@ -66,6 +70,42 @@ public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescri
         @Override
         public String getDefaultValue() {
             return "";
+        }
+    }
+
+    private static class ThymeleafInlineXmlAttributeDescriptor extends AnyXmlAttributeDescriptor {
+        public ThymeleafInlineXmlAttributeDescriptor(String name) {
+            super(name);
+        }
+
+        private static String nullSafeToString(String stringOrNull) {
+            if (stringOrNull == null)
+                return "(null)";
+            else
+                return "\'" + stringOrNull + "\'";
+        }
+
+        @Override
+        public String getDefaultValue() {
+            return "";
+        }
+
+        @Override
+        public boolean isEnumerated() {
+            return true;
+        }
+
+        @Override
+        public String[] getEnumeratedValues() {
+            return new String[]{"text", "javascript", "dart"};
+        }
+
+        @Override
+        public String validateValue(XmlElement context, String attributeValue) {
+            if (attributeValue != null && ("text".equals(attributeValue) || "javascript".equals(attributeValue) || "dart".equals(attributeValue)))
+                return null;
+            else
+                return "Invalid value: " + nullSafeToString(attributeValue) + ". Value must be one of: \'text\', \'javascript\', \'dart\'.";
         }
     }
 }
