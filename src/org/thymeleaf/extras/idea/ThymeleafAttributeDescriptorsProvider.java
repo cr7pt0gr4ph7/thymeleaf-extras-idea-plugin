@@ -45,13 +45,13 @@ public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescri
         } else {
             final String prefix = nsPrefix + ":";
 
-            if ((nsPrefix + "errorclass").equals(attributeName))
+            if ((prefix + "errorclass").equals(attributeName))
                 return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "errorclass");
-            else if ((nsPrefix + "if").equals(attributeName))
+            else if ((prefix + "if").equals(attributeName))
                 return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "if");
-            else if ((nsPrefix + "unless").equals(attributeName))
+            else if ((prefix + "unless").equals(attributeName))
                 return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "unless");
-            else if ((nsPrefix + "each").equals(attributeName))
+            else if ((prefix + "each").equals(attributeName))
                 return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "each");
 
             return null;
