@@ -1,14 +1,9 @@
 package org.thymeleaf.extras.idea.parsing;
 
-import com.intellij.lang.LighterASTNode;
-import com.intellij.lang.LighterLazyParseableNode;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilderFactory;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.diff.FlyweightCapableTreeStructure;
-import org.thymeleaf.extras.idea.HbInHtmlLanguage;
 import org.thymeleaf.extras.idea.HbLanguage;
-import com.intellij.psi.tree.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.IFileElementType;
+import com.intellij.psi.tree.TokenSet;
 
 public class HbTokenTypes {
 
@@ -56,29 +51,8 @@ public class HbTokenTypes {
     public static final IElementType INVALID = new HbElementType("INVALID", "hb.parsing.element.expected.invalid");
 
     public static final IFileElementType FILE = new IFileElementType("FILE", HbLanguage.INSTANCE);
-    public static final IElementType EMBEDDED_CONTENT = new HbEmbeddedContentElementType();
 
     public static final TokenSet WHITESPACES = TokenSet.create(WHITE_SPACE);
     public static final TokenSet COMMENTS = TokenSet.create(COMMENT);
     public static final TokenSet STRING_LITERALS = TokenSet.create(STRING);
-
-    private static class HbEmbeddedContentElementType extends ILazyParseableElementType implements ILightLazyParseableElementType {
-        public HbEmbeddedContentElementType() {
-            super("EMBEDDED_CONTENT", HbInHtmlLanguage.INSTANCE);
-        }
-
-        @Override
-        public FlyweightCapableTreeStructure<LighterASTNode> parseContents(LighterLazyParseableNode chameleon) {
-            PsiFile file = chameleon.getContainingFile();
-            assert file != null : chameleon;
-
-            final PsiBuilder psiBuilder = PsiBuilderFactory.getInstance().createBuilder(file.getProject(), chameleon);
-
-            final PsiBuilder.Marker marker = psiBuilder.mark();
-            new HbParsing(psiBuilder).parse();
-            marker.done(EMBEDDED_CONTENT);
-
-            return psiBuilder.getLightTree();
-        }
-    }
 }
