@@ -10,9 +10,11 @@ import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 
 public class ThymeleafDialectSchemaProvider implements StandardResourceProvider {
+    public static final String DIALECT_HELP_SCHEMA_URL = "http://www.thymeleaf.org/extras/dialect";
+
     @Override
     public void registerResources(ResourceRegistrar registrar) {
-        registrar.addStdResource("http://www.thymeleaf.org/extras/dialect", "/schemas/thymeleaf-dialect-help.xsd", getClass());
+        registrar.addStdResource(ThymeleafDialectSchemaProvider.DIALECT_HELP_SCHEMA_URL, "/schemas/thymeleaf-dialect-help.xsd", getClass());
     }
 
     @NotNull

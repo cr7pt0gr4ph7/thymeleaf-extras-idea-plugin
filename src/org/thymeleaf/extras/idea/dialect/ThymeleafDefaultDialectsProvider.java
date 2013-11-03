@@ -9,12 +9,17 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
 public class ThymeleafDefaultDialectsProvider implements StandardResourceProvider {
+    public static final String STANDARD_DIALECT_URL = "http://www.thymeleaf.org";
+    public static final String SPRING_STANDARD_DIALECT_URL = "http://www.thymeleaf.org/extras/spring";
+    public static final String SPRING_SECURITY_DIALECT_URL = "http://www.thymeleaf.org/extras/spring-security";
+    public static final String TILES_DIALECT_URL = "http://www.thymeleaf.org/extras/tiles";
+
     @Override
     public void registerResources(ResourceRegistrar registrar) {
-        registrar.addStdResource("http://www.thymeleaf.org", "/dialects/Standard-Dialect.xml", getClass());
-        registrar.addStdResource("http://www.thymeleaf.org/extras/spring", "/dialects/Spring-Standard-Dialect.xml", getClass());
-        registrar.addStdResource("http://www.thymeleaf.org/extras/spring-security", "/dialects/Spring-Security-Dialect.xml", getClass());
-        registrar.addStdResource("http://www.thymeleaf.org/extras/tiles", "/dialects/Tiles-Dialect.xml", getClass());
+        registrar.addStdResource(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, "/dialects/Standard-Dialect.xml", getClass());
+        registrar.addStdResource(ThymeleafDefaultDialectsProvider.SPRING_STANDARD_DIALECT_URL, "/dialects/Spring-Standard-Dialect.xml", getClass());
+        registrar.addStdResource(ThymeleafDefaultDialectsProvider.SPRING_SECURITY_DIALECT_URL, "/dialects/Spring-Security-Dialect.xml", getClass());
+        registrar.addStdResource(ThymeleafDefaultDialectsProvider.TILES_DIALECT_URL, "/dialects/Tiles-Dialect.xml", getClass());
     }
 
     @NotNull
