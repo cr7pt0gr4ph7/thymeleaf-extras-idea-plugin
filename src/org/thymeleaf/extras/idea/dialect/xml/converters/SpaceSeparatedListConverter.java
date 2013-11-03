@@ -1,15 +1,11 @@
-package org.thymeleaf.extras.idea.dialect.xml2.converters;
+package org.thymeleaf.extras.idea.dialect.xml.converters;
 
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.enumeration.ArrayEnumeration;
-import com.intellij.util.io.PersistentStringEnumerator;
 import com.intellij.util.xml.ConvertContext;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.converters.DelimitedListConverter;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.MessageFormat;
 import java.util.*;
 import java.lang.String;
 

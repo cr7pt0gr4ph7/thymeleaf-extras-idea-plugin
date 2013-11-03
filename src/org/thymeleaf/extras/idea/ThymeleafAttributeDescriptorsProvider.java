@@ -22,8 +22,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
-import org.thymeleaf.extras.idea.dialect.xml2.AttributeProcessor;
-import org.thymeleaf.extras.idea.dialect.xml2.Dialect;
+import org.thymeleaf.extras.idea.dialect.xml.AttributeProcessor;
+import org.thymeleaf.extras.idea.dialect.xml.Dialect;
 
 import java.net.MalformedURLException;
 import java.net.URL;

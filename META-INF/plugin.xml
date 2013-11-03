@@ -64,10 +64,10 @@
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDialectSchemaProvider"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider"/>
 
-        <dom.fileDescription implementation="org.thymeleaf.extras.idea.dialect.xml2.DialectDomFileDescription"/>
+        <dom.fileDescription implementation="org.thymeleaf.extras.idea.dialect.xml.DialectDomFileDescription"/>
 
-        <dom.implementation interfaceClass="org.thymeleaf.extras.idea.dialect.xml2.DialectItem"
-                            implementationClass="org.thymeleaf.extras.idea.dialect.xml2.impl.DialectItemImpl"/>
+        <dom.implementation interfaceClass="org.thymeleaf.extras.idea.dialect.xml.DialectItem"
+                            implementationClass="org.thymeleaf.extras.idea.dialect.xml.impl.DialectItemImpl"/>
 
         <!-- Documentation / Quick Info -->
         <lang.documentationProvider language="HTML"
