@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlElement;
@@ -16,8 +17,11 @@ import com.intellij.util.xml.DomManager;
 import com.intellij.xml.XmlAttributeDescriptor;
 import com.intellij.xml.XmlAttributeDescriptorsProvider;
 import com.intellij.xml.impl.schema.AnyXmlAttributeDescriptor;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
 import org.thymeleaf.extras.idea.dialect.xml2.AttributeProcessor;
 import org.thymeleaf.extras.idea.dialect.xml2.Dialect;
 
@@ -39,14 +43,13 @@ public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescri
             return XmlAttributeDescriptor.EMPTY;
         } else {
             final String prefix = nsPrefix + ":";
+            final List<XmlAttributeDescriptor> result = new ArrayList<XmlAttributeDescriptor>();
 
-            List<XmlAttributeDescriptor> result = new ArrayList<XmlAttributeDescriptor>();
+            // Load the standard dialect
+            final Dialect dialect = getDialectForSchemaUrl(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, context.getProject());
 
-            result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "errorclass"));
-            result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "if"));
-            result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "unless"));
-            result.add(new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "each"));
-            result.add(new ThymeleafInlineXmlAttributeDescriptor(prefix + "inline", findAttributeProcessor(getDialectForSchemaUrl("http://www.thymeleaf.org", context.getProject()), "inline").getXmlElement()));
+            for (AttributeProcessor attr : dialect.getAttributeProcessors())
+                result.add(new ThymeleafXmlAttributeDescriptor(prefix + attr.getName(), attr));
 
             return result.toArray(new XmlAttributeDescriptor[result.size()]);
         }
@@ -66,30 +69,15 @@ public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescri
         } else {
             final String prefix = nsPrefix + ":";
 
-            if ((prefix + "errorclass").equals(attributeName))
-                return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "errorclass");
-            else if ((prefix + "if").equals(attributeName))
-                return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "if");
-            else if ((prefix + "unless").equals(attributeName))
-                return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "unless");
-            else if ((prefix + "each").equals(attributeName))
-                return new XmlAttributeDescriptorWithEmptyDefaultValue(prefix + "each");
-            else if ((prefix + "inline").equals(attributeName))
-                return new ThymeleafInlineXmlAttributeDescriptor(prefix + "inline", findAttributeProcessor(getDialectForSchemaUrl("http://www.thymeleaf.org", context.getProject()), "inline").getXmlElement());
+            // Load the standard dialect
+            final Dialect dialect = getDialectForSchemaUrl(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, context.getProject());
+
+            for (AttributeProcessor attr : dialect.getAttributeProcessors())
+                if ((prefix + attr.getName()).equals(attributeName))
+                    return new ThymeleafXmlAttributeDescriptor(nsPrefix + attr.getName(), attr);
 
             return null;
         }
-    }
-
-    private AttributeProcessor findAttributeProcessor(@NotNull Dialect dialect, @NotNull String name) {
-        List<AttributeProcessor> processors = dialect.getAttributeProcessors();
-
-        for (AttributeProcessor processor : processors) {
-            if (processor.getName().getValue().equals(name))
-                return processor;
-        }
-
-        return null;
     }
 
     private Dialect getDialectForSchemaUrl(@NotNull String schemaUrl, @NotNull Project project) {
@@ -133,31 +121,18 @@ public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescri
         return dialect;
     }
 
-    private static class XmlAttributeDescriptorWithEmptyDefaultValue extends AnyXmlAttributeDescriptor {
-        public XmlAttributeDescriptorWithEmptyDefaultValue(String name) {
-            super(name);
-        }
+    private static class ThymeleafXmlAttributeDescriptor extends AnyXmlAttributeDescriptor {
+        private final AttributeProcessor myDeclaration;
 
-        @Override
-        public String getDefaultValue() {
-            return "";
-        }
-    }
-
-    private static class ThymeleafInlineXmlAttributeDescriptor extends AnyXmlAttributeDescriptor {
-        private final XmlElement myDeclaration;
-
-        public ThymeleafInlineXmlAttributeDescriptor(String name, XmlElement declaration) {
+        public ThymeleafXmlAttributeDescriptor(String name, AttributeProcessor declaration) {
             super(name);
 
             myDeclaration = declaration;
         }
 
-        private static String nullSafeToString(String stringOrNull) {
-            if (stringOrNull == null)
-                return "(null)";
-            else
-                return "\'" + stringOrNull + "\'";
+        @Override
+        public PsiElement getDeclaration() {
+            return myDeclaration.getXmlElement();
         }
 
         @Override
@@ -167,25 +142,37 @@ public class ThymeleafAttributeDescriptorsProvider implements XmlAttributeDescri
 
         @Override
         public boolean isEnumerated() {
-            return true;
+            return myDeclaration.getRestrictions().getValues().exists();
         }
 
         @Override
         public String[] getEnumeratedValues() {
-            return new String[]{"text", "javascript", "dart"};
+            if (isEnumerated()) {
+                List<String> allowedValues = myDeclaration.getRestrictions().getValues().getValue();
+                assert allowedValues != null;
+                return allowedValues.toArray(new String[allowedValues.size()]);
+            } else {
+                return ArrayUtils.EMPTY_STRING_ARRAY;
+            }
         }
 
         @Override
         public String validateValue(XmlElement context, String attributeValue) {
-            if (attributeValue != null && ("text".equals(attributeValue) || "javascript".equals(attributeValue) || "dart".equals(attributeValue)))
-                return null;
-            else
-                return "Invalid value: " + nullSafeToString(attributeValue) + ". Value must be one of: \'text\', \'javascript\', \'dart\'.";
+            if (!isEnumerated()) return null;
+
+            List<String> allowedValues = myDeclaration.getRestrictions().getValues().getValue();
+            assert allowedValues != null;
+            if (!allowedValues.contains(attributeValue))
+                return "Invalid value: " + nullSafeToString(attributeValue) + ". Value must be one of: {" + StringUtils.join(allowedValues, ", ") + "}";
+
+            return null;
         }
 
-        @Override
-        public XmlElement getDeclaration() {
-            return myDeclaration;
+        private static String nullSafeToString(String stringOrNull) {
+            if (stringOrNull == null)
+                return "(null)";
+            else
+                return "\'" + stringOrNull + "\'";
         }
     }
 }
