@@ -4,11 +4,11 @@ import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes;
 import org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorLexer;
-import org.thymeleaf.extras.idea.parsing.HbLexer;
 
 public class FragmentSelectorHighlighter extends SyntaxHighlighterBase {
     public FragmentSelectorHighlighter() {
@@ -18,10 +18,14 @@ public class FragmentSelectorHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType elementType) {
+        System.out.println(elementType.toString());
+
         if (elementType == FragmentSelectorElementTypes.STRING)
             return pack(DefaultLanguageHighlighterColors.STRING);
-        else
-            return pack(DefaultLanguageHighlighterColors.IDENTIFIER);
+        else if (elementType == TokenType.BAD_CHARACTER)
+            return pack(DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE);
+
+        return EMPTY;
     }
 
     @NotNull
