@@ -1,6 +1,7 @@
 package org.thymeleaf.extras.idea.fragment.selection.file;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.editor.ex.util.LayeredLexerEditorHighlighter;
 import org.thymeleaf.extras.idea.HbBundle;
 import org.thymeleaf.extras.idea.HbIcons;
 import org.thymeleaf.extras.idea.HbLanguage;
@@ -19,18 +20,27 @@ import com.intellij.psi.templateLanguages.TemplateDataLanguageMappings;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorHighlighter;
 
 import javax.swing.Icon;
 import java.nio.charset.Charset;
 
 public class FragmentSelectorFileType extends LanguageFileType implements TemplateLanguageFileType {
     public static final LanguageFileType INSTANCE = new FragmentSelectorFileType();
-
     @NonNls
     public static final String DEFAULT_EXTENSION = "thfs";
 
     private FragmentSelectorFileType() {
         super(HbLanguage.INSTANCE);
+
+        FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(this, new EditorHighlighterProvider() {
+            public EditorHighlighter getEditorHighlighter(@Nullable Project project,
+                                                          @NotNull FileType fileType,
+                                                          @Nullable VirtualFile virtualFile,
+                                                          @NotNull EditorColorsScheme editorColorsScheme) {
+                return new LayeredLexerEditorHighlighter(new FragmentSelectorHighlighter(), editorColorsScheme);
+            }
+        });
     }
 
     @NotNull
@@ -49,6 +59,6 @@ public class FragmentSelectorFileType extends LanguageFileType implements Templa
     }
 
     public Icon getIcon() {
-        return  HbIcons.FILE_ICON;
+        return HbIcons.FILE_ICON;
     }
 }

@@ -18,7 +18,7 @@ public class FragmentSelectorParserDefinition implements ParserDefinition {
     public static final IFileElementType FRAGMENT_SELECTOR_FILE_ELEMENT_TYPE = new IFileElementType("ThymeleafFragmentSelector", FragmentSelectorLanguage.INSTANCE);
     public static final TokenSet WS = TokenSet.create(TokenType.WHITE_SPACE);
     public static final TokenSet COMMENTS = TokenSet.create();
-    public static final TokenSet LITERALS = TokenSet.create();
+    public static final TokenSet LITERALS = TokenSet.create(FragmentSelectorElementTypes.STRING);
 
     @NotNull
     public Lexer createLexer(Project project) {
