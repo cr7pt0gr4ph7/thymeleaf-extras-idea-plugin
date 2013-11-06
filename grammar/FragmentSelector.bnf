@@ -1,0 +1,39 @@
+{
+  parserClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorParser"
+  parserUtilClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorParserUtil"
+
+  psiPackage="org.thymeleaf.extras.idea.fragment.selection.psi"
+  psiImplPackage="org.thymeleaf.extras.idea.fragment.selection.psi.impl"
+  // psiImplUtilClass="org.thymeleaf.extras.idea.fragments.selection.psi.impl.GrammarPsiImplUtil"
+
+  elementTypeHolderClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes"
+  elementTypeClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorCompositeElementType"
+  tokenTypeClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementType"
+
+  tokens=[
+    OPERATOR='::'
+    OPEN_PARENS='('
+    CLOSE_PARENS=')'
+    OPEN_ARRAY='['
+    CLOSE_ARRAY=']'
+    COMMA=','
+
+    string='regexp:([^ \n:(),]+)'
+  ]
+
+  name(".*expr")='expression'
+  name(".*expression")='expression'
+  extends(".*expression")=expression
+}
+
+root ::= expression
+expression ::= fragment_selection_expression
+
+fragment_selection_expression ::=  fragment_spec [fragment_paramlist]
+private fragment_spec         ::= (template_name ['::' dom_selector]) | ('::' dom_selector)
+private template_name         ::= string
+private dom_selector          ::= string
+
+private fragment_paramlist    ::= '(' param_expr (',' param_expr)* ')' {pin=1}
+private param_expr            ::= string
+

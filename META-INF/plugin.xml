@@ -78,5 +78,13 @@
                                     implementationClass="org.thymeleaf.extras.idea.ThymeleafXmlDocumentationProvider"/>
         <xml.attributeDescriptorsProvider
                 implementation="org.thymeleaf.extras.idea.ThymeleafAttributeDescriptorsProvider"/>
+
+        <!-- Fragment selection parser -->
+        <fileTypeFactory
+                implementation="org.thymeleaf.extras.idea.fragment.selection.file.FragmentSelectorFileTypeFactory"/>
+        <lang.fileViewProviderFactory language="ThFragmentSelector"
+                                      implementationClass="org.thymeleaf.extras.idea.fragment.selection.file.FragmentSelectorFileViewProviderFactory"/>
+        <lang.parserDefinition language="ThFragmentSelector"
+                               implementationClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorParserDefinition"/>
     </extensions>
 </idea-plugin>
