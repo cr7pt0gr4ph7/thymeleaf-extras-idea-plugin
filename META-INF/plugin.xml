@@ -37,11 +37,14 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Dialect descriptor files -->
+        <projectService serviceImplementation="org.thymeleaf.extras.idea.ThymeleafAttributeDescriptorsHolder"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDialectSchemaProvider"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider"/>
 
-        <dom.fileDescription implementation="org.thymeleaf.extras.idea.dialect.xml.DialectDomFileDescription"/>
+        <dom.fileDescription implementation="org.thymeleaf.extras.idea.dialect.xml.dom.DialectDomFileDescription"/>
 
+        <dom.implementation interfaceClass="org.thymeleaf.extras.idea.dialect.xml.Dialect"
+                            implementationClass="org.thymeleaf.extras.idea.dialect.xml.impl.DialectImpl"/>
         <dom.implementation interfaceClass="org.thymeleaf.extras.idea.dialect.xml.DialectItem"
                             implementationClass="org.thymeleaf.extras.idea.dialect.xml.impl.DialectItemImpl"/>
 
