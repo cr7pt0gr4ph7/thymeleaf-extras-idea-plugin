@@ -36,30 +36,6 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="org.thymeleaf.extras.idea.file.HbFileTypeFactory"/>
-        <lang.parserDefinition language="Handlebars"
-                               implementationClass="org.thymeleaf.extras.idea.parsing.HbParseDefinition"/>
-        <lang.formatter language="Handlebars"
-                        implementationClass="org.thymeleaf.extras.idea.format.HbFormattingModelBuilder"/>
-        <colorSettingsPage implementation="org.thymeleaf.extras.idea.pages.HbColorsPage"/>
-        <lang.fileViewProviderFactory language="Handlebars"
-                                      implementationClass="org.thymeleaf.extras.idea.file.HbFileViewProviderFactory"/>
-        <lang.commenter language="Handlebars"
-                        implementationClass="org.thymeleaf.extras.idea.editor.comments.HbCommenter"/>
-        <braceMatcher filetype="Handlebars/Mustache"
-                      implementationClass="org.thymeleaf.extras.idea.editor.braces.HbBraceMatcher"/>
-        <lang.foldingBuilder language="Handlebars"
-                             implementationClass="org.thymeleaf.extras.idea.editor.folding.HbFoldingBuilder"/>
-        <typedHandler implementation="org.thymeleaf.extras.idea.editor.actions.HbTypedHandler"/>
-        <enterHandlerDelegate implementation="org.thymeleaf.extras.idea.editor.actions.HbEnterHandler"/>
-        <applicationConfigurable instance="org.thymeleaf.extras.idea.pages.HbConfigurationPage"/>
-        <codeFoldingOptionsProvider
-                instance="org.thymeleaf.extras.idea.config.HbFoldingOptionsProvider"/>
-        <lang.psiStructureViewFactory language="Handlebars"
-                                      implementationClass="org.thymeleaf.extras.idea.structure.HbStructureViewFactory"/>
-        <annotator language="Handlebars"
-                   implementationClass="org.thymeleaf.extras.idea.inspections.HbBlockMismatchInspection"/>
-
         <!-- Dialect descriptor files -->
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDialectSchemaProvider"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider"/>
