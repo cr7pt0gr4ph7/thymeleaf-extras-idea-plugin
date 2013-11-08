@@ -9,8 +9,13 @@ import com.intellij.psi.impl.FakePsiElement;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.usageView.UsageViewTypeLocation;
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
+import org.thymeleaf.extras.idea.dialect.xml.AttributeProcessor;
+import org.thymeleaf.extras.idea.dialect.xml.Dialect;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +50,19 @@ public class ThymeleafXmlDocumentationProvider implements DocumentationProvider,
 
     @Nullable
     @Override
-    public PsiElement getDocumentationElementForLookupItem(PsiManager psiManager, Object o, PsiElement element) {
+    public PsiElement getDocumentationElementForLookupItem(PsiManager psiManager, Object lookupItem, PsiElement psiElement) {
+        if (lookupItem instanceof String) {
+            if (psiElement instanceof XmlAttribute) {
+                final XmlAttribute attr = (XmlAttribute) psiElement;
+
+                if (ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL.equals(attr.getNamespace())) {
+                    Dialect dialect = ThymeleafAttributeDescriptorsHolder.getInstance(psiManager.getProject())
+                            .getDialectForSchemaUrl(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
+
+                    if(dialect == null) return null;
+                }
+            }
+        }
         return null;
     }
 
@@ -64,14 +81,16 @@ public class ThymeleafXmlDocumentationProvider implements DocumentationProvider,
 
     @Nullable
     private static String getDoc(PsiElement element, boolean formatAsHtml) {
-        if (element instanceof XmlAttribute) {
-            XmlAttribute attr = (XmlAttribute) element;
+        /*if (element instanceof XmlTag) {
+            DomManager manager = DomManager.getDomManager(element.getProject());
+            DomElement rawDecl = manager.getDomElement((XmlTag) element);
 
-            if ("http://www.thymeleaf.org".equals(attr.getNamespace()) && "inline".equals(attr.getLocalName())) {
-                // TODO Provide a correct documentation string
-                return "Documentation string for th:inline. TBD.";
+            if (rawDecl != null) {
+                if (rawDecl instanceof AttributeProcessor) {
+                    return "Attribute processor completion info. Format as HTML:" + formatAsHtml;
+                }
             }
-        }
+        }*/
 
         return null;
     }

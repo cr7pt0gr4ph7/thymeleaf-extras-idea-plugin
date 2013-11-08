@@ -35,6 +35,7 @@ public interface DialectItem extends DomElement {
 
     @NotNull
     @Required
+    @NameValue
     GenericAttributeValue<String> getName();
 
     /**
