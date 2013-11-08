@@ -8,13 +8,13 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
 
-public class HbBundle {
+public class ThymeleafBundle {
     private static Reference<ResourceBundle> ourBundle;
 
     @NonNls
-    private static final String PATH_TO_BUNDLE = "messages.HbBundle";
+    private static final String PATH_TO_BUNDLE = "messages.ThymeleafBundle";
 
-    private HbBundle() {
+    private ThymeleafBundle() {
     }
 
     public static String message(@PropertyKey (resourceBundle = PATH_TO_BUNDLE)String key, Object... params) {
