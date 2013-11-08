@@ -1,2 +1,0 @@
-FILE
-  PsiComment([Hb] COMMENT)('{{! this is a comment }}')
