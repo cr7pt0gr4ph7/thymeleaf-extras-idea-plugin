@@ -2,11 +2,6 @@ package org.thymeleaf.extras.idea.fragment.selection.file;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.ex.util.LayeredLexerEditorHighlighter;
-import org.thymeleaf.extras.idea.HbBundle;
-import org.thymeleaf.extras.idea.HbIcons;
-import org.thymeleaf.extras.idea.HbLanguage;
-import org.thymeleaf.extras.idea.HbTemplateHighlighter;
-import com.intellij.lang.Language;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.highlighter.EditorHighlighter;
 import com.intellij.openapi.fileTypes.EditorHighlighterProvider;
@@ -16,14 +11,13 @@ import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.fileTypes.TemplateLanguageFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.templateLanguages.TemplateDataLanguageMappings;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorHighlighter;
+import org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorLanguage;
 
 import javax.swing.Icon;
-import java.nio.charset.Charset;
 
 public class FragmentSelectorFileType extends LanguageFileType implements TemplateLanguageFileType {
     public static final LanguageFileType INSTANCE = new FragmentSelectorFileType();
@@ -31,7 +25,7 @@ public class FragmentSelectorFileType extends LanguageFileType implements Templa
     public static final String DEFAULT_EXTENSION = "thfs";
 
     private FragmentSelectorFileType() {
-        super(HbLanguage.INSTANCE);
+        super(FragmentSelectorLanguage.INSTANCE);
 
         FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(this, new EditorHighlighterProvider() {
             public EditorHighlighter getEditorHighlighter(@Nullable Project project,
@@ -59,6 +53,6 @@ public class FragmentSelectorFileType extends LanguageFileType implements Templa
     }
 
     public Icon getIcon() {
-        return HbIcons.FILE_ICON;
+        return AllIcons.FileTypes.Custom;
     }
 }
