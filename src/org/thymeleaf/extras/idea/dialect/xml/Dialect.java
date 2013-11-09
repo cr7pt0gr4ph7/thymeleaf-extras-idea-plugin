@@ -6,6 +6,7 @@ package org.thymeleaf.extras.idea.dialect.xml;
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -71,6 +72,9 @@ public interface Dialect extends DomElement {
      * @return created child
      */
     AttributeProcessor addAttributeProcessor();
+
+    @Nullable
+    AttributeProcessor findAttributeProcessor(String name);
 
     /**
      * Returns the list of element-processor children.
