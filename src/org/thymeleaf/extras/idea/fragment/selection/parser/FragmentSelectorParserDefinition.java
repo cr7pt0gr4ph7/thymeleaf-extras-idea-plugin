@@ -13,6 +13,7 @@ import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorLanguage;
+import org.thymeleaf.extras.idea.fragment.selection.lexer.FragmentSelectorLexer;
 
 public class FragmentSelectorParserDefinition implements ParserDefinition {
     public static final IFileElementType FRAGMENT_SELECTOR_FILE_ELEMENT_TYPE = new IFileElementType("ThymeleafFragmentSelector", FragmentSelectorLanguage.INSTANCE);

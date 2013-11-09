@@ -8,7 +8,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes;
-import org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorLexer;
+import org.thymeleaf.extras.idea.fragment.selection.lexer.FragmentSelectorLexer;
 
 public class FragmentSelectorHighlighter extends SyntaxHighlighterBase {
     public FragmentSelectorHighlighter() {

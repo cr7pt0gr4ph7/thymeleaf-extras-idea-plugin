@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.fragment.selection.parser;
+package org.thymeleaf.extras.idea.fragment.selection.lexer;
 
 import com.intellij.lexer.FlexAdapter;
 

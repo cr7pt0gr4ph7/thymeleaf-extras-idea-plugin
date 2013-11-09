@@ -2,7 +2,7 @@ package org.thymeleaf.extras.idea.lexer;
 
 import com.intellij.lexer.Lexer;
 import org.jetbrains.annotations.NotNull;
-import org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorLexer;
+import org.thymeleaf.extras.idea.fragment.selection.lexer.FragmentSelectorLexer;
 
 import static org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes.*;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
