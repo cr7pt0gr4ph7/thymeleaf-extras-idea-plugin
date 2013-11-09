@@ -23,11 +23,17 @@ public class FragmentSelectorParser implements PsiParser {
     int level_ = 0;
     boolean result_;
     builder_ = adapt_builder_(root_, builder_, this);
-    if (root_ == EXPRESSION) {
+    if (root_ == DOM_SELECTOR) {
+      result_ = dom_selector(builder_, level_ + 1);
+    }
+    else if (root_ == EXPRESSION) {
       result_ = expression(builder_, level_ + 1);
     }
     else if (root_ == FRAGMENT_SELECTION_EXPRESSION) {
       result_ = fragment_selection_expression(builder_, level_ + 1);
+    }
+    else if (root_ == TEMPLATE_NAME) {
+      result_ = template_name(builder_, level_ + 1);
     }
     else {
       Marker marker_ = builder_.mark();
@@ -56,8 +62,19 @@ public class FragmentSelectorParser implements PsiParser {
 
   /* ********************************************************** */
   // string
-  static boolean dom_selector(PsiBuilder builder_, int level_) {
-    return consumeToken(builder_, STRING);
+  public static boolean dom_selector(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "dom_selector")) return false;
+    if (!nextTokenIs(builder_, STRING)) return false;
+    boolean result_ = false;
+    Marker marker_ = builder_.mark();
+    result_ = consumeToken(builder_, STRING);
+    if (result_) {
+      marker_.done(DOM_SELECTOR);
+    }
+    else {
+      marker_.rollbackTo();
+    }
+    return result_;
   }
 
   /* ********************************************************** */
@@ -261,8 +278,19 @@ public class FragmentSelectorParser implements PsiParser {
 
   /* ********************************************************** */
   // string
-  static boolean template_name(PsiBuilder builder_, int level_) {
-    return consumeToken(builder_, STRING);
+  public static boolean template_name(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "template_name")) return false;
+    if (!nextTokenIs(builder_, STRING)) return false;
+    boolean result_ = false;
+    Marker marker_ = builder_.mark();
+    result_ = consumeToken(builder_, STRING);
+    if (result_) {
+      marker_.done(TEMPLATE_NAME);
+    }
+    else {
+      marker_.rollbackTo();
+    }
+    return result_;
   }
 
 }

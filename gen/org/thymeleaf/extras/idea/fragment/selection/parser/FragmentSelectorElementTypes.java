@@ -8,8 +8,10 @@ import org.thymeleaf.extras.idea.fragment.selection.psi.impl.*;
 
 public interface FragmentSelectorElementTypes {
 
+  IElementType DOM_SELECTOR = new FragmentSelectorCompositeElementType("DOM_SELECTOR");
   IElementType EXPRESSION = new FragmentSelectorCompositeElementType("EXPRESSION");
   IElementType FRAGMENT_SELECTION_EXPRESSION = new FragmentSelectorCompositeElementType("FRAGMENT_SELECTION_EXPRESSION");
+  IElementType TEMPLATE_NAME = new FragmentSelectorCompositeElementType("TEMPLATE_NAME");
 
   IElementType CLOSE_ARRAY = new FragmentSelectorElementType("]");
   IElementType CLOSE_PARENS = new FragmentSelectorElementType(")");
@@ -22,11 +24,17 @@ public interface FragmentSelectorElementTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == EXPRESSION) {
+       if (type == DOM_SELECTOR) {
+        return new DomSelectorImpl(node);
+      }
+      else if (type == EXPRESSION) {
         return new ExpressionImpl(node);
       }
       else if (type == FRAGMENT_SELECTION_EXPRESSION) {
         return new FragmentSelectionExpressionImpl(node);
+      }
+      else if (type == TEMPLATE_NAME) {
+        return new TemplateNameImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

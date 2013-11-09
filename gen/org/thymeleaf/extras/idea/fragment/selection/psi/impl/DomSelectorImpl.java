@@ -8,28 +8,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import org.thymeleaf.extras.idea.fragment.selection.psi.*;
 
-public class FragmentSelectionExpressionImpl extends ExpressionImpl implements FragmentSelectionExpression {
+public class DomSelectorImpl extends ASTWrapperPsiElement implements DomSelector {
 
-  public FragmentSelectionExpressionImpl(ASTNode node) {
+  public DomSelectorImpl(ASTNode node) {
     super(node);
   }
 
   @Override
-  @Nullable
-  public DomSelector getDomSelector() {
-    return findChildByClass(DomSelector.class);
-  }
-
-  @Override
-  @Nullable
-  public TemplateName getTemplateName() {
-    return findChildByClass(TemplateName.class);
+  @NotNull
+  public PsiElement getString() {
+    return findNotNullChildByType(STRING);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) ((Visitor)visitor).visitFragmentSelectionExpression(this);
+    if (visitor instanceof Visitor) ((Visitor)visitor).visitDomSelector(this);
     else super.accept(visitor);
   }
 

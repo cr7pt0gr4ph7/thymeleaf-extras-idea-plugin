@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FragmentSelectionExpression extends Expression {
+public interface DomSelector extends PsiElement {
 
-  @Nullable
-  DomSelector getDomSelector();
-
-  @Nullable
-  TemplateName getTemplateName();
+  @NotNull
+  PsiElement getString();
 
 }

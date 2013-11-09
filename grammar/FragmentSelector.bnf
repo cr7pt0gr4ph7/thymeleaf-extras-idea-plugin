@@ -21,18 +21,23 @@
     string='regexp:([^ \n:(),]+)'
   ]
 
+  extends(".*expression")=expression
   name(".*expr")='expression'
   name(".*expression")='expression'
-  extends(".*expression")=expression
 }
 
 root ::= expression
 expression ::= fragment_selection_expression
 
-fragment_selection_expression ::=  fragment_spec [fragment_paramlist]
-private fragment_spec         ::= (template_name ['::' dom_selector]) | ('::' dom_selector)
-private template_name         ::= string
-private dom_selector          ::= string
+fragment_selection_expression ::=  fragment_spec [fragment_paramlist] {
+    methods=[
+        template_name="/fragment_spec/template_name"
+        dom_selector="/fragment_spec/dom_selector"
+        ]
+    }
+    private fragment_spec         ::= (template_name ['::' dom_selector]) | ('::' dom_selector)
+    template_name         ::= string
+    dom_selector          ::= string
 
 private fragment_paramlist    ::= '(' param_expr (',' param_expr)* ')' {pin=1}
 private param_expr            ::= string
