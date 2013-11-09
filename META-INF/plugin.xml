@@ -41,7 +41,7 @@
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDialectSchemaProvider"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider"/>
 
-        <dom.fileDescription implementation="org.thymeleaf.extras.idea.dialect.xml.dom.DialectDomFileDescription"/>
+        <dom.fileDescription implementation="org.thymeleaf.extras.idea.dialect.DialectsDomFileDescription"/>
 
         <dom.implementation interfaceClass="org.thymeleaf.extras.idea.dialect.xml.Dialect"
                             implementationClass="org.thymeleaf.extras.idea.dialect.xml.impl.DialectImpl"/>
