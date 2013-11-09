@@ -37,7 +37,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Dialect descriptor files -->
-        <projectService serviceImplementation="org.thymeleaf.extras.idea.ThymeleafAttributeDescriptorsHolder"/>
+        <projectService serviceImplementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsHolder"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDialectSchemaProvider"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider"/>
 
@@ -50,13 +50,13 @@
 
         <!-- Documentation / Quick Info -->
         <lang.documentationProvider language="HTML"
-                                    implementationClass="org.thymeleaf.extras.idea.ThymeleafXmlDocumentationProvider"/>
+                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"/>
         <lang.documentationProvider language="XHTML"
-                                    implementationClass="org.thymeleaf.extras.idea.ThymeleafXmlDocumentationProvider"/>
+                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"/>
         <lang.documentationProvider language="XML"
-                                    implementationClass="org.thymeleaf.extras.idea.ThymeleafXmlDocumentationProvider"/>
+                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"/>
         <xml.attributeDescriptorsProvider
-                implementation="org.thymeleaf.extras.idea.ThymeleafAttributeDescriptorsProvider"/>
+                implementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsProvider"/>
 
         <!-- Fragment selection parser -->
         <fileTypeFactory

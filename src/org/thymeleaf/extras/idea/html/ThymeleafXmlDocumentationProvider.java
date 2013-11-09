@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea;
+package org.thymeleaf.extras.idea.html;
 
 import com.intellij.lang.documentation.DocumentationProvider;
 import com.intellij.psi.ElementDescriptionLocation;
@@ -7,14 +7,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.FakePsiElement;
 import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlTag;
 import com.intellij.usageView.UsageViewTypeLocation;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
-import org.thymeleaf.extras.idea.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.idea.dialect.xml.Dialect;
 
 import java.util.Collections;

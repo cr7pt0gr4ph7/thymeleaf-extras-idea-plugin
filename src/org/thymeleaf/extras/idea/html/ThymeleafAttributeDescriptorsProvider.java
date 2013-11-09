@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea;
+package org.thymeleaf.extras.idea.html;
 
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.xml.XmlAttributeDescriptor;

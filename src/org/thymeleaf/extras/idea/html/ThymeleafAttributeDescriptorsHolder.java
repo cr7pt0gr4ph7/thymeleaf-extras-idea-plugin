@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea;
+package org.thymeleaf.extras.idea.html;
 
 import com.intellij.javaee.ExternalResourceManager;
 import com.intellij.javaee.ExternalResourceManagerEx;
