@@ -5,6 +5,7 @@ import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.XmlAttributeValuePattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
@@ -22,28 +23,27 @@ import static com.intellij.patterns.XmlPatterns.xmlAttributeValue;
 import static com.intellij.patterns.XmlPatterns.xmlTag;
 
 public class XmlFragmentSelectorInjector implements MultiHostInjector, DumbAware {
-    private static final XmlAttributeValuePattern THYMELEAF_TAG_ATTRIBUTE = xmlAttributeValue()
-            .withParent(xmlAttribute().withNamespace(
-                    ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL,
-                    ThymeleafDefaultDialectsProvider.SPRING_STANDARD_DIALECT_URL,
-                    ThymeleafDefaultDialectsProvider.SPRING_SECURITY_DIALECT_URL,
-                    ThymeleafDefaultDialectsProvider.TILES_DIALECT_URL
-            ));
+    private static final ElementPattern<XmlAttributeValue> INCLUDE_ATTRIBUTE_PATTERN = xmlAttributeValue()
+            .withLocalName("include", "substituteby")
+            .withParent(xmlAttribute().withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL));
 
-    @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar, @NotNull PsiElement psiElement) {
+        // TODO Are the restrictions to the filetypes XML, XHTML and HTML overly restrictive?
         final FileType fileType = psiElement.getContainingFile().getFileType();
 
-        // TODO Are the restrictions to the filetypes XML, XHTML and HTML to hard?
-        if(fileType != StdFileTypes.HTML && fileType != StdFileTypes.XML && fileType != StdFileTypes.XHTML)
+        if (fileType != StdFileTypes.HTML && fileType != StdFileTypes.XML && fileType != StdFileTypes.XHTML) {
+            return;
+        }
 
-        if (psiElement instanceof XmlAttributeValue) {
-            XmlAttributeValue attrValue = (XmlAttributeValue) psiElement;
-            XmlAttribute parentAttr = (XmlAttribute) attrValue.getParent();
+        if (!psiElement.isValid() || !psiElement.getContainingFile().isValid()) {
+            // Do not try to inject something into invalid elements, e.g. elements that have
+            // already been removed from the internal tree, or that are members of a file that
+            // has become invalid, i.e. has been removed.
+            return;
+        }
 
-            if (ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL.equals(parentAttr.getNamespace()) && "include".equals(parentAttr.getLocalName())) {
-                FragmentSelectorLanguageInjector.injectElementWithPrefixSuffix(registrar, registrar.startIn);
-            }
+        if (INCLUDE_ATTRIBUTE_PATTERN.accepts(psiElement)) {
+            FragmentSelectorLanguageInjector.injectElementWithPrefixSuffix(registrar, (PsiLanguageInjectionHost) psiElement);
         }
     }
 

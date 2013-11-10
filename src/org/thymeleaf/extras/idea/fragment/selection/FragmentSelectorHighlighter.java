@@ -22,6 +22,8 @@ public class FragmentSelectorHighlighter extends SyntaxHighlighterBase {
 
         if (elementType == FragmentSelectorElementTypes.STRING)
             return pack(DefaultLanguageHighlighterColors.STRING);
+        else if (elementType == FragmentSelectorElementTypes.OPERATOR)
+            return pack(DefaultLanguageHighlighterColors.KEYWORD);
         else if (elementType == TokenType.BAD_CHARACTER)
             return pack(DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE);
 

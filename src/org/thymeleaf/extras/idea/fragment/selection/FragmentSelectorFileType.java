@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.Icon;
 
-public class FragmentSelectorFileType extends LanguageFileType implements TemplateLanguageFileType {
-    public static final LanguageFileType INSTANCE = new FragmentSelectorFileType();;
+public class FragmentSelectorFileType extends LanguageFileType {
+    public static final LanguageFileType INSTANCE = new FragmentSelectorFileType();
 
     private FragmentSelectorFileType() {
         super(FragmentSelectorLanguage.INSTANCE);
@@ -17,7 +17,7 @@ public class FragmentSelectorFileType extends LanguageFileType implements Templa
 
     @NotNull
     public String getName() {
-        return "Thymeleaf fragment selector";
+        return FragmentSelectorLanguage.ID;
     }
 
     @NotNull

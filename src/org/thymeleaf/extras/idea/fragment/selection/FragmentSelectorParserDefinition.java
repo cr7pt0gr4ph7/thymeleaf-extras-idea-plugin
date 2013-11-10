@@ -1,6 +1,7 @@
 package org.thymeleaf.extras.idea.fragment.selection;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.LanguageUtil;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
@@ -18,9 +19,8 @@ import org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorEleme
 import org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorParser;
 
 public class FragmentSelectorParserDefinition implements ParserDefinition {
-    public static final IFileElementType FRAGMENT_SELECTOR_FILE_ELEMENT_TYPE = new IFileElementType("ThymeleafFragmentSelector", FragmentSelectorLanguage.INSTANCE);
-    public static final TokenSet WS = TokenSet.create(TokenType.WHITE_SPACE);
-    public static final TokenSet COMMENTS = TokenSet.create();
+    public static final IFileElementType FRAGMENT_SELECTOR_FILE_ELEMENT_TYPE = new IFileElementType("ThFS", FragmentSelectorLanguage.INSTANCE);
+    public static final TokenSet WHITE_SPACE = TokenSet.create(TokenType.WHITE_SPACE);
     public static final TokenSet LITERALS = TokenSet.create(FragmentSelectorElementTypes.STRING);
 
     @NotNull
@@ -38,12 +38,12 @@ public class FragmentSelectorParserDefinition implements ParserDefinition {
 
     @NotNull
     public TokenSet getWhitespaceTokens() {
-        return WS;
+        return WHITE_SPACE;
     }
 
     @NotNull
     public TokenSet getCommentTokens() {
-        return COMMENTS;
+        return TokenSet.EMPTY;
     }
 
     @NotNull
@@ -61,6 +61,7 @@ public class FragmentSelectorParserDefinition implements ParserDefinition {
     }
 
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
-        return SpaceRequirements.MAY;
+        final Lexer lexer = createLexer(left.getPsi().getProject());
+        return LanguageUtil.canStickTokensTogetherByLexer(left, right, lexer);
     }
 }

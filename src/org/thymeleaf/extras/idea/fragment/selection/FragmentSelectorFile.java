@@ -1,7 +1,7 @@
 package org.thymeleaf.extras.idea.fragment.selection;
 
 import com.intellij.extapi.psi.PsiFileBase;
-import com.intellij.lang.Language;
+import com.intellij.lang.ParserDefinition;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +19,12 @@ public class FragmentSelectorFile extends PsiFileBase {
 
     @Override
     public String toString() {
-        return "FragmentSelectorFile:" + getName();
+        return "FragmentSelectorFile: " + getName();
+    }
+
+    @NotNull
+    @Override
+    public ParserDefinition getParserDefinition() {
+        return new FragmentSelectorParserDefinition();
     }
 }

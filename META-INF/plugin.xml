@@ -59,7 +59,8 @@
                 implementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsProvider"/>
 
         <!-- Fragment selection parser -->
-        <lang.parserDefinition language="ThFragmentSelector"
+        <lang.parserDefinition language="ThFS"
                                implementationClass="org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorParserDefinition"/>
+        <multiHostInjector implementation="org.thymeleaf.extras.idea.html.XmlFragmentSelectorInjector"/>
     </extensions>
 </idea-plugin>
