@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes.*;
 import org.thymeleaf.extras.idea.fragment.selection.psi.*;
 
-public class FragmentSelectionExpressionImpl extends ExpressionImpl implements FragmentSelectionExpression {
+public class FragmentSelectionExpressionImpl extends FragmentSelectorPsiCompositeElementImpl implements FragmentSelectionExpression {
 
   public FragmentSelectionExpressionImpl(ASTNode node) {
     super(node);

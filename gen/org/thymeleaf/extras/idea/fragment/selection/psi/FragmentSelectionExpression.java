@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FragmentSelectionExpression extends Expression {
+public interface FragmentSelectionExpression extends FragmentSelectorPsiCompositeElement {
 
   @Nullable
   DomSelector getDomSelector();

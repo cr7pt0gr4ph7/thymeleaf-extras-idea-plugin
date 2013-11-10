@@ -10,6 +10,9 @@
   elementTypeClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorCompositeElementType"
   tokenTypeClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementType"
 
+  implements="org.thymeleaf.extras.idea.fragment.selection.psi.FragmentSelectorPsiCompositeElement"
+  extends="org.thymeleaf.extras.idea.fragment.selection.psi.impl.FragmentSelectorPsiCompositeElementImpl"
+
   tokens=[
     OPERATOR='::'
     OPEN_PARENS='('
@@ -21,13 +24,11 @@
     string='regexp:([^ \n:(),]+)'
   ]
 
-  extends(".*expression")=expression
   name(".*expr")='expression'
   name(".*expression")='expression'
 }
 
-root ::= expression
-expression ::= fragment_selection_expression
+root ::= fragment_selection_expression
 
 fragment_selection_expression ::=  fragment_spec [fragment_paramlist] {
     methods=[

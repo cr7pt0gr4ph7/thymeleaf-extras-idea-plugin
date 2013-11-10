@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface DomSelector extends PsiElement {
+public interface DomSelector extends FragmentSelectorPsiCompositeElement {
 
   @NotNull
   PsiElement getString();

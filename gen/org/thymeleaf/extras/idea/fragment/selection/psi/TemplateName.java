@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TemplateName extends PsiElement {
+public interface TemplateName extends FragmentSelectorPsiCompositeElement {
 
   @NotNull
   PsiElement getString();

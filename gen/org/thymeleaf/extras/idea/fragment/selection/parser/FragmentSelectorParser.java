@@ -26,9 +26,6 @@ public class FragmentSelectorParser implements PsiParser {
     if (root_ == DOM_SELECTOR) {
       result_ = dom_selector(builder_, level_ + 1);
     }
-    else if (root_ == EXPRESSION) {
-      result_ = expression(builder_, level_ + 1);
-    }
     else if (root_ == FRAGMENT_SELECTION_EXPRESSION) {
       result_ = fragment_selection_expression(builder_, level_ + 1);
     }
@@ -49,17 +46,6 @@ public class FragmentSelectorParser implements PsiParser {
     return root(builder_, level_ + 1);
   }
 
-  private static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    TokenSet.create(EXPRESSION, FRAGMENT_SELECTION_EXPRESSION),
-  };
-
-  public static boolean type_extends_(IElementType child_, IElementType parent_) {
-    for (TokenSet set : EXTENDS_SETS_) {
-      if (set.contains(child_) && set.contains(parent_)) return true;
-    }
-    return false;
-  }
-
   /* ********************************************************** */
   // string
   public static boolean dom_selector(PsiBuilder builder_, int level_) {
@@ -74,31 +60,6 @@ public class FragmentSelectorParser implements PsiParser {
     else {
       marker_.rollbackTo();
     }
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // fragment_selection_expression
-  public static boolean expression(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "expression")) return false;
-    if (!nextTokenIs(builder_, OPERATOR) && !nextTokenIs(builder_, STRING)
-        && replaceVariants(builder_, 2, "<expression>")) return false;
-    boolean result_ = false;
-    int start_ = builder_.getCurrentOffset();
-    Marker marker_ = builder_.mark();
-    enterErrorRecordingSection(builder_, level_, _SECTION_GENERAL_, "<expression>");
-    result_ = fragment_selection_expression(builder_, level_ + 1);
-    LighterASTNode last_ = result_? builder_.getLatestDoneMarker() : null;
-    if (last_ != null && last_.getStartOffset() == start_ && type_extends_(last_.getTokenType(), EXPRESSION)) {
-      marker_.drop();
-    }
-    else if (result_) {
-      marker_.done(EXPRESSION);
-    }
-    else {
-      marker_.rollbackTo();
-    }
-    result_ = exitErrorRecordingSection(builder_, level_, result_, false, _SECTION_GENERAL_, null);
     return result_;
   }
 
@@ -165,16 +126,11 @@ public class FragmentSelectorParser implements PsiParser {
     if (!nextTokenIs(builder_, OPERATOR) && !nextTokenIs(builder_, STRING)
         && replaceVariants(builder_, 2, "<expression>")) return false;
     boolean result_ = false;
-    int start_ = builder_.getCurrentOffset();
     Marker marker_ = builder_.mark();
     enterErrorRecordingSection(builder_, level_, _SECTION_GENERAL_, "<expression>");
     result_ = fragment_spec(builder_, level_ + 1);
     result_ = result_ && fragment_selection_expression_1(builder_, level_ + 1);
-    LighterASTNode last_ = result_? builder_.getLatestDoneMarker() : null;
-    if (last_ != null && last_.getStartOffset() == start_ && type_extends_(last_.getTokenType(), FRAGMENT_SELECTION_EXPRESSION)) {
-      marker_.drop();
-    }
-    else if (result_) {
+    if (result_) {
       marker_.done(FRAGMENT_SELECTION_EXPRESSION);
     }
     else {
@@ -271,9 +227,9 @@ public class FragmentSelectorParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // expression
+  // fragment_selection_expression
   static boolean root(PsiBuilder builder_, int level_) {
-    return expression(builder_, level_ + 1);
+    return fragment_selection_expression(builder_, level_ + 1);
   }
 
   /* ********************************************************** */

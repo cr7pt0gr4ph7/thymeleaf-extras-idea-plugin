@@ -9,7 +9,6 @@ import org.thymeleaf.extras.idea.fragment.selection.psi.impl.*;
 public interface FragmentSelectorElementTypes {
 
   IElementType DOM_SELECTOR = new FragmentSelectorCompositeElementType("DOM_SELECTOR");
-  IElementType EXPRESSION = new FragmentSelectorCompositeElementType("EXPRESSION");
   IElementType FRAGMENT_SELECTION_EXPRESSION = new FragmentSelectorCompositeElementType("FRAGMENT_SELECTION_EXPRESSION");
   IElementType TEMPLATE_NAME = new FragmentSelectorCompositeElementType("TEMPLATE_NAME");
 
@@ -26,9 +25,6 @@ public interface FragmentSelectorElementTypes {
       IElementType type = node.getElementType();
        if (type == DOM_SELECTOR) {
         return new DomSelectorImpl(node);
-      }
-      else if (type == EXPRESSION) {
-        return new ExpressionImpl(node);
       }
       else if (type == FRAGMENT_SELECTION_EXPRESSION) {
         return new FragmentSelectionExpressionImpl(node);
