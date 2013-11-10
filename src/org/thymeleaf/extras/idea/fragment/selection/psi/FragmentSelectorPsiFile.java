@@ -5,7 +5,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.impl.PsiFileEx;
 import org.jetbrains.annotations.NotNull;
-import org.thymeleaf.extras.idea.fragment.selection.file.FragmentSelectorFileType;
+import org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorFileType;
 import org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorLanguage;
 
 public class FragmentSelectorPsiFile extends PsiFileBase implements PsiFileEx {

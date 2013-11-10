@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.fragment.selection.parser;
+package org.thymeleaf.extras.idea.fragment.selection;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
@@ -14,6 +14,8 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorLanguage;
 import org.thymeleaf.extras.idea.fragment.selection.lexer.FragmentSelectorLexer;
+import org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes;
+import org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorParser;
 
 public class FragmentSelectorParserDefinition implements ParserDefinition {
     public static final IFileElementType FRAGMENT_SELECTOR_FILE_ELEMENT_TYPE = new IFileElementType("ThymeleafFragmentSelector", FragmentSelectorLanguage.INSTANCE);
@@ -55,7 +57,7 @@ public class FragmentSelectorParserDefinition implements ParserDefinition {
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {
-        return null;
+        return new FragmentSelectorFile(viewProvider);
     }
 
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
