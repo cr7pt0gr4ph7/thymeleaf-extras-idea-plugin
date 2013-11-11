@@ -62,5 +62,7 @@
         <lang.parserDefinition language="ThFS"
                                implementationClass="org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorParserDefinition"/>
         <multiHostInjector implementation="org.thymeleaf.extras.idea.html.XmlFragmentSelectorInjector"/>
+        <completion.contributor language="ThFS"
+                                implementationClass="org.thymeleaf.extras.idea.fragment.selection.completion.FragmentSelectorCompletionContributor"/>
     </extensions>
 </idea-plugin>
