@@ -3,6 +3,7 @@ package org.thymeleaf.extras.idea.fragment.selection.parser;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorLanguage;
 
 /**
  * Distinct interface to distinguish the leaf elements we get from the lexer from the synthetic
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 class FragmentSelectorCompositeElementType extends IElementType {
     public FragmentSelectorCompositeElementType(@NotNull @NonNls String debugName) {
-        super(debugName, null);
+        super(debugName, FragmentSelectorLanguage.INSTANCE);
     }
 }
 
