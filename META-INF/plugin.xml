@@ -17,7 +17,10 @@
     ]]>
     </change-notes>
     <version>0.7</version>
+
     <depends>com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="thymeleaf-spring.xml">com.intellij.spring</depends>
+
     <vendor logo="/icons/handlebars_icon.png" url="https://github.com/dmarcotte">dmarcotte</vendor>
 
     <idea-version since-build="107.105"/>
