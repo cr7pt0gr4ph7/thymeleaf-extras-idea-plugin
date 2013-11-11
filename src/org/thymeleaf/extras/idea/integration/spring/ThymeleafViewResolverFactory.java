@@ -6,6 +6,7 @@ import com.intellij.spring.contexts.model.SpringModel;
 import com.intellij.spring.model.xml.CommonSpringBean;
 import com.intellij.spring.model.xml.beans.SpringBean;
 import com.intellij.spring.model.xml.beans.SpringBeanPointer;
+import com.intellij.spring.model.xml.beans.SpringProperty;
 import com.intellij.spring.model.xml.beans.SpringPropertyDefinition;
 import com.intellij.spring.web.mvc.SpringMVCModel;
 import com.intellij.spring.web.mvc.views.UrlBasedViewResolver;
@@ -44,13 +45,17 @@ public class ThymeleafViewResolverFactory extends ViewResolverFactory {
         SpringPropertyDefinition property = bean.getProperty(propertyName);
 
         if (property != null) {
-            SpringBeanPointer springBeanPointer = property.getRefElement().getValue();
+            if (property instanceof SpringProperty && ((SpringProperty) property).getBean().exists()) {
+                return ((SpringProperty) property).getBean();
+            } else {
+                final SpringBeanPointer springBeanPointer = property.getRefElement().getValue();
 
-            if (springBeanPointer != null) {
-                CommonSpringBean commonSpringBean = springBeanPointer.getSpringBean();
+                if (springBeanPointer != null) {
+                    CommonSpringBean commonSpringBean = springBeanPointer.getSpringBean();
 
-                if (commonSpringBean instanceof SpringBean) {
-                    return (SpringBean) commonSpringBean;
+                    if (commonSpringBean instanceof SpringBean) {
+                        return (SpringBean) commonSpringBean;
+                    }
                 }
             }
         }
