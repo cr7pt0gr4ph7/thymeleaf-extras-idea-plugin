@@ -70,9 +70,6 @@ public class ThymeleafAttributeDescriptorsHolder {
 
     @Nullable
     public XmlAttributeDescriptor getAttributeDescriptor(String attributeName, XmlTag context) {
-        // TODO Remove this debugging aid
-        System.out.println(attributeName);
-
         final String nsPrefix = context.getPrefixByNamespace("http://www.thymeleaf.org");
 
         if (nsPrefix == null) {
