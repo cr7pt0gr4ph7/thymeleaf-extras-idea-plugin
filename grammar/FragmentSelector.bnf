@@ -24,6 +24,11 @@
     string='regexp:([^ \n:(),]+)'
   ]
 
+
+  mixin("dom_selector")="org.thymeleaf.extras.idea.fragment.selection.psi.impl.DomSelectorImplMixin"
+  mixin("template_name")="org.thymeleaf.extras.idea.fragment.selection.psi.impl.TemplateNameImplMixin"
+  // implements("dom_selector|template_name")=["com.intellij.psi.ContributedReferenceHost" "org.thymeleaf.extras.idea.fragment.selection.psi.FragmentSelectorPsiCompositeElement"]
+
   name(".*expr")='expression'
   name(".*expression")='expression'
 }
@@ -42,4 +47,3 @@ fragment_selection_expression ::=  fragment_spec [fragment_paramlist] {
 
 private fragment_paramlist    ::= '(' param_expr (',' param_expr)* ')' {pin=1}
 private param_expr            ::= string
-

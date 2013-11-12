@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <idea-plugin version="2">
     <extensions defaultExtensionNs="com.intellij">
-        <spring.mvc.viewResolverFactory implementation="org.thymeleaf.extras.idea.integration.spring.ThymeleafViewResolverFactory"/>
+        <spring.mvc.viewResolverFactory
+                implementation="org.thymeleaf.extras.idea.integration.spring.ThymeleafViewResolverFactory"/>
+        <psi.referenceContributor language="ThFS"
+                                  implementation="org.thymeleaf.extras.idea.integration.spring.ThymeleafViewReferenceContributor"/>
     </extensions>
 </idea-plugin>

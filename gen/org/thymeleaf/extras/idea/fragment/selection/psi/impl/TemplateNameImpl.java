@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes.*;
 import org.thymeleaf.extras.idea.fragment.selection.psi.*;
 
-public class TemplateNameImpl extends FragmentSelectorPsiCompositeElementImpl implements TemplateName {
+public class TemplateNameImpl extends TemplateNameImplMixin implements TemplateName {
 
   public TemplateNameImpl(ASTNode node) {
     super(node);

@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes.*;
 import org.thymeleaf.extras.idea.fragment.selection.psi.*;
 
-public class DomSelectorImpl extends FragmentSelectorPsiCompositeElementImpl implements DomSelector {
+public class DomSelectorImpl extends DomSelectorImplMixin implements DomSelector {
 
   public DomSelectorImpl(ASTNode node) {
     super(node);
