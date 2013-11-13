@@ -19,7 +19,9 @@ import com.intellij.util.xml.DomManager;
 import com.intellij.xml.XmlAttributeDescriptor;
 import com.intellij.xml.XmlNSDescriptor;
 import com.intellij.xml.impl.schema.AnyXmlAttributeDescriptor;
+import com.intellij.xml.util.XmlUtil;
 import gnu.trove.THashMap;
+import gnu.trove.THashSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -31,9 +33,7 @@ import org.thymeleaf.extras.idea.dialect.xml.Dialect;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ThymeleafAttributeDescriptorsHolder {
     private static final Logger LOG = Logger.getInstance(ThymeleafAttributeDescriptorsHolder.class);
@@ -49,44 +49,73 @@ public class ThymeleafAttributeDescriptorsHolder {
     }
 
     public XmlAttributeDescriptor[] getAttributeDescriptors(XmlTag context) {
-        final String nsPrefix = context.getPrefixByNamespace("http://www.thymeleaf.org");
+        // The set of all namespaces that have at least one xmlns declaration that is visible at the current element.
+        // Note that multiple prefix declarations for one and the same namespace are not handled properly at the moment
+        final String[] visibleNamespaces = context.knownNamespaces();
 
-        if (nsPrefix == null) {
-            // Thymeleaf XML namespace does not exist
-            return XmlAttributeDescriptor.EMPTY;
-        } else {
-            final String prefix = nsPrefix + ":";
-            final List<XmlAttributeDescriptor> result = new ArrayList<XmlAttributeDescriptor>();
+        // The set of known dialect namespaces
+        final Set<String> knownDialects = new THashSet<String>();
 
-            // Load the standard dialect
-            final Dialect dialect = getDialectForSchemaUrl(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
+        knownDialects.add(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
+        knownDialects.add(ThymeleafDefaultDialectsProvider.SPRING_STANDARD_DIALECT_URL);
+        knownDialects.add(ThymeleafDefaultDialectsProvider.SPRING_SECURITY_DIALECT_URL);
+        knownDialects.add(ThymeleafDefaultDialectsProvider.TILES_DIALECT_URL);
 
-            for (AttributeProcessor attr : dialect.getAttributeProcessors())
-                result.add(new ThymeleafXmlAttributeDescriptor(prefix + attr.getName(), attr));
+        final List<XmlAttributeDescriptor> result = new ArrayList<XmlAttributeDescriptor>();
 
-            return result.toArray(new XmlAttributeDescriptor[result.size()]);
+        for (final String dialectUrl : visibleNamespaces) {
+            if (knownDialects.contains(dialectUrl)) {
+                // A dialect has been registered for the current schema url
+                final Dialect dialect = getDialectForSchemaUrl(dialectUrl);
+
+                if (dialect == null) {
+                    // TODO Maybe limit the appearance rate of this error message to avoid spamming the output window?
+                    LOG.warn(MessageFormat.format("Failed to load dialect with schema url \"{0}\".", dialectUrl));
+                    continue;
+                }
+
+                final String prefix = context.getPrefixByNamespace(dialectUrl);
+                if (prefix == null) {
+                    // No prefix available for this namespace. This should not happen in practice.
+                    continue;
+                }
+                final String prefixWithColon = prefix + ':';
+
+                for (AttributeProcessor attr : dialect.getAttributeProcessors())
+                    result.add(new ThymeleafXmlAttributeDescriptor(prefixWithColon + attr.getName(), attr));
+            }
         }
+
+        return result.toArray(new XmlAttributeDescriptor[result.size()]);
     }
 
     @Nullable
-    public XmlAttributeDescriptor getAttributeDescriptor(String attributeName, XmlTag context) {
-        final String nsPrefix = context.getPrefixByNamespace("http://www.thymeleaf.org");
-
-        if (nsPrefix == null) {
-            // Thymeleaf XML namespace does not exist
-            return null;
-        } else {
-            final String prefix = nsPrefix + ":";
-
-            // Load the standard dialect
-            final Dialect dialect = getDialectForSchemaUrl(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
-
-            for (AttributeProcessor attr : dialect.getAttributeProcessors())
-                if ((prefix + attr.getName()).equals(attributeName))
-                    return new ThymeleafXmlAttributeDescriptor(nsPrefix + attr.getName(), attr);
-
+    public XmlAttributeDescriptor getAttributeDescriptor(final String attributeName, final XmlTag context) {
+        final String localName = MyXmlUtil.getLocalName(attributeName);
+        if (localName.isEmpty()) {
+            // Incomplete attribute name, i.e. "th:"
             return null;
         }
+
+        final String schemaUrl = context.getNamespaceByPrefix(XmlUtil.findPrefixByQualifiedName(attributeName));
+        if (schemaUrl.isEmpty()) {
+            // Prefix is not associated to a namespace
+            return null;
+        }
+
+        final Dialect dialect = getDialectForSchemaUrl(schemaUrl);
+        if (dialect == null) {
+            // No mapping found for dialect, or namespace url is not a dialect namespace
+            return null;
+        }
+
+        final AttributeProcessor attr = dialect.findAttributeProcessor(localName);
+        if (attr == null) {
+            // Unknown attribute processor
+            return null;
+        }
+
+        return new ThymeleafXmlAttributeDescriptor(attributeName, attr);
     }
 
     @Nullable
