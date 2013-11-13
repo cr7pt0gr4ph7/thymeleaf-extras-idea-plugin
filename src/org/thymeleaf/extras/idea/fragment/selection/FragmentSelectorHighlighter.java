@@ -2,6 +2,7 @@ package org.thymeleaf.extras.idea.fragment.selection;
 
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
+import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.TokenType;
@@ -25,7 +26,7 @@ public class FragmentSelectorHighlighter extends SyntaxHighlighterBase {
         else if (elementType == FragmentSelectorElementTypes.OPERATOR)
             return pack(DefaultLanguageHighlighterColors.KEYWORD);
         else if (elementType == TokenType.BAD_CHARACTER)
-            return pack(DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE);
+            return pack(HighlighterColors.BAD_CHARACTER);
 
         return EMPTY;
     }
