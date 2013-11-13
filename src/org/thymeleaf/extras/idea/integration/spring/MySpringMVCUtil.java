@@ -11,11 +11,14 @@ import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.web.mvc.SpringMVCModel;
 
+import java.awt.dnd.DropTargetContext;
+
 /**
  * Some helper methods & workarounds for working with the Spring plugin.
  */
 class MySpringMVCUtil {
     public static SpringMVCModel getSpringMVCModelForPsiElement(final PsiElement element) {
+        // TODO Check if element is valid (PsiElement.isValid())?
         Module module = ModuleUtilCore.findModuleForPsiElement(element);
         if (module == null) {
             return null;
@@ -39,7 +42,7 @@ class MySpringMVCUtil {
         //       so we have to use our own version that is aware of language injections.
         // TODO Is the implementation of MySpringMVCUtil.findWebFacetForPsiElement correct?
 
-        PsiFile psiFile = InjectedLanguageUtil.getTopLevelFile(element);
+        PsiFile psiFile = getTopLevelFile(element);
         if (psiFile == null) {
             return null;
         }
@@ -52,4 +55,22 @@ class MySpringMVCUtil {
         return WebUtil.getWebFacet(virtualFile, element.getProject());
     }
 
+    private static PsiFile getTopLevelFile(final PsiElement element) {
+        // NOTE: InjectedLanguageUtil.getTopLevelFile seems to return the file
+        //       that is shown in the *top level window*, not the conceptual containing file.
+        PsiFile current, next = element.getContainingFile();
+        do {
+            current = next;
+            next = getNextLevelFile(current);
+        } while (next != null);
+        return current;
+    }
+
+    private static PsiFile getNextLevelFile(final PsiFile element) {
+        PsiElement context = element.getContext();
+        if (context != null) {
+            return context.getContainingFile();
+        }
+        return null;
+    }
 }
