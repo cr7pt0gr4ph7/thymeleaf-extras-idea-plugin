@@ -49,7 +49,15 @@ class MySpringMVCUtil {
 
         VirtualFile virtualFile = psiFile.getVirtualFile();
         if (virtualFile == null) {
-            return null;
+            // NOTE: psiFile.getVirtualFile() returns null when called in a completion handler.
+            //       The workaround is to use psiFile.getOriginalFile().getVirtualFile() in those cases.
+            //       Which might return null, too! -> Completion is not available in those cases.
+
+            virtualFile = psiFile.getOriginalFile().getVirtualFile();
+
+            if (virtualFile == null) {
+                return null;
+            }
         }
 
         return WebUtil.getWebFacet(virtualFile, element.getProject());
