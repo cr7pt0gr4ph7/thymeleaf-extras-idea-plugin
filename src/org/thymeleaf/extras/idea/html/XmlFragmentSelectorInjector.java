@@ -24,7 +24,7 @@ import static com.intellij.patterns.XmlPatterns.xmlTag;
 
 public class XmlFragmentSelectorInjector implements MultiHostInjector, DumbAware {
     private static final ElementPattern<XmlAttributeValue> INCLUDE_ATTRIBUTE_PATTERN = xmlAttributeValue()
-            .withLocalName("include", "substituteby")
+            .withLocalName("include", "substituteby", "replace")
             .withParent(xmlAttribute().withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL));
 
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar, @NotNull PsiElement psiElement) {
