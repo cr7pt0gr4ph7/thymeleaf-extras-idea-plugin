@@ -61,6 +61,10 @@
         <xml.attributeDescriptorsProvider
                 implementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsProvider"/>
 
+        <!-- Line markers for fragment usages -->
+        <codeInsight.lineMarkerProvider language="ThFS"
+                                        implementationClass="org.thymeleaf.extras.idea.html.FragmentSelectorLineMarkerProvider"/>
+
         <!-- Fragment selection parser -->
         <lang.parserDefinition language="ThFS"
                                implementationClass="org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorParserDefinition"/>
