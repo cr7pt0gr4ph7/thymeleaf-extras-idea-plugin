@@ -4,7 +4,7 @@
 
   psiPackage="org.thymeleaf.extras.idea.fragment.selection.psi"
   psiImplPackage="org.thymeleaf.extras.idea.fragment.selection.psi.impl"
-  // psiImplUtilClass="org.thymeleaf.extras.idea.fragments.selection.psi.impl.GrammarPsiImplUtil"
+  // psiImplUtilClass="org.thymeleaf.extras.idea.fragment.selection.psi.impl.FragmentSelectionPsiImplUtil"
 
   elementTypeHolderClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes"
   elementTypeClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorCompositeElementType"
@@ -39,11 +39,12 @@ fragment_selection_expression ::=  fragment_spec [fragment_paramlist] {
     methods=[
         template_name="/fragment_spec/template_name"
         dom_selector="/fragment_spec/dom_selector"
-        ]
-    }
-    private fragment_spec         ::= (template_name ['::' dom_selector]) | ('::' dom_selector)
-    template_name         ::= string
-    dom_selector          ::= string
+    ]
+}
+
+private fragment_spec ::= (template_name ['::' dom_selector]) | ('::' dom_selector)
+template_name         ::= string
+dom_selector          ::= string
 
 private fragment_paramlist    ::= '(' param_expr (',' param_expr)* ')' {pin=1}
 private param_expr            ::= string
