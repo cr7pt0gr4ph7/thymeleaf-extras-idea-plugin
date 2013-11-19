@@ -53,11 +53,14 @@
 
         <!-- Documentation / Quick Info -->
         <lang.documentationProvider language="HTML"
-                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"/>
+                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"
+                                    order="first, before xml"/>
         <lang.documentationProvider language="XHTML"
-                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"/>
+                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"
+                                    order="first, before xml"/>
         <lang.documentationProvider language="XML"
-                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"/>
+                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"
+                                    order="first, before xml"/>
         <xml.attributeDescriptorsProvider
                 implementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsProvider"/>
 
