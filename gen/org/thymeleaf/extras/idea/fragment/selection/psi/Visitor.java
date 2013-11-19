@@ -14,6 +14,10 @@ public class Visitor extends PsiElementVisitor {
     visitFragmentSelectorPsiCompositeElement(o);
   }
 
+  public void visitParamExpr(@NotNull ParamExpr o) {
+    visitFragmentSelectorPsiCompositeElement(o);
+  }
+
   public void visitTemplateName(@NotNull TemplateName o) {
     visitFragmentSelectorPsiCompositeElement(o);
   }

@@ -10,6 +10,7 @@ public interface FragmentSelectorElementTypes {
 
   IElementType DOM_SELECTOR = new FragmentSelectorCompositeElementType("DOM_SELECTOR");
   IElementType FRAGMENT_SELECTION_EXPRESSION = new FragmentSelectorCompositeElementType("FRAGMENT_SELECTION_EXPRESSION");
+  IElementType PARAM_EXPR = new FragmentSelectorCompositeElementType("PARAM_EXPR");
   IElementType TEMPLATE_NAME = new FragmentSelectorCompositeElementType("TEMPLATE_NAME");
 
   IElementType CLOSE_ARRAY = new FragmentSelectorElementType("]");
@@ -28,6 +29,9 @@ public interface FragmentSelectorElementTypes {
       }
       else if (type == FRAGMENT_SELECTION_EXPRESSION) {
         return new FragmentSelectionExpressionImpl(node);
+      }
+      else if (type == PARAM_EXPR) {
+        return new ParamExprImpl(node);
       }
       else if (type == TEMPLATE_NAME) {
         return new TemplateNameImpl(node);

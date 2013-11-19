@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FragmentSelectionExpression extends FragmentSelectorPsiCompositeElement {
-
-  @Nullable
-  DomSelector getDomSelector();
+public interface ParamExpr extends FragmentSelectorPsiCompositeElement {
 
   @NotNull
-  List<ParamExpr> getParamExprList();
-
-  @Nullable
-  TemplateName getTemplateName();
+  PsiElement getString();
 
 }

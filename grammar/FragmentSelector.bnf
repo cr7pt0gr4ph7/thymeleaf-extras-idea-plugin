@@ -29,13 +29,16 @@
   mixin("template_name")="org.thymeleaf.extras.idea.fragment.selection.psi.impl.TemplateNameImplMixin"
   // implements("dom_selector|template_name")=["com.intellij.psi.ContributedReferenceHost" "org.thymeleaf.extras.idea.fragment.selection.psi.FragmentSelectorPsiCompositeElement"]
 
+  name("dom_selector")='Selector or name'
+  name("template_name")='Name'
+
   name(".*expr")='expression'
   name(".*expression")='expression'
 }
 
 root ::= fragment_selection_expression
 
-fragment_selection_expression ::=  fragment_spec [fragment_paramlist] {
+fragment_selection_expression ::=  fragment_spec [fragment_arguments] {
     methods=[
         template_name="/fragment_spec/template_name"
         dom_selector="/fragment_spec/dom_selector"
@@ -46,5 +49,17 @@ private fragment_spec ::= (template_name ['::' dom_selector]) | ('::' dom_select
 template_name         ::= string
 dom_selector          ::= string
 
-private fragment_paramlist    ::= '(' param_expr (',' param_expr)* ')' {pin=1}
-private param_expr            ::= string
+fragment_argument_list ::= '(' fragment_argument_list ')' {pin=1}
+fragment_arguments     ::= fragment_argument (',' fragment_argument)*  {pin(".*")=1}
+fragment_argument      ::= string {recoverUntil}
+
+record_tuple ::= '{' record_fields? '}' {pin=1}
+record_fields ::= record_field (',' record_field)* {pin(".*")=1}
+record_field ::= (q_atom | '_') '=' (qualified_atom_expression | expression) {
+  pin=1
+  methods = [
+    getReference
+    field_name_atom = "q_atom[0]"
+  ]
+  recoverUntil="tuple_recoverer"
+}

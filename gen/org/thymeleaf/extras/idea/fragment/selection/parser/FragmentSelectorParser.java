@@ -29,6 +29,9 @@ public class FragmentSelectorParser implements PsiParser {
     else if (root_ == FRAGMENT_SELECTION_EXPRESSION) {
       result_ = fragment_selection_expression(builder_, level_ + 1);
     }
+    else if (root_ == PARAM_EXPR) {
+      result_ = param_expr(builder_, level_ + 1);
+    }
     else if (root_ == TEMPLATE_NAME) {
       result_ = template_name(builder_, level_ + 1);
     }
@@ -107,16 +110,20 @@ public class FragmentSelectorParser implements PsiParser {
   private static boolean fragment_paramlist_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fragment_paramlist_2_0")) return false;
     boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = builder_.mark();
+    enterErrorRecordingSection(builder_, level_, _SECTION_GENERAL_, null);
     result_ = consumeToken(builder_, COMMA);
+    pinned_ = result_; // pin = 1
     result_ = result_ && param_expr(builder_, level_ + 1);
-    if (!result_) {
+    if (!result_ && !pinned_) {
       marker_.rollbackTo();
     }
     else {
       marker_.drop();
     }
-    return result_;
+    result_ = exitErrorRecordingSection(builder_, level_, result_, pinned_, _SECTION_GENERAL_, null);
+    return result_ || pinned_;
   }
 
   /* ********************************************************** */
@@ -222,8 +229,19 @@ public class FragmentSelectorParser implements PsiParser {
 
   /* ********************************************************** */
   // string
-  static boolean param_expr(PsiBuilder builder_, int level_) {
-    return consumeToken(builder_, STRING);
+  public static boolean param_expr(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "param_expr")) return false;
+    if (!nextTokenIs(builder_, STRING)) return false;
+    boolean result_ = false;
+    Marker marker_ = builder_.mark();
+    result_ = consumeToken(builder_, STRING);
+    if (result_) {
+      marker_.done(PARAM_EXPR);
+    }
+    else {
+      marker_.rollbackTo();
+    }
+    return result_;
   }
 
   /* ********************************************************** */

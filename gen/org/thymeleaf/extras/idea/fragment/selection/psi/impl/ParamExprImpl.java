@@ -10,32 +10,20 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes.*;
 import org.thymeleaf.extras.idea.fragment.selection.psi.*;
 
-public class FragmentSelectionExpressionImpl extends FragmentSelectorPsiCompositeElementImpl implements FragmentSelectionExpression {
+public class ParamExprImpl extends FragmentSelectorPsiCompositeElementImpl implements ParamExpr {
 
-  public FragmentSelectionExpressionImpl(ASTNode node) {
+  public ParamExprImpl(ASTNode node) {
     super(node);
   }
 
   @Override
-  @Nullable
-  public DomSelector getDomSelector() {
-    return findChildByClass(DomSelector.class);
-  }
-
-  @Override
   @NotNull
-  public List<ParamExpr> getParamExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParamExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public TemplateName getTemplateName() {
-    return findChildByClass(TemplateName.class);
+  public PsiElement getString() {
+    return findNotNullChildByType(STRING);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) ((Visitor)visitor).visitFragmentSelectionExpression(this);
+    if (visitor instanceof Visitor) ((Visitor)visitor).visitParamExpr(this);
     else super.accept(visitor);
   }
 
