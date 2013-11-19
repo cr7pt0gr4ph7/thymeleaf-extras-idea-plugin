@@ -99,7 +99,7 @@ public class ThymeleafAttributeDescriptorsHolder {
 
         final String schemaUrl = context.getNamespaceByPrefix(XmlUtil.findPrefixByQualifiedName(attributeName));
         if (schemaUrl.isEmpty()) {
-            // Prefix is not associated to a namespace
+            // Prefix is not associated with a namespace
             return null;
         }
 
