@@ -7,11 +7,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.FakePsiElement;
 import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.usageView.UsageViewTypeLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
 import org.thymeleaf.extras.idea.dialect.xml.Dialect;
+import org.thymeleaf.extras.idea.dialect.xml.DialectItem;
 
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +57,7 @@ public class ThymeleafXmlDocumentationProvider implements DocumentationProvider,
                     Dialect dialect = ThymeleafAttributeDescriptorsHolder.getInstance(psiManager.getProject())
                             .getDialectForSchemaUrl(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
 
-                    if(dialect == null) return null;
+                    if (dialect == null) return null;
                 }
             }
         }
@@ -77,16 +79,13 @@ public class ThymeleafXmlDocumentationProvider implements DocumentationProvider,
 
     @Nullable
     private static String getDoc(PsiElement element, boolean formatAsHtml) {
-        /*if (element instanceof XmlTag) {
-            DomManager manager = DomManager.getDomManager(element.getProject());
-            DomElement rawDecl = manager.getDomElement((XmlTag) element);
+        if (element instanceof XmlTag) {
+            final ThymeleafAttributeDescriptorsHolder holder = ThymeleafAttributeDescriptorsHolder.getInstance(element.getProject());
+            final DialectItem dialectItem = holder.findDialectItemFromDocumentationXmlTag((XmlTag) element);
 
-            if (rawDecl != null) {
-                if (rawDecl instanceof AttributeProcessor) {
-                    return "Attribute processor completion info. Format as HTML:" + formatAsHtml;
-                }
-            }
-        }*/
+            if (dialectItem == null) return null;
+            return dialectItem.getDocumentation().getValue();
+        }
 
         return null;
     }

@@ -14,6 +14,7 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomManager;
 import com.intellij.xml.XmlAttributeDescriptor;
@@ -29,11 +30,15 @@ import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
 import org.thymeleaf.extras.idea.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.idea.dialect.xml.Dialect;
+import org.thymeleaf.extras.idea.dialect.xml.DialectItem;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ThymeleafAttributeDescriptorsHolder {
     private static final Logger LOG = Logger.getInstance(ThymeleafAttributeDescriptorsHolder.class);
@@ -128,7 +133,7 @@ public class ThymeleafAttributeDescriptorsHolder {
             return null;
         }
 
-        VirtualFile schema;
+        final VirtualFile schema;
         try {
             schema = VfsUtil.findFileByURL(new URL(location));
         } catch (MalformedURLException ignore) {
@@ -140,23 +145,31 @@ public class ThymeleafAttributeDescriptorsHolder {
             return null;
         }
 
-        PsiFile psiFile = PsiManager.getInstance(myProject).findFile(schema);
+        final PsiFile psiFile = PsiManager.getInstance(myProject).findFile(schema);
 
         if (!(psiFile instanceof XmlFile)) {
             LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: File is not an xml file.", location));
             return null;
         }
 
-        DomManager manager = DomManager.getDomManager(myProject);
-        DomFileElement<Dialect> domFileElement = manager.getFileElement((XmlFile) psiFile, Dialect.class);
+        final DomManager manager = DomManager.getDomManager(myProject);
+        final DomFileElement<Dialect> domFileElement = manager.getFileElement((XmlFile) psiFile, Dialect.class);
 
         if (domFileElement == null) {
             LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: Could not read xml file into DOM.", location));
             return null;
         }
 
-        Dialect dialect = domFileElement.getRootElement();
+        final Dialect dialect = domFileElement.getRootElement();
         return dialect;
+    }
+
+    @Nullable
+    public DialectItem findDialectItemFromDocumentationXmlTag(@NotNull XmlTag itemDeclaration) {
+        final DomManager manager = DomManager.getDomManager(myProject);
+        final DomElement domElement = manager.getDomElement(itemDeclaration);
+        if (!(domElement instanceof DialectItem)) return null;
+        return (DialectItem) domElement;
     }
 
     private static class ThymeleafXmlAttributeDescriptor extends AnyXmlAttributeDescriptor {
@@ -166,6 +179,10 @@ public class ThymeleafAttributeDescriptorsHolder {
             super(name);
 
             myDeclaration = declaration;
+        }
+
+        public AttributeProcessor getDomDeclaration() {
+            return myDeclaration;
         }
 
         @Override
