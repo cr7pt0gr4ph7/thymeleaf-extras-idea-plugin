@@ -6,21 +6,18 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.XmlAttributeValuePattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
-import org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorLanguageInjector;
+import org.thymeleaf.extras.idea.lang.fragment.selection.FragmentSelectorLanguageInjector;
 
 import java.util.Collections;
 import java.util.List;
 
 import static com.intellij.patterns.XmlPatterns.xmlAttribute;
 import static com.intellij.patterns.XmlPatterns.xmlAttributeValue;
-import static com.intellij.patterns.XmlPatterns.xmlTag;
 
 public class XmlFragmentSelectorInjector implements MultiHostInjector, DumbAware {
     private static final ElementPattern<XmlAttributeValue> INCLUDE_ATTRIBUTE_PATTERN = xmlAttributeValue()

@@ -1,17 +1,17 @@
 {
-  parserClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorParser"
-  parserUtilClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorParserUtil"
+  parserClass="org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorParser"
+  parserUtilClass="org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorParserUtil"
 
-  psiPackage="org.thymeleaf.extras.idea.fragment.selection.psi"
-  psiImplPackage="org.thymeleaf.extras.idea.fragment.selection.psi.impl"
-  // psiImplUtilClass="org.thymeleaf.extras.idea.fragment.selection.psi.impl.FragmentSelectionPsiImplUtil"
+  psiPackage="org.thymeleaf.extras.idea.lang.fragment.selection.psi"
+  psiImplPackage="org.thymeleaf.extras.idea.lang.fragment.selection.psi.impl"
+  // psiImplUtilClass="org.thymeleaf.extras.idea.lang.fragment.selection.psi.impl.FragmentSelectionPsiImplUtil"
 
-  elementTypeHolderClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementTypes"
-  elementTypeClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorCompositeElementType"
-  tokenTypeClass="org.thymeleaf.extras.idea.fragment.selection.parser.FragmentSelectorElementType"
+  elementTypeHolderClass="org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorElementTypes"
+  elementTypeClass="org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorCompositeElementType"
+  tokenTypeClass="org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorElementType"
 
-  implements="org.thymeleaf.extras.idea.fragment.selection.psi.FragmentSelectorPsiCompositeElement"
-  extends="org.thymeleaf.extras.idea.fragment.selection.psi.impl.FragmentSelectorPsiCompositeElementImpl"
+  implements="org.thymeleaf.extras.idea.lang.fragment.selection.psi.FragmentSelectorPsiCompositeElement"
+  extends="org.thymeleaf.extras.idea.lang.fragment.selection.psi.impl.FragmentSelectorPsiCompositeElementImpl"
 
   tokens=[
     OPERATOR='::'
@@ -25,9 +25,9 @@
   ]
 
 
-  mixin("dom_selector")="org.thymeleaf.extras.idea.fragment.selection.psi.impl.DomSelectorImplMixin"
-  mixin("template_name")="org.thymeleaf.extras.idea.fragment.selection.psi.impl.TemplateNameImplMixin"
-  // implements("dom_selector|template_name")=["com.intellij.psi.ContributedReferenceHost" "org.thymeleaf.extras.idea.fragment.selection.psi.FragmentSelectorPsiCompositeElement"]
+  mixin("dom_selector")="org.thymeleaf.extras.idea.lang.fragment.selection.psi.impl.DomSelectorImplMixin"
+  mixin("template_name")="org.thymeleaf.extras.idea.lang.fragment.selection.psi.impl.TemplateNameImplMixin"
+  // implements("dom_selector|template_name")=["com.intellij.psi.ContributedReferenceHost" "org.thymeleaf.extras.idea.lang.fragment.selection.psi.FragmentSelectorPsiCompositeElement"]
 
   name("dom_selector")='Selector or name'
   name("template_name")='Name'

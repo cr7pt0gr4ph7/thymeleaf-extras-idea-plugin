@@ -11,7 +11,7 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.ThymeleafBundle;
-import org.thymeleaf.extras.idea.fragment.selection.psi.FragmentSelectionExpression;
+import org.thymeleaf.extras.idea.lang.fragment.selection.psi.FragmentSelectionExpression;
 
 import java.util.ArrayList;
 import java.util.Collection;

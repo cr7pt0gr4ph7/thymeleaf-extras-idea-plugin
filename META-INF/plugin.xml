@@ -70,9 +70,9 @@
 
         <!-- Fragment selection parser -->
         <lang.parserDefinition language="ThFS"
-                               implementationClass="org.thymeleaf.extras.idea.fragment.selection.FragmentSelectorParserDefinition"/>
+                               implementationClass="org.thymeleaf.extras.idea.lang.fragment.selection.FragmentSelectorParserDefinition"/>
         <multiHostInjector implementation="org.thymeleaf.extras.idea.html.XmlFragmentSelectorInjector"/>
         <completion.contributor language="ThFS"
-                                implementationClass="org.thymeleaf.extras.idea.fragment.selection.completion.FragmentSelectorCompletionContributor"/>
+                                implementationClass="org.thymeleaf.extras.idea.lang.fragment.selection.completion.FragmentSelectorCompletionContributor"/>
     </extensions>
 </idea-plugin>
