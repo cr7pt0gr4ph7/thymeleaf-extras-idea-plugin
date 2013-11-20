@@ -71,7 +71,7 @@
         <!-- Fragment selection parser -->
         <lang.parserDefinition language="ThFS"
                                implementationClass="org.thymeleaf.extras.idea.lang.fragment.selection.FragmentSelectorParserDefinition"/>
-        <multiHostInjector implementation="org.thymeleaf.extras.idea.html.XmlFragmentSelectorInjector"/>
+        <multiHostInjector implementation="org.thymeleaf.extras.idea.html.XmlAttributeProcessorInjector"/>
         <completion.contributor language="ThFS"
                                 implementationClass="org.thymeleaf.extras.idea.lang.fragment.selection.completion.FragmentSelectorCompletionContributor"/>
     </extensions>
