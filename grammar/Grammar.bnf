@@ -18,7 +18,7 @@
     EXPRESSION_END='}'
 
     // comment='regexp:--.*'
-    string='regexp:([^\}]+)'
+    string='regexp:([^\{\}\n]+)'
   ]
 
   name(".*expr")='expression'

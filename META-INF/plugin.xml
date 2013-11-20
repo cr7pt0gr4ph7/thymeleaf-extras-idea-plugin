@@ -68,10 +68,16 @@
         <codeInsight.lineMarkerProvider language="ThFS"
                                         implementationClass="org.thymeleaf.extras.idea.html.FragmentSelectorLineMarkerProvider"/>
 
+        <!-- Language injection for XML/HTML/XHTML attributes -->
+        <multiHostInjector implementation="org.thymeleaf.extras.idea.html.XmlAttributeProcessorInjector"/>
+
+        <!-- Thymeleaf expression language -->
+        <lang.parserDefinition language="ThEL"
+                               implementationClass="org.thymeleaf.extras.idea.lang.expression.ThymeleafExpressionParserDefinition"/>
+
         <!-- Fragment selection parser -->
         <lang.parserDefinition language="ThFS"
                                implementationClass="org.thymeleaf.extras.idea.lang.fragment.selection.FragmentSelectorParserDefinition"/>
-        <multiHostInjector implementation="org.thymeleaf.extras.idea.html.XmlAttributeProcessorInjector"/>
         <completion.contributor language="ThFS"
                                 implementationClass="org.thymeleaf.extras.idea.lang.fragment.selection.completion.FragmentSelectorCompletionContributor"/>
     </extensions>

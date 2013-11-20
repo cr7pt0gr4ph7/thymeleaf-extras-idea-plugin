@@ -10,13 +10,13 @@ import org.thymeleaf.extras.idea.lang.fragment.selection.FragmentSelectorLanguag
 
 public class ThymeleafExpressionFile extends PsiFileBase {
     protected ThymeleafExpressionFile(@NotNull final FileViewProvider fileViewProvider) {
-        super(fileViewProvider, FragmentSelectorLanguage.INSTANCE);
+        super(fileViewProvider, ThymeleafExpressionLanguage.INSTANCE);
     }
 
     @NotNull
     @Override
     public FileType getFileType() {
-        return FragmentSelectorFileType.INSTANCE;
+        return ThymeleafExpressionFileType.INSTANCE;
     }
 
     @Override
