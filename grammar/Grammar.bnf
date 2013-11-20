@@ -1,0 +1,63 @@
+{
+  parserClass="org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionParser"
+  parserUtilClass="org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionParserUtil"
+
+  psiPackage="org.thymeleaf.extras.idea.lang.expression.psi"
+  psiImplPackage="org.thymeleaf.extras.idea.lang.expression.psi.impl"
+  // psiImplUtilClass="org.thymeleaf.extras.idea.lang.expression.psi.impl.ThymeleafExpressionPsiImplUtil"
+
+  elementTypeHolderClass="org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes"
+  elementTypeClass="org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionCompositeElementType"
+  tokenTypeClass="org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementType"
+
+  tokens=[
+    VARIABLE_EXPR_START='${'
+    SELECTION_EXPR_START='*{'
+    MESSAGE_EXPR_START='#{'
+    LINK_EXPR_START='@{'
+    EXPRESSION_END='}'
+
+    // comment='regexp:--.*'
+    string='regexp:([^\}]+)'
+  ]
+
+  name(".*expr")='expression'
+  name(".*expression")='expression'
+
+  // Note: When there are multiple extends("...") patterns applicable for the same rule,
+  //       the first extends(...)-clause that matches takes precedence.
+  //       Therefore, match-all patterns like ".*expr" have to come last.
+
+  extends("(variable|selection|message|link)_expr")='generic_selection_expr'
+  extends(".*expr")=expression
+
+  methods("(variable|selection|message|link)_expr")=[
+    getSelectionString="/string[0]"
+  ]
+}
+
+root ::= expression
+
+expression ::= generic_selection_expr
+
+// Selectors: ${...}, *{...}, #{...} and @{...}
+generic_selection_expr ::= variable_expr | selection_expr | link_expr | message_expr {recoverUntil=selection_expr_recover}
+private selection_expr_recover ::= !('}')
+
+variable_expr ::= '${' string '}' {pin=1}
+selection_expr ::= '*{' string '}' {pin=1}
+message_expr ::= '#{' string '}' {pin=1}
+link_expr ::= '@{' string '}' {pin=1}
+
+//expr ::= factor plus_expr *
+//left plus_expr ::= plus_op factor
+//private plus_op ::= '+'|'-'
+//private factor ::= primary mul_expr *
+//left mul_expr  ::= mul_op primary
+//private mul_op ::= '*'|'/'
+//private primary ::= primary_inner factorial_expr ?
+//left factorial_expr ::= '!'
+//private primary_inner ::= literal_expr | ref_expr | paren_expr
+//paren_expr ::= '(' expr ')' {pin=1}
+//ref_expr ::= id
+//literal_expr ::= number | string | float
