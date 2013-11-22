@@ -1,0 +1,2 @@
+<dialect xmlns="http://www.thymeleaf.org/extras/dialect" prefix="TP" namespace-uri="http://example.com/namespace-uri" class="TC">
+</dialect>

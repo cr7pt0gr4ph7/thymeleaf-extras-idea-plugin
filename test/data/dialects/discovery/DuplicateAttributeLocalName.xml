@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dialect xmlns="http://www.thymeleaf.org/extras/dialect"
+          xmlns:xyz="http://example.com/wrong-namespace" xmlns:uvw="http://example.com/another-wrong-namespace"
+          prefix="TP" xyz:namespace-uri="http://example.com/namespace-uri/invalid-1"
+          namespace-uri="http://example.com/namespace-uri"
+          uvw:namespace-uri="http://example.com/namespace-uri/invalid-2"
+          class="TC">
+</dialect>
