@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.html;
+package org.thymeleaf.extras.idea.dialect;
 
 import com.intellij.javaee.ExternalResourceManager;
 import com.intellij.javaee.ExternalResourceManagerEx;
@@ -27,6 +27,10 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.List;
 
+/**
+ * Provide the mapping (dialect namespace URI -> dialect descriptor file) for use with code completion,
+ * language injection etc.
+ */
 public class DialectDescriptorsHolder {
     private static final Logger LOG = Logger.getInstance(DialectDescriptorsHolder.class);
     private final Project myProject;

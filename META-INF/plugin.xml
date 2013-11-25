@@ -41,18 +41,18 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Dialect descriptor files -->
         <projectService serviceImplementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsHolder"/>
-        <projectService serviceImplementation="org.thymeleaf.extras.idea.html.DialectDescriptorsHolder"/>
+        <projectService serviceImplementation="org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDialectSchemaProvider"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider"/>
 
         <fileBasedIndex implementation="org.thymeleaf.extras.idea.dialect.discovery.DialectDescriptorIndex"/>
 
-        <dom.fileDescription implementation="org.thymeleaf.extras.idea.dialect.DialectsDomFileDescription"/>
+        <dom.fileDescription implementation="org.thymeleaf.extras.idea.dialect.dom.DialectsDomFileDescription"/>
 
-        <dom.implementation interfaceClass="org.thymeleaf.extras.idea.dialect.xml.Dialect"
-                            implementationClass="org.thymeleaf.extras.idea.dialect.xml.impl.DialectImpl"/>
-        <dom.implementation interfaceClass="org.thymeleaf.extras.idea.dialect.xml.DialectItem"
-                            implementationClass="org.thymeleaf.extras.idea.dialect.xml.impl.DialectItemImpl"/>
+        <dom.implementation interfaceClass="org.thymeleaf.extras.idea.dialect.dom.model.Dialect"
+                            implementationClass="org.thymeleaf.extras.idea.dialect.dom.model.impl.DialectImpl"/>
+        <dom.implementation interfaceClass="org.thymeleaf.extras.idea.dialect.dom.model.DialectItem"
+                            implementationClass="org.thymeleaf.extras.idea.dialect.dom.model.impl.DialectItemImpl"/>
 
         <!-- Documentation / Quick Info -->
         <lang.documentationProvider language="HTML"
