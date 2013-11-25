@@ -24,7 +24,7 @@ import java.util.List;
 import static com.intellij.patterns.XmlPatterns.xmlAttribute;
 import static com.intellij.patterns.XmlPatterns.xmlAttributeValue;
 
-public class XmlAttributeProcessorInjector implements MultiHostInjector, DumbAware {
+public class AttributeProcessorInXmlTemplateInjector implements MultiHostInjector, DumbAware {
     private static final ElementPattern<XmlAttribute> STANDARD_DIALECT_ATTR_PATTERN = xmlAttribute()
             .withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
     // --

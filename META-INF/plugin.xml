@@ -75,7 +75,7 @@
                                         implementationClass="org.thymeleaf.extras.idea.html.FragmentSelectorLineMarkerProvider"/>
 
         <!-- Language injection for XML/HTML/XHTML attributes -->
-        <multiHostInjector implementation="org.thymeleaf.extras.idea.html.XmlAttributeProcessorInjector"/>
+        <multiHostInjector implementation="org.thymeleaf.extras.idea.html.AttributeProcessorInXmlTemplateInjector"/>
 
         <!-- Thymeleaf expression language -->
         <lang.parserDefinition language="ThEL"
