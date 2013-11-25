@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.dom.model.AttributeProcessor;
 import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
 import org.thymeleaf.extras.idea.dialect.dom.model.DialectItem;
+import org.thymeleaf.extras.idea.util.MyXmlUtil;
 
 import java.util.ArrayList;
 import java.util.List;
