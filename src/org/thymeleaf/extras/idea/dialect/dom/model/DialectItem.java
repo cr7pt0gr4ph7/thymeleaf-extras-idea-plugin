@@ -23,7 +23,7 @@ public interface DialectItem extends DomElement {
      */
     @NotNull
     @Attribute("class")
-    GenericAttributeValue<PsiClass> getClazz();
+    GenericAttributeValue<PsiClass> getImplementationClass();
 
     /**
      * Returns the value of the documentation child.
