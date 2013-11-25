@@ -4,6 +4,8 @@ import com.intellij.javaee.ExternalResourceManager;
 import com.intellij.javaee.ExternalResourceManagerEx;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -20,14 +22,14 @@ import com.intellij.util.xml.DomManager;
 import com.intellij.xml.XmlAttributeDescriptor;
 import com.intellij.xml.XmlNSDescriptor;
 import com.intellij.xml.impl.schema.AnyXmlAttributeDescriptor;
+import com.intellij.xml.index.IndexedRelevantResource;
 import com.intellij.xml.util.XmlUtil;
 import gnu.trove.THashMap;
-import gnu.trove.THashSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
+import org.thymeleaf.extras.idea.dialect.discovery.DialectDescriptorIndex;
 import org.thymeleaf.extras.idea.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.idea.dialect.xml.Dialect;
 import org.thymeleaf.extras.idea.dialect.xml.DialectItem;
@@ -38,7 +40,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ThymeleafAttributeDescriptorsHolder {
     private static final Logger LOG = Logger.getInstance(ThymeleafAttributeDescriptorsHolder.class);
@@ -58,37 +59,26 @@ public class ThymeleafAttributeDescriptorsHolder {
         // Note that multiple prefix declarations for one and the same namespace are not handled properly at the moment
         final String[] visibleNamespaces = context.knownNamespaces();
 
-        // The set of known dialect namespaces
-        final Set<String> knownDialects = new THashSet<String>();
-
-        knownDialects.add(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
-        knownDialects.add(ThymeleafDefaultDialectsProvider.SPRING_STANDARD_DIALECT_URL);
-        knownDialects.add(ThymeleafDefaultDialectsProvider.SPRING_SECURITY_DIALECT_URL);
-        knownDialects.add(ThymeleafDefaultDialectsProvider.TILES_DIALECT_URL);
-
         final List<XmlAttributeDescriptor> result = new ArrayList<XmlAttributeDescriptor>();
 
         for (final String dialectUrl : visibleNamespaces) {
-            if (knownDialects.contains(dialectUrl)) {
-                // A dialect has been registered for the current schema url
-                final Dialect dialect = getDialectForSchemaUrl(dialectUrl);
+            final Dialect dialect = getDialectForSchemaUrl(dialectUrl, context);
 
-                if (dialect == null) {
-                    // TODO Maybe limit the appearance rate of this error message to avoid spamming the output window?
-                    LOG.warn(MessageFormat.format("Failed to load dialect with schema url \"{0}\".", dialectUrl));
-                    continue;
-                }
-
-                final String prefix = context.getPrefixByNamespace(dialectUrl);
-                if (prefix == null) {
-                    // No prefix available for this namespace. This should not happen in practice.
-                    continue;
-                }
-                final String prefixWithColon = prefix + ':';
-
-                for (AttributeProcessor attr : dialect.getAttributeProcessors())
-                    result.add(new ThymeleafXmlAttributeDescriptor(prefixWithColon + attr.getName(), attr));
+            if (dialect == null) {
+                // Not a dialect namespace
+                continue;
             }
+
+            final String prefix = context.getPrefixByNamespace(dialectUrl);
+            if (prefix == null) {
+                // No prefix available for this namespace. This should not happen in practice.
+                continue;
+            }
+
+            final String prefixWithColon = prefix + ':';
+
+            for (AttributeProcessor attr : dialect.getAttributeProcessors())
+                result.add(new ThymeleafXmlAttributeDescriptor(prefixWithColon + attr.getName(), attr));
         }
 
         return result.toArray(new XmlAttributeDescriptor[result.size()]);
@@ -108,7 +98,7 @@ public class ThymeleafAttributeDescriptorsHolder {
             return null;
         }
 
-        final Dialect dialect = getDialectForSchemaUrl(schemaUrl);
+        final Dialect dialect = getDialectForSchemaUrl(schemaUrl, context);
         if (dialect == null) {
             // No mapping found for dialect, or namespace url is not a dialect namespace
             return null;
@@ -124,12 +114,37 @@ public class ThymeleafAttributeDescriptorsHolder {
     }
 
     @Nullable
-    public Dialect getDialectForSchemaUrl(@NotNull String schemaUrl) {
+    public Dialect getDialectForSchemaUrl(@NotNull String schemaUrl, @NotNull PsiElement context) {
+        final Module module = ModuleUtilCore.findModuleForPsiElement(context);
+        final PsiFile containingFile = context.getContainingFile();
+
+        return getDialectForSchemaUrl(schemaUrl, module, containingFile);
+    }
+
+    @Nullable
+    public Dialect getDialectForSchemaUrl(@NotNull String schemaUrl, @Nullable Module module, @Nullable PsiFile context) {
+        if (module != null && context != null) {
+            final List<IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo>> candidates =
+                    DialectDescriptorIndex.getDialectDescriptorFiles(schemaUrl, module, context);
+
+            for (final IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo> candidate : candidates) {
+                final VirtualFile file = candidate.getFile();
+                if (file == null || !file.isValid()) continue;
+                final Dialect dialect = findDialectByVirtualFile(file);
+                if (dialect == null || !dialect.isValid()) continue;
+                return dialect;
+            }
+        }
+        return getStdDialectForSchemaUrl(schemaUrl);
+    }
+
+    @Nullable
+    public Dialect getStdDialectForSchemaUrl(@NotNull String schemaUrl) {
         // String location = ExternalResourceManager.getInstance().getResourceLocation(schemaUrl, project);
         final String location = ((ExternalResourceManagerEx) ExternalResourceManager.getInstance()).getStdResource(schemaUrl, null);
-        // No mapping found
+
         if (location == null) {
-            LOG.warn(MessageFormat.format("Could not read dialect help file for dialect {0}: No mapping found for dialect schema url (in project {1}).", schemaUrl, myProject.getName()));
+            // No mapping found. This is the point where we filter out namespaces that do not refer to dialects.
             return null;
         }
 
@@ -145,10 +160,18 @@ public class ThymeleafAttributeDescriptorsHolder {
             return null;
         }
 
-        final PsiFile psiFile = PsiManager.getInstance(myProject).findFile(schema);
+        return findDialectByVirtualFile(schema);
+    }
+
+    /**
+     * Get the dialect DOM model from the virtual file of the dialect schema.
+     */
+    @Nullable
+    public Dialect findDialectByVirtualFile(@NotNull VirtualFile schemaFile) {
+        final PsiFile psiFile = PsiManager.getInstance(myProject).findFile(schemaFile);
 
         if (!(psiFile instanceof XmlFile)) {
-            LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: File is not an xml file.", location));
+            LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: File is not an xml file.", schemaFile.getPath()));
             return null;
         }
 
@@ -156,7 +179,7 @@ public class ThymeleafAttributeDescriptorsHolder {
         final DomFileElement<Dialect> domFileElement = manager.getFileElement((XmlFile) psiFile, Dialect.class);
 
         if (domFileElement == null) {
-            LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: Could not read xml file into DOM.", location));
+            LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: Could not read xml file into DOM.", schemaFile.getPath()));
             return null;
         }
 

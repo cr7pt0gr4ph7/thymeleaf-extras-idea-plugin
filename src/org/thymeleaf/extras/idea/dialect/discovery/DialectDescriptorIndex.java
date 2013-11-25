@@ -4,7 +4,6 @@ import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -14,8 +13,6 @@ import com.intellij.util.indexing.FileBasedIndex;
 import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.ID;
 import com.intellij.util.io.DataExternalizer;
-import com.intellij.util.text.CharArrayUtil;
-import com.intellij.util.xml.NanoXmlUtil;
 import com.intellij.xml.index.IndexedRelevantResource;
 import com.intellij.xml.index.XmlIndex;
 import com.intellij.xml.util.XmlUtil;
@@ -34,7 +31,7 @@ import java.util.Map;
 
 public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.DialectInfo> {
     public static final ID<String, DialectInfo> NAME = ID.create("thymeleafDialectUris");
-    private static final int INDEX_VERSION = 1;
+    private static final int INDEX_VERSION = 10;
 
     // TODO Rename to getResourcesByNamespace
     public static List<IndexedRelevantResource<String, DialectInfo>> getDialectDescriptorFiles(String namespace, @NotNull Module module, @Nullable PsiFile context) {
@@ -53,7 +50,8 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
 
     @Nullable
     private static GlobalSearchScope computeAdditionalScope(Module module, @Nullable PsiFile context) {
-        return createFilterForProject(module.getProject());
+        return module.getModuleWithDependenciesAndLibrariesScope(/*includeTests: */ false);
+        // return createFilterForProject(module.getProject());
     }
 
     private static GlobalSearchScope createFilterForProject(final Project project) {
@@ -110,9 +108,7 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
         return new FileBasedIndex.InputFilter() {
             @Override
             public boolean acceptInput(VirtualFile file) {
-                if (XmlFileType.INSTANCE != file.getFileType()) return false;
-                String name = file.getName();
-                return (name.endsWith(".xml")) && (file.getFileSystem() == LocalFileSystem.getInstance());
+                return XmlFileType.INSTANCE == file.getFileType() && file.getName().endsWith(".xml");
             }
         };
     }
@@ -124,9 +120,7 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
             @Override
             @NotNull
             public Map<String, DialectInfo> map(FileContent inputData) {
-                final DialectUriXmlBuilder builder = new DialectUriXmlBuilder();
-
-                NanoXmlUtil.parse(CharArrayUtil.readerFromCharSequence(inputData.getContentAsText()), builder);
+                final DialectUriXmlBuilder builder = DialectUriXmlBuilder.computeInfo(inputData.getContentAsText());
 
                 if (!builder.isDialectDescriptor() || !builder.isUriFound()) {
                     return Collections.emptyMap();

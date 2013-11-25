@@ -1,8 +1,12 @@
 package org.thymeleaf.extras.idea.dialect.discovery;
 
+import com.intellij.util.text.CharArrayUtil;
 import com.intellij.util.xml.NanoXmlUtil;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.Reader;
 
 public class DialectUriXmlBuilder extends NanoXmlUtil.BaseXmlBuilder {
 
@@ -24,6 +28,16 @@ public class DialectUriXmlBuilder extends NanoXmlUtil.BaseXmlBuilder {
     public DialectUriXmlBuilder() {
         myPrefix = "";
         myUri = "";
+    }
+
+    public static DialectUriXmlBuilder computeInfo(@NotNull final CharSequence text) {
+        return computeInfo(CharArrayUtil.readerFromCharSequence(text));
+    }
+
+    public static DialectUriXmlBuilder computeInfo(@NotNull final Reader reader) {
+        final DialectUriXmlBuilder builder = new DialectUriXmlBuilder();
+        NanoXmlUtil.parse(reader, builder);
+        return builder;
     }
 
     @Override
