@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.dialect.xml;
+package org.thymeleaf.extras.idea.dialect.dom.model;
 
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;

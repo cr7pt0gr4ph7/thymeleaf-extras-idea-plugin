@@ -4,27 +4,23 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomManager;
 import com.intellij.xml.XmlAttributeDescriptor;
-import com.intellij.xml.XmlNSDescriptor;
 import com.intellij.xml.impl.schema.AnyXmlAttributeDescriptor;
 import com.intellij.xml.util.XmlUtil;
-import gnu.trove.THashMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.thymeleaf.extras.idea.dialect.xml.AttributeProcessor;
-import org.thymeleaf.extras.idea.dialect.xml.Dialect;
-import org.thymeleaf.extras.idea.dialect.xml.DialectItem;
+import org.thymeleaf.extras.idea.dialect.dom.model.AttributeProcessor;
+import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
+import org.thymeleaf.extras.idea.dialect.dom.model.DialectItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ThymeleafAttributeDescriptorsHolder {
     private static final Logger LOG = Logger.getInstance(ThymeleafAttributeDescriptorsHolder.class);

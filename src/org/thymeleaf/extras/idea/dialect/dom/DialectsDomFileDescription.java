@@ -1,7 +1,7 @@
-package org.thymeleaf.extras.idea.dialect;
+package org.thymeleaf.extras.idea.dialect.dom;
 
 import com.intellij.util.xml.DomFileDescription;
-import org.thymeleaf.extras.idea.dialect.xml.Dialect;
+import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
 
 public class DialectsDomFileDescription extends DomFileDescription<Dialect> {
     public DialectsDomFileDescription() {

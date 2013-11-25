@@ -12,9 +12,9 @@ import com.intellij.usageView.UsageViewTypeLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
-import org.thymeleaf.extras.idea.dialect.xml.Dialect;
-import org.thymeleaf.extras.idea.dialect.xml.DialectItem;
-import org.thymeleaf.extras.idea.dialect.xml.Documentation;
+import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
+import org.thymeleaf.extras.idea.dialect.dom.model.DialectItem;
+import org.thymeleaf.extras.idea.dialect.dom.model.Documentation;
 
 import java.util.Collections;
 import java.util.List;

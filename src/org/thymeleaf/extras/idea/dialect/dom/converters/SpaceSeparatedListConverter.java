@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.dialect.xml.converters;
+package org.thymeleaf.extras.idea.dialect.dom.converters;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;

@@ -1,10 +1,10 @@
-package org.thymeleaf.extras.idea.dialect.xml.impl;
+package org.thymeleaf.extras.idea.dialect.dom.model.impl;
 
 import com.intellij.util.xml.DomUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.thymeleaf.extras.idea.dialect.xml.AttributeProcessor;
-import org.thymeleaf.extras.idea.dialect.xml.Dialect;
+import org.thymeleaf.extras.idea.dialect.dom.model.AttributeProcessor;
+import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
 
 public abstract class DialectImpl implements Dialect {
     @Override

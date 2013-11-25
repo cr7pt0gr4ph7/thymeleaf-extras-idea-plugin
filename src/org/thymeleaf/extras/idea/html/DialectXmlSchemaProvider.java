@@ -10,7 +10,7 @@ import com.intellij.xml.XmlSchemaProvider;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.thymeleaf.extras.idea.dialect.xml.Dialect;
+import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
 
 import java.util.Set;
 
