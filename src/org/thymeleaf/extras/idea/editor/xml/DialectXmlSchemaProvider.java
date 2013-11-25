@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.html;
+package org.thymeleaf.extras.idea.editor.xml;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder;
 import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
+import org.thymeleaf.extras.idea.editor.ThymeleafUtil;
 
 import java.util.Set;
 

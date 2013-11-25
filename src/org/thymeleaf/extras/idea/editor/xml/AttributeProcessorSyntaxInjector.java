@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.html;
+package org.thymeleaf.extras.idea.editor.xml;
 
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
@@ -24,7 +24,7 @@ import java.util.List;
 import static com.intellij.patterns.XmlPatterns.xmlAttribute;
 import static com.intellij.patterns.XmlPatterns.xmlAttributeValue;
 
-public class AttributeProcessorInXmlTemplateInjector implements MultiHostInjector, DumbAware {
+public class AttributeProcessorSyntaxInjector implements MultiHostInjector, DumbAware {
     private static final ElementPattern<XmlAttribute> STANDARD_DIALECT_ATTR_PATTERN = xmlAttribute()
             .withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
     // --

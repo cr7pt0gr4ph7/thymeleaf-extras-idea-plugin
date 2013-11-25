@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.html;
+package org.thymeleaf.extras.idea.editor;
 
 import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.ide.highlighter.XHtmlFileType;

@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.html;
+package org.thymeleaf.extras.idea.editor.xml;
 
 import com.intellij.lang.documentation.DocumentationProvider;
 import com.intellij.psi.ElementDescriptionLocation;
@@ -20,7 +20,7 @@ import org.thymeleaf.extras.idea.dialect.dom.model.Documentation;
 import java.util.Collections;
 import java.util.List;
 
-public class ThymeleafXmlDocumentationProvider implements DocumentationProvider, ElementDescriptionProvider {
+public class AttributeProcessorDocumentationProvider implements DocumentationProvider, ElementDescriptionProvider {
     @Nullable
     @Override
     public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement) {
@@ -82,7 +82,7 @@ public class ThymeleafXmlDocumentationProvider implements DocumentationProvider,
     @Nullable
     private static String getDoc(PsiElement element, boolean formatAsHtml) {
         if (element instanceof XmlTag) {
-            final ThymeleafAttributeDescriptorsHolder holder = ThymeleafAttributeDescriptorsHolder.getInstance(element.getProject());
+            final DialectXmlAttributeDescriptorsHolder holder = DialectXmlAttributeDescriptorsHolder.getInstance(element.getProject());
             final DialectItem dialectItem = holder.findDialectItemFromDocumentationXmlTag((XmlTag) element);
 
             if (dialectItem == null) return null;

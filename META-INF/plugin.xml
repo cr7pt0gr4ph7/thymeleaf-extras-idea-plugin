@@ -40,7 +40,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Dialect descriptor files -->
-        <projectService serviceImplementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsHolder"/>
+        <projectService serviceImplementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlAttributeDescriptorsHolder"/>
         <projectService serviceImplementation="org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDialectSchemaProvider"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider"/>
@@ -56,26 +56,26 @@
 
         <!-- Documentation / Quick Info -->
         <lang.documentationProvider language="HTML"
-                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"
+                                    implementationClass="org.thymeleaf.extras.idea.editor.xml.AttributeProcessorDocumentationProvider"
                                     order="first, before xml"/>
         <lang.documentationProvider language="XHTML"
-                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"
+                                    implementationClass="org.thymeleaf.extras.idea.editor.xml.AttributeProcessorDocumentationProvider"
                                     order="first, before xml"/>
         <lang.documentationProvider language="XML"
-                                    implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"
+                                    implementationClass="org.thymeleaf.extras.idea.editor.xml.AttributeProcessorDocumentationProvider"
                                     order="first, before xml"/>
 
         <!-- XML Validation: Attribute descriptors & dialect namespace resolution -->
         <xml.attributeDescriptorsProvider
-                implementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsProvider"/>
-        <xml.schemaProvider implementation="org.thymeleaf.extras.idea.html.DialectXmlSchemaProvider"/>
+                implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlAttributeDescriptorsProvider"/>
+        <xml.schemaProvider implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlSchemaProvider"/>
 
         <!-- Line markers for fragment usages -->
         <codeInsight.lineMarkerProvider language="ThFS"
-                                        implementationClass="org.thymeleaf.extras.idea.html.FragmentSelectorLineMarkerProvider"/>
+                                        implementationClass="org.thymeleaf.extras.idea.editor.fragment.selection.FragmentSelectorLineMarkerProvider"/>
 
         <!-- Language injection for XML/HTML/XHTML attributes -->
-        <multiHostInjector implementation="org.thymeleaf.extras.idea.html.AttributeProcessorInXmlTemplateInjector"/>
+        <multiHostInjector implementation="org.thymeleaf.extras.idea.editor.xml.AttributeProcessorSyntaxInjector"/>
 
         <!-- Thymeleaf expression language -->
         <lang.parserDefinition language="ThEL"

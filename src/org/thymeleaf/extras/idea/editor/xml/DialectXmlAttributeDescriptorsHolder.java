@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.html;
+package org.thymeleaf.extras.idea.editor.xml;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -24,16 +24,16 @@ import org.thymeleaf.extras.idea.util.MyXmlUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThymeleafAttributeDescriptorsHolder {
-    private static final Logger LOG = Logger.getInstance(ThymeleafAttributeDescriptorsHolder.class);
+public class DialectXmlAttributeDescriptorsHolder {
+    private static final Logger LOG = Logger.getInstance(DialectXmlAttributeDescriptorsHolder.class);
     private final Project myProject;
 
-    public ThymeleafAttributeDescriptorsHolder(@NotNull Project project) {
+    public DialectXmlAttributeDescriptorsHolder(@NotNull Project project) {
         myProject = project;
     }
 
-    public static ThymeleafAttributeDescriptorsHolder getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, ThymeleafAttributeDescriptorsHolder.class);
+    public static DialectXmlAttributeDescriptorsHolder getInstance(@NotNull Project project) {
+        return ServiceManager.getService(project, DialectXmlAttributeDescriptorsHolder.class);
     }
 
     public XmlAttributeDescriptor[] getAttributeDescriptors(XmlTag context) {
