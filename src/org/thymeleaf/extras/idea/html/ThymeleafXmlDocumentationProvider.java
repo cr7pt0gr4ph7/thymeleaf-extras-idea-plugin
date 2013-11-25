@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
 import org.thymeleaf.extras.idea.dialect.xml.Dialect;
 import org.thymeleaf.extras.idea.dialect.xml.DialectItem;
+import org.thymeleaf.extras.idea.dialect.xml.Documentation;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,8 +55,8 @@ public class ThymeleafXmlDocumentationProvider implements DocumentationProvider,
                 final XmlAttribute attr = (XmlAttribute) psiElement;
 
                 if (ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL.equals(attr.getNamespace())) {
-                    Dialect dialect = ThymeleafAttributeDescriptorsHolder.getInstance(psiManager.getProject())
-                            .getDialectForSchemaUrl(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
+                    Dialect dialect = DialectDescriptorsHolder.getInstance(psiManager.getProject())
+                            .getDialectForSchemaUrl(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, psiElement);
 
                     if (dialect == null) return null;
                 }
@@ -84,7 +85,13 @@ public class ThymeleafXmlDocumentationProvider implements DocumentationProvider,
             final DialectItem dialectItem = holder.findDialectItemFromDocumentationXmlTag((XmlTag) element);
 
             if (dialectItem == null) return null;
-            return dialectItem.getDocumentation().getValue();
+            final Documentation documentation = dialectItem.getDocumentation();
+
+            if (documentation.exists()) {
+                return documentation.getValue();
+            } else {
+                return "No documentation available for this attribute processor.";
+            }
         }
 
         return null;

@@ -41,6 +41,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Dialect descriptor files -->
         <projectService serviceImplementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsHolder"/>
+        <projectService serviceImplementation="org.thymeleaf.extras.idea.html.DialectDescriptorsHolder"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDialectSchemaProvider"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider"/>
 
@@ -63,8 +64,11 @@
         <lang.documentationProvider language="XML"
                                     implementationClass="org.thymeleaf.extras.idea.html.ThymeleafXmlDocumentationProvider"
                                     order="first, before xml"/>
+
+        <!-- XML Validation: Attribute descriptors & dialect namespace resolution -->
         <xml.attributeDescriptorsProvider
                 implementation="org.thymeleaf.extras.idea.html.ThymeleafAttributeDescriptorsProvider"/>
+        <xml.schemaProvider implementation="org.thymeleaf.extras.idea.html.DialectXmlSchemaProvider"/>
 
         <!-- Line markers for fragment usages -->
         <codeInsight.lineMarkerProvider language="ThFS"
