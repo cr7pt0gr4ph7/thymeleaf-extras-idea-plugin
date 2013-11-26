@@ -18,6 +18,8 @@
     </change-notes>
     <version>0.7</version>
 
+    <resource-bundle>resources.messages.ThymeleafBundle</resource-bundle>
+
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="thymeleaf-spring.xml">com.intellij.spring</depends>
 
@@ -71,7 +73,11 @@
                 implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlAttributeDescriptorsProvider"/>
         <xml.schemaProvider implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlSchemaProvider"/>
 
-        <localInspection implementationClass="org.thymeleaf.extras.idea.inspection.HardcodedResourceUrlInspection">
+
+        <localInspection shortName="ThymeleafHardcodedResourceUrlInspection" bundle="resources.messages.ThymeleafBundle"
+                         key="template.inspection.hardcoded.resource.url.display.name"
+                         groupKey="template.inspection.group.name" enabledByDefault="true" level="warning"
+                         implementationClass="org.thymeleaf.extras.idea.inspection.HardcodedResourceUrlInspection"/>
 
         <!-- Language injection for XML/HTML/XHTML attributes -->
         <multiHostInjector implementation="org.thymeleaf.extras.idea.editor.xml.AttributeProcessorSyntaxInjector"/>
