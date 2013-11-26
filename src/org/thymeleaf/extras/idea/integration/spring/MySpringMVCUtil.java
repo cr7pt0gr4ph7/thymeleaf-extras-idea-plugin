@@ -10,13 +10,15 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.web.mvc.SpringMVCModel;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.dnd.DropTargetContext;
 
 /**
  * Some helper methods & workarounds for working with the Spring plugin.
  */
-class MySpringMVCUtil {
+public class MySpringMVCUtil {
+    @Nullable
     public static SpringMVCModel getSpringMVCModelForPsiElement(final PsiElement element) {
         // TODO Check if element is valid (PsiElement.isValid())?
         Module module = ModuleUtilCore.findModuleForPsiElement(element);
@@ -37,6 +39,7 @@ class MySpringMVCUtil {
         return SpringMVCModel.getModel(webFacet, springFacet);
     }
 
+    @Nullable
     private static WebFacet findWebFacetForPsiElement(final PsiElement element) {
         // NOTE: WebUtil.findWebFacetForPsiElement doesn't seem to work well with language injections,
         //       so we have to use our own version that is aware of language injections.
@@ -74,6 +77,7 @@ class MySpringMVCUtil {
         return current;
     }
 
+    @Nullable
     private static PsiFile getNextLevelFile(final PsiFile element) {
         PsiElement context = element.getContext();
         if (context != null) {
