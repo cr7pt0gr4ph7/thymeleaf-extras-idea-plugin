@@ -1,11 +1,14 @@
 package org.thymeleaf.extras.idea.util;
 
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.containers.BidirectionalMap;
 import com.intellij.xml.util.XmlUtil;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MyXmlUtil {
     @NotNull
@@ -44,5 +47,12 @@ public class MyXmlUtil {
         } else {
             return new BidirectionalMap<String, String>();
         }
+    }
+
+    @NonNls
+    @NotNull
+    public static String buildQName(@Nullable String namespacePrefix, @NotNull String localName) {
+        if (StringUtil.isEmpty(namespacePrefix)) return localName;
+        else return namespacePrefix + ":" + localName;
     }
 }
