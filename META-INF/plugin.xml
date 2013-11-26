@@ -71,6 +71,7 @@
                 implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlAttributeDescriptorsProvider"/>
         <xml.schemaProvider implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlSchemaProvider"/>
 
+        <localInspection implementationClass="org.thymeleaf.extras.idea.inspection.HardcodedResourceUrlInspection">
 
         <!-- Language injection for XML/HTML/XHTML attributes -->
         <multiHostInjector implementation="org.thymeleaf.extras.idea.editor.xml.AttributeProcessorSyntaxInjector"/>
