@@ -1,34 +1,44 @@
 package org.thymeleaf.extras.idea.inspection;
 
-import com.intellij.codeInsight.completion.ExtendedTagInsertHandler;
-import com.intellij.codeInsight.completion.XmlAttributeInsertHandler;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.XmlSuppressableInspectionTool;
+import com.intellij.javaee.web.WebRoot;
+import com.intellij.javaee.web.WebUtil;
+import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceUtil;
+import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileSystemItemUtil;
+import com.intellij.psi.jsp.WebDirectoryElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
+import com.intellij.spring.contexts.model.SpringModel;
+import com.intellij.spring.model.xml.DomSpringBean;
+import com.intellij.spring.model.xml.beans.DomSpringBeanPointer;
+import com.intellij.spring.model.xml.beans.SpringBaseBeanPointer;
+import com.intellij.spring.model.xml.mvc.Resources;
+import com.intellij.spring.web.mvc.SpringMVCModel;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.xml.XmlExtension;
 import com.intellij.xml.util.XmlUtil;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
 import org.thymeleaf.extras.idea.editor.ThymeleafUtil;
-import org.thymeleaf.extras.idea.util.MyXmlUtil;
+import org.thymeleaf.extras.idea.integration.spring.MySpringMVCUtil;
 
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.List;
 
 import static com.intellij.patterns.XmlPatterns.*;
 import static org.thymeleaf.extras.idea.util.MyXmlUtil.buildQName;
@@ -131,17 +141,81 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
         }
 
         private static void addAttribute(String prefix, XmlAttributeValue value) {
+            // TODO Don't add the xml namespace declaration if adding the attribute fails!
             XmlTag tag = PsiTreeUtil.getParentOfType(value, XmlTag.class, false);
             if (tag == null) return;
 
             final XmlAttribute originalAttr = PsiTreeUtil.getParentOfType(value, XmlAttribute.class);
             if (originalAttr == null) return;
 
-            final String newValue = "...";
+            // TODO Warn if adding the attribute fails, e.g. because of a missing SpringFacet?
+            final String newValue = determineWebPath(value);
+            if (newValue == null) return;
             final XmlElementFactory factory = XmlElementFactory.getInstance(value.getProject());
             final XmlAttribute newAttribute = factory.createXmlAttribute(buildQName(prefix, originalAttr.getLocalName()), newValue);
 
             tag.addBefore(newAttribute, originalAttr);
+        }
+
+        @Nullable
+        private static String determineWebPath(@NotNull XmlAttributeValue value) {
+            // TODO This is a hack to get the web path for the local file
+            SpringMVCModel springMVCModel = MySpringMVCUtil.getSpringMVCModelForPsiElement(value);
+            if (springMVCModel == null) return null;
+
+            final PsiFile targetPsiFile = FileReferenceUtil.findFile(value);
+            if (targetPsiFile == null) return null;
+
+            final VirtualFile targetFile = targetPsiFile.getVirtualFile();
+            if (targetFile == null) return null;
+
+            final WebFacet webFacet = springMVCModel.getWebFacet();
+            final WebRoot webRoot = WebUtil.findParentWebRoot(targetFile, webFacet.getWebRoots());
+
+            if (webRoot == null) return null;
+
+            // TODO Is there an ordering of the models inside SpringMVCModel.getServletModels()?
+            // TODO Should we use SpringMVCModel.getServletModels() here, or something different?
+            for (final SpringModel model : springMVCModel.getServletModels()) {
+                // TODO Is there an explicit ordering in the returned list?
+                for (final SpringBaseBeanPointer pointer : model.findBeansByPsiClassWithInheritance("org.springframework.web.servlet.resource.ResourceHttpRequestHandler")) {
+                    if (pointer instanceof DomSpringBeanPointer) {
+                        final DomSpringBean bean = ((DomSpringBeanPointer) pointer).getSpringBean();
+
+                        if (bean instanceof Resources) {
+                            final Resources resources = (Resources) bean;
+
+                            final String mapping = resources.getMapping().getValue();
+                            if (mapping == null) continue;
+
+                            final List<PsiFileSystemItem> locations = resources.getLocation().getValue();
+                            if (locations == null) continue;
+
+                            final WebDirectoryElement targetWebDirectory = WebUtil.findWebDirectoryByFile(targetPsiFile);
+
+                            outer_loop:
+                            for (PsiFileSystemItem location : locations) {
+                                // Determine if "location" is a parent of "targetPsiFile"
+                                PsiFileSystemItem parent = targetWebDirectory;
+                                while (!location.equals(parent)) {
+                                    if (parent == null) continue outer_loop;
+                                    parent = parent.getParent();
+                                }
+                                // Found a matching mvc:resources tag where one of the locations
+                                // mentioned in @location match.
+
+                                final String relativePath = PsiFileSystemItemUtil.getRelativePath(location, targetWebDirectory);
+                                // TODO Dirty hack
+                                final String result = ThymeleafUtil.createLinkExpression(mapping.replace("**", relativePath));
+                                return result;
+                            }
+                        }
+                    }
+                }
+                // Resources resources = (Resources)pointer.getSpringBean();
+                // resources.getMapping();
+            }
+            return null;
         }
     }
 }

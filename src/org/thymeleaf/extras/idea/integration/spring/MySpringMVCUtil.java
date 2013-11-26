@@ -7,12 +7,9 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.web.mvc.SpringMVCModel;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.dnd.DropTargetContext;
 
 /**
  * Some helper methods & workarounds for working with the Spring plugin.

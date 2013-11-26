@@ -11,4 +11,8 @@ public class ThymeleafUtil {
         // TODO Don't hardcode this decision
         return (fileType == XmlFileType.INSTANCE || fileType == HtmlFileType.INSTANCE || fileType == XHtmlFileType.INSTANCE);
     }
+
+    public static String createLinkExpression(String path) {
+        return "@{" + path + "}";
+    }
 }
