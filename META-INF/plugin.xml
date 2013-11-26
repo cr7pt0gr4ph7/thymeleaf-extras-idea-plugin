@@ -40,7 +40,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Dialect descriptor files -->
-        <projectService serviceImplementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlAttributeDescriptorsHolder"/>
+        <projectService
+                serviceImplementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlAttributeDescriptorsHolder"/>
         <projectService serviceImplementation="org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDialectSchemaProvider"/>
         <standardResourceProvider implementation="org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider"/>
@@ -70,12 +71,10 @@
                 implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlAttributeDescriptorsProvider"/>
         <xml.schemaProvider implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlSchemaProvider"/>
 
-        <!-- Line markers for fragment usages -->
-        <codeInsight.lineMarkerProvider language="ThFS"
-                                        implementationClass="org.thymeleaf.extras.idea.editor.fragment.selection.FragmentSelectorLineMarkerProvider"/>
 
         <!-- Language injection for XML/HTML/XHTML attributes -->
         <multiHostInjector implementation="org.thymeleaf.extras.idea.editor.xml.AttributeProcessorSyntaxInjector"/>
+
 
         <!-- Thymeleaf expression language -->
         <lang.parserDefinition language="ThEL"
@@ -86,5 +85,7 @@
                                implementationClass="org.thymeleaf.extras.idea.lang.fragment.selection.FragmentSelectorParserDefinition"/>
         <completion.contributor language="ThFS"
                                 implementationClass="org.thymeleaf.extras.idea.lang.fragment.selection.completion.FragmentSelectorCompletionContributor"/>
+        <codeInsight.lineMarkerProvider language="ThFS"
+                                        implementationClass="org.thymeleaf.extras.idea.editor.fragment.selection.FragmentSelectorLineMarkerProvider"/>
     </extensions>
 </idea-plugin>
