@@ -1,13 +1,13 @@
 <!--suppress XmlUnboundNsPrefix -->
-<idea-plugin version="2" url="https://github.com/dmarcotte/idea-handlebars">
+<idea-plugin version="2" url="https://github.com/cr7pt0gr4ph7/thymeleaf-extras-idea">
     <id>org.thymeleaf.extras.idea</id>
-    <name>Handlebars/Mustache</name>
-    <description>
-        <![CDATA[
-      <a href="http://handlebarsjs.com/">Handlebars</a> and <a href="http://mustache.github.com/">Mustache</a> template support
+    <name>Thymeleaf</name>
+    <!-- TODO Configure a correct description -->
+    <description><![CDATA[
+      <a href="http://www.thymeleaf.org">Thymeleaf</a> template support
       <br>
       <br>
-      Issues, feature requests and contributions welcome: <a href="https://github.com/dmarcotte/idea-handlebars">https://github.com/dmarcotte/idea-handlebars</a>
+      Issues, feature requests and contributions welcome: <a href="https://github.com/cr7pt0gr4ph7/thymeleaf-extras-idea">https://github.com/cr7pt0gr4ph7/thymeleaf-extras-idea</a>
     ]]>
     </description>
     <category>Custom Languages</category>
@@ -16,14 +16,15 @@
       <b>Changenotes</b>
     ]]>
     </change-notes>
-    <version>0.7</version>
+    <version>0.1</version>
 
     <resource-bundle>resources.messages.ThymeleafBundle</resource-bundle>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="thymeleaf-spring.xml">com.intellij.spring</depends>
 
-    <vendor logo="/icons/handlebars_icon.png" url="https://github.com/dmarcotte">dmarcotte</vendor>
+    <!-- TODO Configure a correct vendor -->
+    <vendor logo="/icons/handlebars_icon.png" url="https://github.com/cr7pt0gr4ph7">cr7pt0gr4ph7</vendor>
 
     <idea-version since-build="107.105"/>
     <!--<idea-version since-build="110.000" until-build="128.18"/>-->
