@@ -1,7 +1,7 @@
 <!--suppress XmlUnboundNsPrefix -->
 <idea-plugin version="2" url="https://github.com/cr7pt0gr4ph7/thymeleaf-extras-idea">
     <id>org.thymeleaf.extras.idea</id>
-    <name>Thymeleaf</name>
+    <name>Thymeleaf support</name>
     <!-- TODO Configure a correct description -->
     <description><![CDATA[
       <a href="http://www.thymeleaf.org">Thymeleaf</a> template support
