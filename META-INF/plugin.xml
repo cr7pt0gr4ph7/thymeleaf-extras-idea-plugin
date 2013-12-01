@@ -77,7 +77,7 @@
 
         <localInspection shortName="ThymeleafHardcodedResourceUrlInspection" bundle="resources.messages.ThymeleafBundle"
                          key="template.inspection.hardcoded.resource.url.display.name"
-                         groupKey="template.inspection.group.name" enabledByDefault="true" level="warning"
+                         groupKey="template.inspection.group.name" enabledByDefault="true" level="WARNING"
                          implementationClass="org.thymeleaf.extras.idea.inspection.HardcodedResourceUrlInspection"/>
 
         <!-- Language injection for XML/HTML/XHTML attributes -->
