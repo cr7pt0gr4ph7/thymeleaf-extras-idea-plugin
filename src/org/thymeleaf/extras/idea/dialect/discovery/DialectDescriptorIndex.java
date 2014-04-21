@@ -16,6 +16,7 @@ import com.intellij.util.io.DataExternalizer;
 import com.intellij.xml.index.IndexedRelevantResource;
 import com.intellij.xml.index.XmlIndex;
 import com.intellij.xml.util.XmlUtil;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -115,6 +116,7 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
 
     @Override
     @NotNull
+    @SuppressWarnings("FeatureEnvy")
     public DataIndexer<String, DialectInfo, FileContent> getIndexer() {
         return new DataIndexer<String, DialectInfo, FileContent>() {
             @Override
@@ -135,13 +137,14 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
     public DataExternalizer<DialectInfo> getValueExternalizer() {
         return new DataExternalizer<DialectInfo>() {
             @Override
-            public void save(DataOutput out, DialectDescriptorIndex.DialectInfo value) throws IOException {
+            @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+            public void save(DataOutput out, DialectInfo value) throws IOException {
                 out.writeUTF(value.prefix);
             }
 
             @Override
-            public DialectDescriptorIndex.DialectInfo read(DataInput in) throws IOException {
-                return new DialectDescriptorIndex.DialectInfo(in.readUTF());
+            public DialectInfo read(DataInput in) throws IOException {
+                return new DialectInfo(in.readUTF());
             }
         };
     }
@@ -152,9 +155,10 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
     }
 
     public static class DialectInfo implements Comparable<DialectInfo> {
+        @NonNls
         private final String prefix;
 
-        private DialectInfo(String prefix) {
+        private DialectInfo(@SuppressWarnings("ParameterHidesMemberVariable") String prefix) {
             this.prefix = (prefix == null ? "" : prefix);
         }
 
