@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ThymeleafDefaultDialectsProvider implements StandardResourceProvider {
     public static final String STANDARD_DIALECT_URL = "http://www.thymeleaf.org";
-    public static final String SPRING_STANDARD_DIALECT_URL = "http://www.thymeleaf.org/extras/spring";
+    public static final String SPRING_STANDARD_DIALECT_URL = "http://www.thymeleaf.org/spring";
     public static final String SPRING_SECURITY_DIALECT_URL = "http://www.thymeleaf.org/extras/spring-security";
     public static final String TILES_DIALECT_URL = "http://www.thymeleaf.org/extras/tiles";
 
