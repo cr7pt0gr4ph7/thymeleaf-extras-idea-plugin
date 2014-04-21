@@ -44,6 +44,13 @@ public class DialectDescriptorsHolder {
     }
 
     @Nullable
+    public String getDefaultPrefix(@NotNull String schemaUrl, @NotNull PsiElement context) {
+        final Dialect dialect = getDialectForSchemaUrl(schemaUrl, context);
+        if(dialect == null) return null;
+        return dialect.getPrefix().getValue();
+    }
+
+    @Nullable
     public Dialect getDialectForSchemaUrl(@NotNull String schemaUrl, @NotNull PsiElement context) {
         final Module module = ModuleUtilCore.findModuleForPsiElement(context);
         final PsiFile containingFile = context.getContainingFile();
