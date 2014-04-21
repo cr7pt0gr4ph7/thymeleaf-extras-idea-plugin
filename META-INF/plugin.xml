@@ -21,7 +21,7 @@
     <resource-bundle>resources.messages.ThymeleafBundle</resource-bundle>
 
     <depends>com.intellij.modules.lang</depends>
-    <depends optional="true" config-file="thymeleaf-spring.xml">com.intellij.spring</depends>
+    <depends optional="true" config-file="thymeleaf-spring-mvc.xml">com.intellij.spring.mvc</depends>
 
     <!-- TODO Configure a correct vendor -->
     <vendor logo="/icons/handlebars_icon.png" url="https://github.com/cr7pt0gr4ph7">cr7pt0gr4ph7</vendor>

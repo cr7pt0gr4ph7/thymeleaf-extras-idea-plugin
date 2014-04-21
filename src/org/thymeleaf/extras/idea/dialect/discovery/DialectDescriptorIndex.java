@@ -37,7 +37,7 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
     // TODO Rename to getResourcesByNamespace
     public static List<IndexedRelevantResource<String, DialectInfo>> getDialectDescriptorFiles(String namespace, @NotNull Module module, @Nullable PsiFile context) {
         // TODO Should we use DumbService.isDumb() here?
-        if (DumbService.isDumb(module.getProject()) || (context != null && XmlUtil.isStubBuilding(context))) {
+        if (DumbService.isDumb(module.getProject()) || (context != null && XmlUtil.isStubBuilding())) {
             return Collections.emptyList();
         }
 
@@ -84,7 +84,7 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
     // TODO Rename to getAllResources
     public static List<IndexedRelevantResource<String, DialectInfo>> getDialectDescriptorFiles(final Module module, final PsiFile context) {
         // TODO Should we use DumbService.isDumb() here?
-        if (DumbService.isDumb(module.getProject()) || (context != null && XmlUtil.isStubBuilding(context))) {
+        if (DumbService.isDumb(module.getProject()) || (context != null && XmlUtil.isStubBuilding())) {
             return Collections.emptyList();
         }
 

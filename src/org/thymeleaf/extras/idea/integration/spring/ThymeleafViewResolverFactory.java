@@ -3,9 +3,9 @@ package org.thymeleaf.extras.idea.integration.spring;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.spring.contexts.model.SpringModel;
-import com.intellij.spring.model.xml.CommonSpringBean;
+import com.intellij.spring.model.CommonSpringBean;
+import com.intellij.spring.model.SpringBeanPointer;
 import com.intellij.spring.model.xml.beans.SpringBean;
-import com.intellij.spring.model.xml.beans.SpringBeanPointer;
 import com.intellij.spring.model.xml.beans.SpringProperty;
 import com.intellij.spring.model.xml.beans.SpringPropertyDefinition;
 import com.intellij.spring.web.mvc.SpringMVCModel;
@@ -24,16 +24,18 @@ public class ThymeleafViewResolverFactory extends ViewResolverFactory {
     }
 
     @Override
-    protected ViewResolver doCreate(SpringBean bean, SpringModel model) {
-        // Get the property ThymeleafViewResolver/@templateEngine
-        SpringBean templateEngine = getBeanForProperty(bean, "templateEngine");
+    protected ViewResolver doCreate(CommonSpringBean bean, SpringModel model) {
+        if (bean instanceof SpringBean) {
+            // Get the property ThymeleafViewResolver/@templateEngine
+            SpringBean templateEngine = getBeanForProperty((SpringBean) bean, "templateEngine");
 
-        if (templateEngine != null) {
-            SpringBean templateResolver = getBeanForProperty(templateEngine, "templateResolver");
+            if (templateEngine != null) {
+                SpringBean templateResolver = getBeanForProperty(templateEngine, "templateResolver");
 
-            if (templateResolver != null) {
-                // TODO: Differentiate between the different TemplateResolvers / ResourceResolvers
-                return new ThymeleafViewResolver(templateResolver);
+                if (templateResolver != null) {
+                    // TODO: Differentiate between the different TemplateResolvers / ResourceResolvers
+                    return new ThymeleafViewResolver(templateResolver);
+                }
             }
         }
 

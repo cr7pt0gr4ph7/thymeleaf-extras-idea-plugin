@@ -29,6 +29,7 @@ import com.intellij.spring.model.xml.mvc.Resources;
 import com.intellij.spring.web.mvc.SpringMVCModel;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.xml.XmlExtension;
+import com.intellij.xml.XmlNamespaceHelper;
 import com.intellij.xml.util.XmlUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -138,8 +139,8 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                 String prefix = tag.getPrefixByNamespace(myNamespaceUri);
 
                 if (StringUtil.isEmpty(prefix)) {
-                    XmlExtension extension = XmlExtension.getExtensionByElement(value);
-                    XmlExtension.Runner<String, IncorrectOperationException> after = new XmlExtension.Runner<String, IncorrectOperationException>() {
+                    XmlNamespaceHelper extension = XmlNamespaceHelper.getHelper(value.getContainingFile());
+                    XmlNamespaceHelper.Runner<String, IncorrectOperationException> after = new XmlNamespaceHelper.Runner<String, IncorrectOperationException>() {
                         @Override
                         public void run(String prefix) throws IncorrectOperationException {
                             addAttribute(prefix, value);
