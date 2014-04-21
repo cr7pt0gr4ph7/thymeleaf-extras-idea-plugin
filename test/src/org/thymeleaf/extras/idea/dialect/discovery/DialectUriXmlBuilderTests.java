@@ -9,6 +9,7 @@ import org.junit.Assert;
 import java.io.IOException;
 import java.io.Reader;
 
+@SuppressWarnings("InstanceMethodNamingConvention")
 @TestDataPath("$CONTENT_ROOT/test/data")
 public class DialectUriXmlBuilderTests extends ExternalParsingTestCase {
     private static String TEST_PREFIX = "TP";
@@ -81,11 +82,11 @@ public class DialectUriXmlBuilderTests extends ExternalParsingTestCase {
     /**
      * Parse the file corresponding to the current test method.
      */
-    protected ParseResult parseInputFile() throws IOException {
+    private ParseResult parseInputFile() throws IOException {
         return parseFile(getTestFileName(false));
     }
 
-    protected ParseResult parseFile(@TestDataFile String fileName) throws IOException {
+    private ParseResult parseFile(@TestDataFile String fileName) throws IOException {
         final DialectUriXmlBuilder builder = new DialectUriXmlBuilder();
         final String inputString = loadFile(fileName);
         final Reader reader = CharArrayUtil.readerFromCharSequence(inputString);
@@ -93,19 +94,21 @@ public class DialectUriXmlBuilderTests extends ExternalParsingTestCase {
         return new ParseResult(builder);
     }
 
-    static class ParseResult {
-        private DialectUriXmlBuilder builder;
+    @SuppressWarnings({"NonBooleanMethodNameMayNotStartWithQuestion", "FeatureEnvy"})
+    private static class ParseResult {
+        @SuppressWarnings("InstanceVariableOfConcreteClass")
+        private final DialectUriXmlBuilder builder;
 
         public ParseResult(DialectUriXmlBuilder builder) {
             this.builder = builder;
         }
 
         public void shouldBeAccepted() {
-            Assert.assertEquals(true, builder.isDialectDescriptor());
+            Assert.assertTrue(builder.isDialectDescriptor());
         }
 
         public void shouldBeRejected() {
-            Assert.assertEquals(false, builder.isDialectDescriptor());
+            Assert.assertFalse(builder.isDialectDescriptor());
             shouldHavePrefix(null);
             shouldHaveUri(null);
         }

@@ -4,9 +4,11 @@ import com.intellij.lexer.Lexer;
 import org.jetbrains.annotations.NotNull;
 import org.thymeleaf.extras.idea.lang.fragment.selection.lexer.FragmentSelectorLexer;
 
-import static org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorElementTypes.*;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorElementTypes.OPERATOR;
+import static org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorElementTypes.STRING;
 
+@SuppressWarnings({"InstanceMethodNamingConvention", "HardcodedFileSeparator", "DuplicateStringLiteralInspection"})
 public class FragmentSelectorTokenizerSpecTest extends GeneralLexerTest {
     @NotNull
     @Override
