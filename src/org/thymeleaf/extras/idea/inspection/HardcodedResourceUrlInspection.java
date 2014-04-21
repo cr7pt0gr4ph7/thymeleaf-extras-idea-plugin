@@ -47,6 +47,10 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
     private static final ElementPattern<XmlAttributeValue> SRC_ATTRIBUTE_PATTERN = xmlAttributeValue()
             .withParent(xmlAttribute("src"))
             .withSuperParent(2, xmlTag().andNot(xmlTag().withChild(xmlAttribute("src").withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL))));
+    private static final ElementPattern<XmlAttributeValue> HREF_ATTRIBUTE_PATTERN = xmlAttributeValue()
+            .withParent(xmlAttribute("href"))
+            .withSuperParent(2, xmlTag().andNot(xmlTag().withChild(xmlAttribute("href").withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL))));
+    private static final ElementPattern<XmlAttributeValue> SRC_OR_HREF_ATTRIBUTE_PATTERN = or(SRC_ATTRIBUTE_PATTERN, HREF_ATTRIBUTE_PATTERN);
 
     @NotNull
     @Override
@@ -61,23 +65,32 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                     return;
                 }
 
-                if (!SRC_ATTRIBUTE_PATTERN.accepts(value)) {
+                if (!SRC_OR_HREF_ATTRIBUTE_PATTERN.accepts(value)) {
                     return;
                 }
+
 
                 XmlTag tag = PsiTreeUtil.getParentOfType(value, XmlTag.class);
                 if (tag == null) return;
 
+                XmlAttribute attr = PsiTreeUtil.getParentOfType(value, XmlAttribute.class);
+                if (attr == null) return;
+
                 PsiFile referencedFile = FileReferenceUtil.findFile(value);
                 if (referencedFile == null) return;
 
-                // This is a local file reference
+                String nsPrefix = tag.getPrefixByNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
+                if (nsPrefix == null) return;
+
+                String localName = attr.getLocalName();
+                if(StringUtil.isEmpty(localName)) return;
+
+                // Register an error message
                 TextRange range = ElementManipulators.getValueTextRange(value);
-                holder.registerProblem(value, range, "Use th:src attribute in addition to hardcoded URL",
-                        new AddThymeleafAttributeFix(
-                                ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL,
-                                tag.getPrefixByNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL),
-                                "src"));
+                String message = MessageFormat.format("Use {0} attribute in addition to hardcoded URL", buildQName(nsPrefix, localName));
+
+                holder.registerProblem(value, range, message,
+                        new AddThymeleafAttributeFix(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, nsPrefix, ""));
             }
         };
     }
