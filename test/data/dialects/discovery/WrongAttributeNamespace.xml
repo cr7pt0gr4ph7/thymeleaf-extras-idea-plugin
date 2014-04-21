@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-s<dialect xmlns="http://www.thymeleaf.org/extras/dialect" xmlns:xyz="http://example.com/wrong-namespace" xyz:prefix="TP" xyz:namespace-uri="http://example.com/namespace-uri" class="TC">
-</dialect>

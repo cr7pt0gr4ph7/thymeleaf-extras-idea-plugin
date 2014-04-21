@@ -21,62 +21,62 @@ public class DialectUriXmlBuilderTests extends ExternalParsingTestCase {
         super("dialects/discovery", ".xml");
     }
 
-    public void testCorrectDocument() throws Exception {
+    public void testCorrectDocument_IsOK() throws Exception {
         ParseResult result = parseInputFile();
         result.shouldBeAccepted();
         result.shouldHavePrefix(TEST_PREFIX);
         result.shouldHaveUri(TEST_NAMESPACE);
     }
 
-    public void testCorrectDocumentWithoutXmlDeclaration() throws Exception {
+    public void testCorrectDocumentWithoutXmlDeclaration_IsOK() throws Exception {
         ParseResult result = parseInputFile();
         result.shouldBeAccepted();
         result.shouldHavePrefix(TEST_PREFIX);
         result.shouldHaveUri(TEST_NAMESPACE);
     }
 
-    public void testDuplicateAttributeLocalName() throws Exception {
+    public void testDuplicateAttributeLocalNameWithOtherNS_IsOK() throws Exception {
         ParseResult result = parseInputFile();
         result.shouldBeAccepted();
         result.shouldHavePrefix(TEST_PREFIX);
         result.shouldHaveUri(TEST_NAMESPACE);
     }
 
-    public void testMalformedDocument() throws Exception {
+    public void testMalformedDocument_IsRejected() throws Exception {
         parseInputFile().shouldBeRejected();
     }
 
-    public void testNonDefaultNamespace() throws Exception {
+    public void testNonDefaultXmlnsPrefix_IsOK() throws Exception {
         ParseResult result = parseInputFile();
         result.shouldBeAccepted();
         result.shouldHavePrefix(TEST_PREFIX);
         result.shouldHaveUri(TEST_NAMESPACE);
     }
 
-    public void testNonDefaultNamespaceOnAttributes() throws Exception {
+    public void testWithoutNamespace_IsRejected() throws Exception {
+        parseInputFile().shouldBeRejected();
+    }
+
+    public void testWrongElementNamespace_IsRejected() throws Exception {
+        parseInputFile().shouldBeRejected();
+    }
+
+    public void testWrongAttributeNamespace_IsRejected() throws Exception {
         ParseResult result = parseInputFile();
         result.shouldBeAccepted();
         result.shouldHavePrefix(null);
         result.shouldHaveUri(null);
     }
 
-    public void testWithoutNamespace() throws Exception {
+    public void testWrongNamespace_IsRejected() throws Exception {
         parseInputFile().shouldBeRejected();
     }
 
-    public void testWrongElementNamespace() throws Exception {
-        parseInputFile().shouldBeRejected();
-    }
-
-    public void testWrongAttributeNamespace() throws Exception {
+    public void testXmlnsPrefixOnAttributes_IsRejected() throws Exception {
         ParseResult result = parseInputFile();
         result.shouldBeAccepted();
-        result.shouldHavePrefix(TEST_PREFIX);
+        result.shouldHavePrefix(null);
         result.shouldHaveUri(null);
-    }
-
-    public void testWrongNamespace() throws Exception {
-        parseInputFile().shouldBeRejected();
     }
 
     /**
@@ -104,34 +104,34 @@ public class DialectUriXmlBuilderTests extends ExternalParsingTestCase {
         }
 
         public void shouldBeAccepted() {
-            Assert.assertTrue(builder.isDialectDescriptor());
+            Assert.assertTrue("isDialectDescriptor() should be true", builder.isDialectDescriptor());
         }
 
         public void shouldBeRejected() {
-            Assert.assertFalse(builder.isDialectDescriptor());
+            Assert.assertFalse("isDialectDescriptor() should be false", builder.isDialectDescriptor());
             shouldHavePrefix(null);
             shouldHaveUri(null);
         }
 
         public void shouldHavePrefix(String prefix) {
             if (prefix == null) {
-                Assert.assertFalse(builder.isPrefixFound());
-                Assert.assertNotNull(builder.getPrefix());
-                Assert.assertEquals("", builder.getPrefix());
+                Assert.assertFalse("isPrefixFound() is not false", builder.isPrefixFound());
+                Assert.assertNotNull("getPrefix() is null", builder.getPrefix());
+                Assert.assertEquals("getPrefix() is not empty", "", builder.getPrefix());
             } else {
-                Assert.assertTrue(builder.isPrefixFound());
-                Assert.assertNotNull(builder.getPrefix());
-                Assert.assertEquals(prefix, builder.getPrefix());
+                Assert.assertTrue("should have a prefix", builder.isPrefixFound());
+                Assert.assertNotNull("getPrefix() is null", builder.getPrefix());
+                Assert.assertEquals("getPrefix() has wrong value", prefix, builder.getPrefix());
             }
         }
 
         public void shouldHaveUri(String namespaceUri) {
             if (namespaceUri == null) {
-                Assert.assertFalse(builder.isUriFound());
-                Assert.assertEquals("", builder.getUri());
+                Assert.assertFalse("isUriFound() is not false", builder.isUriFound());
+                Assert.assertEquals("getUri() is not empty", "", builder.getUri());
             } else {
-                Assert.assertTrue(builder.isUriFound());
-                Assert.assertEquals(namespaceUri, builder.getUri());
+                Assert.assertTrue("isUriFound() is not true", builder.isUriFound());
+                Assert.assertEquals("getUri() has wrong value", namespaceUri, builder.getUri());
             }
         }
     }
