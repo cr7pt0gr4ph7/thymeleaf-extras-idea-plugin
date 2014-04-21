@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataFile;
 import com.intellij.testFramework.TestDataPath;
 import com.intellij.util.text.CharArrayUtil;
 import com.intellij.util.xml.NanoXmlUtil;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import java.io.IOException;
 import java.io.Reader;
