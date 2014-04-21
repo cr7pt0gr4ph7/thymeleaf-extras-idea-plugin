@@ -72,7 +72,7 @@ public class DialectUriXmlBuilderTests extends ExternalParsingTestCase {
         parseInputFile().shouldBeRejected();
     }
 
-    public void testXmlnsPrefixOnAttributes_IsRejected() throws Exception {
+    public void testXmlnsPrefixOnAttributes_IsPartiallyOK() throws Exception {
         ParseResult result = parseInputFile();
         result.shouldBeAccepted();
         result.shouldHavePrefix(null);

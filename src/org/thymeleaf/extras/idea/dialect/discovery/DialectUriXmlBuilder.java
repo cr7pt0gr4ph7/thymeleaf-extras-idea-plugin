@@ -44,8 +44,13 @@ public class DialectUriXmlBuilder extends NanoXmlUtil.BaseXmlBuilder {
     public void addAttribute(String key, String nsPrefix, String nsURI, String value, String type) throws Exception {
         super.addAttribute(key, nsPrefix, nsURI, value, type);
 
-        // Is the condition (nsUri == null) || isDialectSchemaUri(nsURI) correct?
-        if (isInDialectTag() && ((nsURI == null) || isDialectSchemaUri(nsURI))) {
+        // NOTE If we have got something like:
+        //        <nd:dialect xmlns:nd="http://example.org" prefix="abc">...</dialect>
+        //      then nsURI is *null* for the prefix attribute!
+        //      It is non-null for the nd:prefix attribute in the following case:
+        //        <nd:dialect xmlns:cd="http://example.org" nd:prefix="abc">...</dialect>
+        //      Note that the first case should be accepted, while the second one should be rejected.
+        if (isInDialectTag() && (nsURI == null)) {
             if (PREFIX_ATTR.equals(key)) {
                 myPrefix = value;
                 myPrefixFound = true;
