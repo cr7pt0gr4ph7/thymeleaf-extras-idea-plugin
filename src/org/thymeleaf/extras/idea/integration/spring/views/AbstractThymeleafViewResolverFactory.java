@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.integration.spring;
+package org.thymeleaf.extras.idea.integration.spring.views;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiElement;
@@ -17,12 +17,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ThymeleafViewResolverFactory extends ViewResolverFactory {
-    @Override
-    protected String getBeanClass() {
-        return "org.thymeleaf.spring3.view.ThymeleafViewResolver";
-    }
-
+/**
+ * Base classes for the view resolvers for {@code thymeleaf-spring3} and {@code thymeleaf-spring4}.
+ *
+ * @see org.thymeleaf.extras.idea.integration.spring.views.ThymeleafSpring3ViewResolverFactory
+ * @see org.thymeleaf.extras.idea.integration.spring.views.ThymeleafSpring4ViewResolverFactory
+ */
+public abstract class AbstractThymeleafViewResolverFactory extends ViewResolverFactory {
     @Override
     protected ViewResolver doCreate(CommonSpringBean bean, SpringModel model) {
         if (bean instanceof SpringBean) {
