@@ -65,8 +65,8 @@ public class ThymeleafViewResolverFactory extends ViewResolverFactory {
         return null;
     }
 
-    static class ThymeleafViewResolver extends UrlBasedViewResolver {
-        public ThymeleafViewResolver(SpringBean bean) {
+    private static class ThymeleafViewResolver extends UrlBasedViewResolver {
+        private ThymeleafViewResolver(CommonSpringBean bean) {
             super(bean);
         }
 
