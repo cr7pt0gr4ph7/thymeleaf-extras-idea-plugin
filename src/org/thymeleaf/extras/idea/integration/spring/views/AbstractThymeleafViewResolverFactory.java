@@ -24,6 +24,7 @@ import java.util.List;
  * @see org.thymeleaf.extras.idea.integration.spring.views.ThymeleafSpring4ViewResolverFactory
  */
 public abstract class AbstractThymeleafViewResolverFactory extends ViewResolverFactory {
+    @Nullable
     @Override
     protected ViewResolver doCreate(CommonSpringBean bean, SpringModel model) {
         if (bean instanceof SpringBean) {

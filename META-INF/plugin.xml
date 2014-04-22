@@ -21,6 +21,7 @@
     <resource-bundle>resources.messages.ThymeleafBundle</resource-bundle>
 
     <depends>com.intellij.modules.lang</depends>
+    <!--<depends>com.intellij.spring</depends>-->
     <depends optional="true" config-file="thymeleaf-spring-mvc.xml">com.intellij.spring.mvc</depends>
 
     <!-- TODO Configure a correct vendor -->

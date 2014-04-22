@@ -7,7 +7,12 @@ import com.intellij.codeInspection.XmlSuppressableInspectionTool;
 import com.intellij.javaee.web.WebRoot;
 import com.intellij.javaee.web.WebUtil;
 import com.intellij.javaee.web.facet.WebFacet;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.PopupStep;
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -28,6 +33,7 @@ import com.intellij.spring.model.xml.DomSpringBeanPointer;
 import com.intellij.spring.model.xml.mvc.Resources;
 import com.intellij.spring.web.mvc.SpringMVCModel;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.SmartList;
 import com.intellij.xml.XmlNamespaceHelper;
 import com.intellij.xml.util.XmlUtil;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +47,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.intellij.patterns.XmlPatterns.*;
+import static org.thymeleaf.extras.idea.util.MyXmlUtil.addAttributeBefore;
 import static org.thymeleaf.extras.idea.util.MyXmlUtil.buildQName;
 
 public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionTool {
@@ -127,6 +134,7 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
             final PsiElement element = descriptor.getPsiElement();
             if (element instanceof XmlAttributeValue) {
                 final XmlAttributeValue value = (XmlAttributeValue) element;
+
                 XmlTag tag = PsiTreeUtil.getParentOfType(value, XmlTag.class, false);
                 if (tag == null) return;
 
@@ -138,7 +146,7 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                 String prefix = tag.getPrefixByNamespace(myNamespaceUri);
 
                 if (StringUtil.isEmpty(prefix)) {
-                    XmlNamespaceHelper extension = XmlNamespaceHelper.getHelper(value.getContainingFile());
+                    XmlNamespaceHelper extension = XmlNamespaceHelper.getHelper(file);
                     XmlNamespaceHelper.Runner<String, IncorrectOperationException> after = new XmlNamespaceHelper.Runner<String, IncorrectOperationException>() {
                         @Override
                         public void run(String prefix) throws IncorrectOperationException {
@@ -149,7 +157,6 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                 } else {
                     addAttribute(prefix, value);
                 }
-
             }
         }
 
@@ -162,16 +169,56 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
             if (originalAttr == null) return;
 
             // TODO Warn if adding the attribute fails, e.g. because of a missing SpringFacet?
-            final String newValue = determineWebPath(value);
-            if (newValue == null) return;
-            final XmlElementFactory factory = XmlElementFactory.getInstance(value.getProject());
-            final XmlAttribute newAttribute = factory.createXmlAttribute(buildQName(prefix, originalAttr.getLocalName()), newValue);
+            final List<String> potentialPaths = determineWebPaths(value);
 
-            tag.addBefore(newAttribute, originalAttr);
+            if (potentialPaths == null || potentialPaths.isEmpty()) return;
+
+            chooseResourceToAdd(tag, originalAttr, buildQName(prefix, originalAttr.getLocalName()), potentialPaths);
+
+            /*if (potentialPaths.size() == 1) {
+                final String newValue = potentialPaths.get(0);
+                addAttributeBefore(tag, originalAttr, buildQName(prefix, originalAttr.getLocalName()), newValue);
+            } else {
+                chooseResourceToAdd(tag, originalAttr, buildQName(prefix, originalAttr.getLocalName()), potentialPaths);
+            }*/
+        }
+
+        private static void chooseResourceToAdd(@NotNull final XmlTag tag, @NotNull final XmlAttribute originalAttr,
+                                                @NotNull final String name, final List<String> potentialPaths) {
+            //noinspection rawtypes
+            final BaseListPopupStep<String> step = new BaseListPopupStep<String>("Resource to refer to", potentialPaths) {
+                @Override
+                public PopupStep onChosen(final String selectedValue, boolean finalChoice) {
+                    if (selectedValue == null) {
+                        return FINAL_CHOICE;
+                    }
+
+                    if (finalChoice) {
+                        CommandProcessor.getInstance().executeCommand(tag.getProject(), new Runnable() {
+                            @Override
+                            public void run() {
+                                ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        addAttributeBefore(tag, originalAttr, name, selectedValue);
+                                    }
+                                });
+                            }
+                        }, String.format("Add %s attribute", name), null);
+                        return FINAL_CHOICE;
+                    }
+
+                    // TODO Implement this
+                    return FINAL_CHOICE;
+                }
+            };
+
+            // TODO Use showInBestPositionFor(...)
+            JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
         }
 
         @Nullable
-        private static String determineWebPath(@NotNull XmlAttributeValue value) {
+        private static List<String> determineWebPaths(@NotNull XmlAttributeValue value) {
             // TODO This is a hack to get the web path for the local file
             SpringMVCModel springMVCModel = MySpringMVCUtil.getSpringMVCModelForPsiElement(value);
             if (springMVCModel == null) return null;
@@ -184,8 +231,12 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
 
             final WebFacet webFacet = springMVCModel.getWebFacet();
             final WebRoot webRoot = WebUtil.findParentWebRoot(targetFile, webFacet.getWebRoots());
-
             if (webRoot == null) return null;
+
+            // Setup the list that collects the results
+            List<String> items = new SmartList<String>();
+
+            // TODO Define something like FileToWebPathResolver (comparable to Spring's ViewResolver)
 
             // TODO Is there an ordering of the models inside SpringMVCModel.getServletModels()?
             // TODO Should we use SpringMVCModel.getServletModels() here, or something different?
@@ -219,16 +270,15 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
 
                                 final String relativePath = PsiFileSystemItemUtil.getRelativePath(location, targetWebDirectory);
                                 // TODO Dirty hack
-                                final String result = ThymeleafUtil.createLinkExpression(mapping.replace("**", relativePath));
-                                return result;
+                                final String linkExpr = ThymeleafUtil.createLinkExpression(mapping.replace("**", relativePath));
+                                items.add(linkExpr);
                             }
                         }
                     }
                 }
-                // Resources resources = (Resources)pointer.getSpringBean();
-                // resources.getMapping();
             }
-            return null;
+
+            return items;
         }
     }
 }

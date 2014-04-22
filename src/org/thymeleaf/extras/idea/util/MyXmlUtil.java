@@ -1,7 +1,9 @@
 package org.thymeleaf.extras.idea.util;
 
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.XmlElementFactory;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.containers.BidirectionalMap;
@@ -54,5 +56,14 @@ public class MyXmlUtil {
     public static String buildQName(@Nullable String namespacePrefix, @NotNull String localName) {
         if (StringUtil.isEmpty(namespacePrefix)) return localName;
         else return namespacePrefix + ":" + localName;
+    }
+
+
+    public static void addAttributeBefore(@NotNull XmlTag parentTag, @NotNull XmlAttribute originalAttr,
+                                          @NotNull String name, @NotNull String value) {
+        final XmlElementFactory factory = XmlElementFactory.getInstance(originalAttr.getProject());
+        final XmlAttribute newAttribute = factory.createXmlAttribute(name, value);
+
+        parentTag.addBefore(newAttribute, originalAttr);
     }
 }
