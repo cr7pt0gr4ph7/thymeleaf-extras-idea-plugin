@@ -9,8 +9,10 @@ import com.intellij.javaee.web.WebUtil;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.util.TextRange;
@@ -22,6 +24,7 @@ import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferen
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileSystemItemUtil;
 import com.intellij.psi.jsp.WebDirectoryElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilBase;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
@@ -214,7 +217,15 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
             };
 
             // TODO Use showInBestPositionFor(...)
-            JBPopupFactory.getInstance().createListPopup(step).showInFocusCenter();
+            final ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(step);
+            final Editor editor = PsiUtilBase.findEditor(tag);
+            if (editor == null) {
+                // TODO Turn the assert into a LOG message here (or remove this conditional branch altogether)
+                assert false : "Failed to get the editor";
+                listPopup.showInFocusCenter();
+            } else {
+                listPopup.showInBestPositionFor(editor);
+            }
         }
 
         @Nullable
