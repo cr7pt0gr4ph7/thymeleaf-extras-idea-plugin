@@ -22,13 +22,12 @@ import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.spring.contexts.model.SpringModel;
+import com.intellij.spring.model.SpringBeanPointer;
 import com.intellij.spring.model.xml.DomSpringBean;
-import com.intellij.spring.model.xml.beans.DomSpringBeanPointer;
-import com.intellij.spring.model.xml.beans.SpringBaseBeanPointer;
+import com.intellij.spring.model.xml.DomSpringBeanPointer;
 import com.intellij.spring.model.xml.mvc.Resources;
 import com.intellij.spring.web.mvc.SpringMVCModel;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.xml.XmlExtension;
 import com.intellij.xml.XmlNamespaceHelper;
 import com.intellij.xml.util.XmlUtil;
 import org.jetbrains.annotations.NotNull;
@@ -84,14 +83,14 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                 if (nsPrefix == null) return;
 
                 String localName = attr.getLocalName();
-                if(StringUtil.isEmpty(localName)) return;
+                if (StringUtil.isEmpty(localName)) return;
 
                 // Register an error message
                 TextRange range = ElementManipulators.getValueTextRange(value);
                 String message = MessageFormat.format("Use {0} attribute in addition to hardcoded URL", buildQName(nsPrefix, localName));
 
                 holder.registerProblem(value, range, message,
-                        new AddThymeleafAttributeFix(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, nsPrefix, ""));
+                        new AddThymeleafAttributeFix(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, nsPrefix, localName));
             }
         };
     }
@@ -192,7 +191,7 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
             // TODO Should we use SpringMVCModel.getServletModels() here, or something different?
             for (final SpringModel model : springMVCModel.getServletModels()) {
                 // TODO Is there an explicit ordering in the returned list?
-                for (final SpringBaseBeanPointer pointer : model.findBeansByPsiClassWithInheritance("org.springframework.web.servlet.resource.ResourceHttpRequestHandler")) {
+                for (final SpringBeanPointer pointer : model.findBeansByPsiClassWithInheritance("org.springframework.web.servlet.resource.ResourceHttpRequestHandler")) {
                     if (pointer instanceof DomSpringBeanPointer) {
                         final DomSpringBean bean = ((DomSpringBeanPointer) pointer).getSpringBean();
 
