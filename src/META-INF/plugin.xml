@@ -82,7 +82,7 @@
 
         <localInspection shortName="NonLocalizedTextInspection" bundle="resources.messages.ThymeleafBundle"
                          key="template.inspection.non.localized.text.display.name"
-                         groupKey="template.inspection.group.name" enabledByDefault="true" level="WARNING"
+                         groupKey="template.inspection.group.name" enabledByDefault="false" level="WARNING"
                          implementationClass="org.thymeleaf.extras.idea.inspection.NonLocalizedTextInspection"/>
 
 

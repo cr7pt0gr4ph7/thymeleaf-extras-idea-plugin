@@ -1,9 +1,6 @@
 package org.thymeleaf.extras.idea.inspection;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.codeInspection.XmlSuppressableInspectionTool;
+import com.intellij.codeInspection.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
@@ -11,10 +8,7 @@ import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceUtil;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlAttributeValue;
-import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.xml.XmlTag;
+import com.intellij.psi.xml.*;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.xml.XmlNamespaceHelper;
 import com.intellij.xml.util.XmlUtil;
@@ -26,25 +20,30 @@ import org.thymeleaf.extras.idea.util.MyXmlUtil;
 
 import java.text.MessageFormat;
 import java.util.Collections;
-import java.util.List;
 
 import static com.intellij.patterns.StandardPatterns.or;
 import static com.intellij.patterns.XmlPatterns.*;
-import static org.thymeleaf.extras.idea.util.MyXmlUtil.*;
+import static org.thymeleaf.extras.idea.util.MyXmlUtil.buildQName;
+import static org.thymeleaf.extras.idea.util.MyXmlUtil.getPrefixByNamespace;
 
 public class NonLocalizedTextInspection extends XmlSuppressableInspectionTool {
-    private static final ElementPattern<XmlAttributeValue> ALT_ATTRIBUTE_PATTERN = buildPattern("alt");
-    private static final ElementPattern<XmlAttributeValue> PLACEHOLDER_ATTRIBUTE_PATTERN = buildPattern("placeholder");
-    private static final ElementPattern<XmlAttributeValue> ACTION_ATTRIBUTE_PATTERN = buildPattern("action");
-    private static final ElementPattern<XmlAttributeValue> ANY_LOCALIZABLE_ATTRIBUTE_PATTERN =
+    private static final ElementPattern<XmlAttributeValue> ALT_ATTRIBUTE_PATTERN = onlyPlainAttribute("alt");
+    private static final ElementPattern<XmlAttributeValue> PLACEHOLDER_ATTRIBUTE_PATTERN = onlyPlainAttribute("placeholder");
+    private static final ElementPattern<XmlAttributeValue> ACTION_ATTRIBUTE_PATTERN = onlyPlainAttribute("action");
+    private static final ElementPattern<XmlAttributeValue> NON_LOCALIZED_ATTRIBUTE_PATTERN =
             or(ALT_ATTRIBUTE_PATTERN, PLACEHOLDER_ATTRIBUTE_PATTERN, ACTION_ATTRIBUTE_PATTERN);
 
+    private static final ElementPattern<XmlText> NON_LOCALIZED_TEXT_PATTERN = not(xmlText()
+            .withParent(xmlTag().withChild(thymeleafAttribute("text"))));
 
-
-    private static ElementPattern<XmlAttributeValue> buildPattern(@NonNls @NotNull String localName) {
+    private static ElementPattern<XmlAttributeValue> onlyPlainAttribute(@NonNls @NotNull String localName) {
         return xmlAttributeValue()
                 .withParent(xmlAttribute(localName))
-                .withSuperParent(2, xmlTag().andNot(xmlTag().withChild(xmlAttribute(localName).withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL))));
+                .withSuperParent(2, xmlTag().andNot(xmlTag().withChild(thymeleafAttribute(localName))));
+    }
+
+    private static ElementPattern<XmlAttribute> thymeleafAttribute(@NonNls @NotNull String localName) {
+        return xmlAttribute(localName).withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
     }
 
     @NotNull
@@ -55,12 +54,31 @@ public class NonLocalizedTextInspection extends XmlSuppressableInspectionTool {
 
         return new XmlElementVisitor() {
             @Override
+            public void visitXmlText(XmlText text) {
+                if (!isXmlFileWithThymeleafSupport) {
+                    return;
+                }
+
+                if (!NON_LOCALIZED_TEXT_PATTERN.accepts(text)) {
+                    return;
+                }
+
+                String nsPrefix = getPrefixByNamespace(text, ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
+                if (nsPrefix == null) return;
+
+                // Register an error message
+                String message = MessageFormat.format("Use {0} attribute in addition to hardcoded text", buildQName(nsPrefix, "text"));
+
+                holder.registerProblem(text, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+            }
+
+            @Override
             public void visitXmlAttributeValue(XmlAttributeValue value) {
                 if (!isXmlFileWithThymeleafSupport) {
                     return;
                 }
 
-                if (!ANY_LOCALIZABLE_ATTRIBUTE_PATTERN.accepts(value)) {
+                if (!NON_LOCALIZED_ATTRIBUTE_PATTERN.accepts(value)) {
                     return;
                 }
 
@@ -80,7 +98,6 @@ public class NonLocalizedTextInspection extends XmlSuppressableInspectionTool {
             }
         };
     }
-
 
 
     private static class AddThymeleafAttributeFix implements LocalQuickFix {
