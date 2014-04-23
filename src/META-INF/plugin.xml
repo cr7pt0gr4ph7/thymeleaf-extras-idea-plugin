@@ -75,11 +75,16 @@
                 implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlAttributeDescriptorsProvider"/>
         <xml.schemaProvider implementation="org.thymeleaf.extras.idea.editor.xml.DialectXmlSchemaProvider"/>
 
-
-        <localInspection shortName="ThymeleafHardcodedResourceUrlInspection" bundle="resources.messages.ThymeleafBundle"
+        <localInspection shortName="HardcodedResourceUrl" bundle="resources.messages.ThymeleafBundle"
                          key="template.inspection.hardcoded.resource.url.display.name"
                          groupKey="template.inspection.group.name" enabledByDefault="true" level="WARNING"
                          implementationClass="org.thymeleaf.extras.idea.inspection.HardcodedResourceUrlInspection"/>
+
+        <localInspection shortName="NonLocalizedTextInspection" bundle="resources.messages.ThymeleafBundle"
+                         key="template.inspection.non.localized.text.display.name"
+                         groupKey="template.inspection.group.name" enabledByDefault="true" level="WARNING"
+                         implementationClass="org.thymeleaf.extras.idea.inspection.NonLocalizedTextInspection"/>
+
 
         <!-- Language injection for XML/HTML/XHTML attributes -->
         <multiHostInjector implementation="org.thymeleaf.extras.idea.editor.xml.AttributeProcessorSyntaxInjector"/>

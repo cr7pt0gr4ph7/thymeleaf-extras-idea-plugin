@@ -113,19 +113,19 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                 String message = MessageFormat.format("Use {0} attribute in addition to hardcoded URL", buildQName(nsPrefix, localName));
 
                 holder.registerProblem(value, range, message,
-                        new AddThymeleafAttributeFix(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, nsPrefix, localName));
+                        new AddThymeleafUrlAttributeFix(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, nsPrefix, localName));
             }
         };
     }
 
-    private static class AddThymeleafAttributeFix implements LocalQuickFix {
+    private static class AddThymeleafUrlAttributeFix implements LocalQuickFix {
         private final String myNamespaceUri;
         private final String myNamespacePrefix;
         private final String myLocalName;
         //
         private final String myQuickFixName;
 
-        private AddThymeleafAttributeFix(String namespaceUri, String namespacePrefix, String localName) {
+        private AddThymeleafUrlAttributeFix(String namespaceUri, String namespacePrefix, String localName) {
             this.myNamespaceUri = namespaceUri;
             this.myNamespacePrefix = namespacePrefix;
             this.myLocalName = localName;
