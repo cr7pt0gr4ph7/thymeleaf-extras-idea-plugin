@@ -29,6 +29,7 @@ public class ThymeleafViewReference extends PsiReferenceBase<PsiElement>
         this.myResolvers = resolvers;
     }
 
+    @Override
     public PsiElement resolve() {
         SpringMVCModel model = MySpringMVCUtil.getSpringMVCModelForPsiElement(getElement());
         if (model == null) return null;

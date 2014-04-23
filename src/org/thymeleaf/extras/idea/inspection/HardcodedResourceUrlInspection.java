@@ -11,6 +11,7 @@ import com.intellij.javaee.web.WebUtil;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
@@ -51,11 +52,13 @@ import com.intellij.util.SmartList;
 import com.intellij.util.containers.MultiMap;
 import com.intellij.xml.XmlNamespaceHelper;
 import com.intellij.xml.util.XmlUtil;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
 import org.thymeleaf.extras.idea.editor.ThymeleafUtil;
 import org.thymeleaf.extras.idea.integration.spring.MySpringMVCUtil;
+import org.thymeleaf.extras.idea.util.MyXmlUtil;
 
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -64,17 +67,21 @@ import java.util.HashSet;
 import java.util.List;
 
 import static com.intellij.patterns.XmlPatterns.*;
-import static org.thymeleaf.extras.idea.util.MyXmlUtil.addAttributeBefore;
-import static org.thymeleaf.extras.idea.util.MyXmlUtil.buildQName;
+import static org.thymeleaf.extras.idea.util.MyXmlUtil.*;
 
 public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionTool {
-    private static final ElementPattern<XmlAttributeValue> SRC_ATTRIBUTE_PATTERN = xmlAttributeValue()
-            .withParent(xmlAttribute("src"))
-            .withSuperParent(2, xmlTag().andNot(xmlTag().withChild(xmlAttribute("src").withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL))));
-    private static final ElementPattern<XmlAttributeValue> HREF_ATTRIBUTE_PATTERN = xmlAttributeValue()
-            .withParent(xmlAttribute("href"))
-            .withSuperParent(2, xmlTag().andNot(xmlTag().withChild(xmlAttribute("href").withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL))));
-    private static final ElementPattern<XmlAttributeValue> SRC_OR_HREF_ATTRIBUTE_PATTERN = or(SRC_ATTRIBUTE_PATTERN, HREF_ATTRIBUTE_PATTERN);
+    private static final Logger LOGGER = Logger.getInstance(HardcodedResourceUrlInspection.class);
+
+    private static final ElementPattern<XmlAttributeValue> SRC_ATTRIBUTE_PATTERN = buildPattern("src");
+    private static final ElementPattern<XmlAttributeValue> HREF_ATTRIBUTE_PATTERN = buildPattern("href");
+    private static final ElementPattern<XmlAttributeValue> ACTION_ATTRIBUTE_PATTERN = buildPattern("action");
+    private static final ElementPattern<XmlAttributeValue> ANY_URL_ATTRIBUTE_PATTERN = or(SRC_ATTRIBUTE_PATTERN, HREF_ATTRIBUTE_PATTERN, ACTION_ATTRIBUTE_PATTERN);
+
+    private static ElementPattern<XmlAttributeValue> buildPattern(@NonNls @NotNull String localName) {
+        return xmlAttributeValue()
+                .withParent(xmlAttribute(localName))
+                .withSuperParent(2, xmlTag().andNot(xmlTag().withChild(xmlAttribute(localName).withNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL))));
+    }
 
     @NotNull
     @Override
@@ -89,25 +96,16 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                     return;
                 }
 
-                if (!SRC_OR_HREF_ATTRIBUTE_PATTERN.accepts(value)) {
+                if (!ANY_URL_ATTRIBUTE_PATTERN.accepts(value)) {
                     return;
                 }
 
-
-                XmlTag tag = PsiTreeUtil.getParentOfType(value, XmlTag.class);
-                if (tag == null) return;
-
-                XmlAttribute attr = PsiTreeUtil.getParentOfType(value, XmlAttribute.class);
-                if (attr == null) return;
+                String nsPrefix = getPrefixByNamespace(value, ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
+                String localName = MyXmlUtil.getNameOfAttribute(value);
+                if (nsPrefix == null || localName == null) return;
 
                 PsiFile referencedFile = FileReferenceUtil.findFile(value);
                 if (referencedFile == null) return;
-
-                String nsPrefix = tag.getPrefixByNamespace(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL);
-                if (nsPrefix == null) return;
-
-                String localName = attr.getLocalName();
-                if (StringUtil.isEmpty(localName)) return;
 
                 // Register an error message
                 TextRange range = ElementManipulators.getValueTextRange(value);
@@ -152,32 +150,29 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
             if (element instanceof XmlAttributeValue) {
                 final XmlAttributeValue value = (XmlAttributeValue) element;
 
-                XmlTag tag = PsiTreeUtil.getParentOfType(value, XmlTag.class, false);
-                if (tag == null) return;
-
                 // TODO What is with conditional comments, which create a separate tree?
                 final XmlFile file = XmlUtil.getContainingFile(value);
                 if (file == null) return;
 
-                // TODO Handle cases where the Thymeleaf namespace doesn't exist
-                String prefix = tag.getPrefixByNamespace(myNamespaceUri);
-
+                // Handle cases where the Thymeleaf namespace doesn't exist
+                final String prefix = getPrefixByNamespace(value, myNamespaceUri);
                 if (StringUtil.isEmpty(prefix)) {
+                    // Insert namespace declaration first (xmlns:th="..." or similar)
                     XmlNamespaceHelper extension = XmlNamespaceHelper.getHelper(file);
                     XmlNamespaceHelper.Runner<String, IncorrectOperationException> after = new XmlNamespaceHelper.Runner<String, IncorrectOperationException>() {
                         @Override
                         public void run(String prefix) throws IncorrectOperationException {
-                            addAttribute(prefix, value);
+                            addThymeleafAttribute(prefix, value);
                         }
                     };
                     extension.insertNamespaceDeclaration(file, null, Collections.singleton(myNamespaceUri), prefix, after);
                 } else {
-                    addAttribute(prefix, value);
+                    addThymeleafAttribute(prefix, value);
                 }
             }
         }
 
-        private static void addAttribute(String prefix, XmlAttributeValue value) {
+        private static void addThymeleafAttribute(String prefix, XmlAttributeValue value) {
             // TODO Don't add the xml namespace declaration if adding the attribute fails!
             XmlTag tag = PsiTreeUtil.getParentOfType(value, XmlTag.class, false);
             if (tag == null) return;
@@ -187,17 +182,14 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
 
             // TODO Warn if adding the attribute fails, e.g. because of a missing SpringFacet?
             final List<String> potentialPaths = determineWebPaths(value);
-
             if (potentialPaths == null || potentialPaths.isEmpty()) return;
 
-            chooseResourceToAdd(tag, originalAttr, buildQName(prefix, originalAttr.getLocalName()), potentialPaths);
-
-            /*if (potentialPaths.size() == 1) {
+            if (potentialPaths.size() == 1) {
                 final String newValue = potentialPaths.get(0);
                 addAttributeBefore(tag, originalAttr, buildQName(prefix, originalAttr.getLocalName()), newValue);
             } else {
                 chooseResourceToAdd(tag, originalAttr, buildQName(prefix, originalAttr.getLocalName()), potentialPaths);
-            }*/
+            }
         }
 
         private static void chooseResourceToAdd(@NotNull final XmlTag tag, @NotNull final XmlAttribute originalAttr,
@@ -234,8 +226,7 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
             final ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(step);
             final Editor editor = PsiUtilBase.findEditor(tag);
             if (editor == null) {
-                // TODO Turn the assert into a LOG message here (or remove this conditional branch altogether)
-                assert false : "Failed to get the editor";
+                LOGGER.warn("Failed to get the editor");
                 listPopup.showInFocusCenter();
             } else {
                 listPopup.showInBestPositionFor(editor);

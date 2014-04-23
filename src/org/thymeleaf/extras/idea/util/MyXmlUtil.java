@@ -4,18 +4,25 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.XmlElementFactory;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.containers.BidirectionalMap;
-import com.intellij.xml.util.XmlUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MyXmlUtil {
     @NotNull
-    public static String getLocalName(@NotNull String name) {
-        return name.substring(name.indexOf(':') + 1);
+    public static String getLocalName(@NotNull String qualifiedName) {
+        return qualifiedName.substring(qualifiedName.indexOf(':') + 1);
+    }
+
+    @NonNls
+    @NotNull
+    public static String buildQName(@Nullable String namespacePrefix, @NotNull String localName) {
+        if (StringUtil.isEmpty(namespacePrefix)) return localName;
+        else return namespacePrefix + ":" + localName;
     }
 
     // NOTE: One prefix can only be bound to one namespace (altough this binding can be overridden in nested elements),
@@ -51,13 +58,14 @@ public class MyXmlUtil {
         }
     }
 
-    @NonNls
-    @NotNull
-    public static String buildQName(@Nullable String namespacePrefix, @NotNull String localName) {
-        if (StringUtil.isEmpty(namespacePrefix)) return localName;
-        else return namespacePrefix + ":" + localName;
+    @Nullable
+    public static String getNameOfAttribute(XmlAttributeValue value) {
+        XmlAttribute attr = PsiTreeUtil.getParentOfType(value, XmlAttribute.class);
+        if (attr == null) return null;
+        String localName = attr.getLocalName();
+        if (StringUtil.isEmpty(localName)) return null;
+        return localName;
     }
-
 
     public static void addAttributeBefore(@NotNull XmlTag parentTag, @NotNull XmlAttribute originalAttr,
                                           @NotNull String name, @NotNull String value) {
@@ -65,5 +73,12 @@ public class MyXmlUtil {
         final XmlAttribute newAttribute = factory.createXmlAttribute(name, value);
 
         parentTag.addBefore(newAttribute, originalAttr);
+    }
+
+    @Nullable
+    public static String getPrefixByNamespace(XmlAttributeValue value, String namespaceUrl) {
+        XmlTag tag = PsiTreeUtil.getParentOfType(value, XmlTag.class);
+        if (tag == null) return null;
+        return tag.getPrefixByNamespace(namespaceUrl);
     }
 }
