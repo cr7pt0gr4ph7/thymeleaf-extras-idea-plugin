@@ -2,14 +2,14 @@ package org.thymeleaf.extras.idea.lexer;
 
 import com.intellij.lexer.Lexer;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.testFramework.PlatformLiteFixture;
-import junit.framework.Assert;
+import junit.framework.TestCase;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GeneralLexerTest extends PlatformLiteFixture {
+public abstract class GeneralLexerTest extends TestCase {
 
     /**
      * The lexer instance to be tested.
