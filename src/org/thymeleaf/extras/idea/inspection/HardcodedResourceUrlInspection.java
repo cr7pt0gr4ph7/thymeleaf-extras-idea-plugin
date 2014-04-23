@@ -181,23 +181,30 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
             if (originalAttr == null) return;
 
             // TODO Warn if adding the attribute fails, e.g. because of a missing SpringFacet?
-            final List<String> potentialPaths = determineWebPaths(value);
+            final List<InsertUrlItem> potentialPaths = determineWebPaths(value);
             if (potentialPaths == null || potentialPaths.isEmpty()) return;
 
             if (potentialPaths.size() == 1) {
-                final String newValue = potentialPaths.get(0);
-                addAttributeBefore(tag, originalAttr, buildQName(prefix, originalAttr.getLocalName()), newValue);
+                final InsertUrlItem newValue = potentialPaths.get(0);
+                addAttributeBefore(tag, originalAttr, buildQName(prefix, originalAttr.getLocalName()), newValue.getLookupString());
             } else {
                 chooseResourceToAdd(tag, originalAttr, buildQName(prefix, originalAttr.getLocalName()), potentialPaths);
             }
         }
 
         private static void chooseResourceToAdd(@NotNull final XmlTag tag, @NotNull final XmlAttribute originalAttr,
-                                                @NotNull final String name, final List<String> potentialPaths) {
+                                                @NotNull final String newAttrName, final List<InsertUrlItem> potentialPaths) {
+
             //noinspection rawtypes
-            final BaseListPopupStep<String> step = new BaseListPopupStep<String>("Resource to refer to", potentialPaths) {
+            final BaseListPopupStep<InsertUrlItem> step = new BaseListPopupStep<InsertUrlItem>("Resources To Refer To", potentialPaths) {
+                @NotNull
                 @Override
-                public PopupStep onChosen(final String selectedValue, boolean finalChoice) {
+                public String getTextFor(InsertUrlItem value) {
+                    return value.getPresentation();
+                }
+
+                @Override
+                public PopupStep onChosen(final InsertUrlItem selectedValue, boolean finalChoice) {
                     if (selectedValue == null) {
                         return FINAL_CHOICE;
                     }
@@ -209,11 +216,11 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                                     @Override
                                     public void run() {
-                                        addAttributeBefore(tag, originalAttr, name, selectedValue);
+                                        addAttributeBefore(tag, originalAttr, newAttrName, selectedValue.getLookupString());
                                     }
                                 });
                             }
-                        }, String.format("Add %s attribute", name), null);
+                        }, String.format("Add %s attribute", newAttrName), null);
                         return FINAL_CHOICE;
                     }
 
@@ -222,7 +229,6 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                 }
             };
 
-            // TODO Use showInBestPositionFor(...)
             final ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(step);
             final Editor editor = PsiUtilBase.findEditor(tag);
             if (editor == null) {
@@ -234,7 +240,7 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
         }
 
         @Nullable
-        private static List<String> determineWebPaths(@NotNull XmlAttributeValue value) {
+        private static List<InsertUrlItem> determineWebPaths(@NotNull XmlAttributeValue value) {
             // TODO This is a hack to get the web path for the local file
             SpringMVCModel springMVCModel = MySpringMVCUtil.getSpringMVCModelForPsiElement(value);
             if (springMVCModel == null) return null;
@@ -250,7 +256,7 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
             if (webRoot == null) return null;
 
             // Setup the list that collects the results
-            List<String> items = new SmartList<String>();
+            List<InsertUrlItem> items = new SmartList<InsertUrlItem>();
 
             // TODO Define something like FileToWebPathResolver (comparable to Spring's ViewResolver)
 
@@ -287,7 +293,9 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                                 final String relativePath = PsiFileSystemItemUtil.getRelativePath(location, targetWebDirectory);
                                 // TODO Dirty hack
                                 final String linkExpr = ThymeleafUtil.createLinkExpression(mapping.replace("**", relativePath));
-                                items.add(linkExpr);
+
+                                //noinspection ObjectAllocationInLoop
+                                items.add(new InsertUrlItem(linkExpr, String.format("%s (%s)", linkExpr, targetFile.getPresentableUrl())));
                             }
                         }
                     }
@@ -303,49 +311,66 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                     }
                 };
 
-                for (SpringMVCModel.Variant url : urls) {
+                for (SpringMVCModel.Variant url : urls) //
+                {
                     final PsiElement psiElement = url.psiElementPointer.getPsiElement();
                     if (!(psiElement instanceof PomTargetPsiElement)) continue;
 
                     final PomTarget pomTarget = ((PomTargetPsiElement) psiElement).getTarget();
-                    if ((pomTarget instanceof JamPomTarget)) {
+                    if ((pomTarget instanceof JamPomTarget)) //
+                    {
                         final JamElement jamElement = ((JamPomTarget) pomTarget).getJamElement();
                         if (!(jamElement instanceof SpringMVCRequestMapping.MethodMapping)) continue;
 
                         final PsiMethod psiMethod = ((SpringMVCRequestMapping.MethodMapping) jamElement).getPsiElement();
                         method2urls.putValue(psiMethod, url);
-                    } else if ((pomTarget instanceof SpringBeanPsiTarget)) {
+                    } //
+                    else if ((pomTarget instanceof SpringBeanPsiTarget)) //
+                    {
                         final CommonSpringBean springBean = ((SpringBeanPsiTarget) pomTarget).getSpringBean();
                         if (!(springBean instanceof ViewController)) continue;
 
                         final ViewController viewController = (ViewController) springBean;
-                        for (ViewResolver resolver : resolvers) {
+                        for (ViewResolver resolver : resolvers) //
+                        {
                             PsiElement viewPsiElement = resolver.resolveFinalView(viewController.getViewName().getValue(), springMVCModel);
-                            if ((viewPsiElement != null) && (Comparing.equal(targetFile, viewPsiElement.getContainingFile().getVirtualFile()))) {
+                            if ((viewPsiElement != null) && (Comparing.equal(targetFile, viewPsiElement.getContainingFile().getVirtualFile()))) //
+                            {
                                 // TODO Improve the generated URL for HardcodedResourceUrlInspection
-                                items.add(ThymeleafUtil.createLinkExpression(viewController.getPath().getValue()));
+                                final String linkExpr = ThymeleafUtil.createLinkExpression(viewController.getPath().getValue());
+                                final PsiFile containingFile = viewController.getContainingFile();
+                                final String containingFileName = containingFile != null ? containingFile.getName() : "?";
+
+                                items.add(new InsertUrlItem(linkExpr, String.format("%s (%s)", linkExpr, containingFileName)));
                             }
                         }
                     }
                 }
 
-                for (SpringBeanPointer pointer : springMVCModel.getControllers()) {
+                for (SpringBeanPointer pointer : springMVCModel.getControllers()) //
+                {
                     final PsiClass beanClass = pointer.getBeanClass();
-                    if (beanClass != null) {
-                        final SpringControllerClassInfo info = SpringControllerClassInfo.getInfo(beanClass);
-                        final MultiMap<String, PsiMethod> views = info.getViews(null);
+                    if (beanClass == null) continue;
 
-                        for (String view : views.keySet()) {
-                            for (ViewResolver resolver : resolvers) {
-                                PsiElement psiElement = resolver.resolveFinalView(view, springMVCModel);
-                                if ((psiElement != null) && (Comparing.equal(targetFile, psiElement.getContainingFile().getVirtualFile()))) {
-                                    for (PsiMethod method : views.get(view)) {
-                                        for (SpringMVCModel.Variant url : method2urls.get(method)) {
-                                            // TODO Improve the generated URL for HardcodedResourceUrlInspection
-                                            final String urlString = "/" + url.lookupString;
-                                            items.add(ThymeleafUtil.createLinkExpression(urlString));
-                                        }
-                                        // items.add(new GotoRelatedItem(method, "Spring MVC"));
+                    final SpringControllerClassInfo info = SpringControllerClassInfo.getInfo(beanClass);
+                    final MultiMap<String, PsiMethod> views = info.getViews(null);
+
+                    for (String view : views.keySet()) //
+                    {
+                        for (ViewResolver resolver : resolvers) //
+                        {
+                            PsiElement psiElement = resolver.resolveFinalView(view, springMVCModel);
+                            if ((psiElement != null) && (Comparing.equal(targetFile, psiElement.getContainingFile().getVirtualFile()))) //
+                            {
+                                for (PsiMethod method : views.get(view)) //
+                                {
+                                    for (SpringMVCModel.Variant url : method2urls.get(method)) {
+                                        // TODO Improve the generated URL for HardcodedResourceUrlInspection
+                                        final String linkExpr = ThymeleafUtil.createLinkExpression("/" + url.lookupString);
+                                        final PsiFile containingFile = method.getContainingFile();
+                                        final String containingFileName = containingFile != null ? containingFile.getName() : "?";
+
+                                        items.add(new InsertUrlItem(linkExpr, String.format("%s (%s)", linkExpr, containingFileName)));
                                     }
                                 }
                             }
