@@ -4,6 +4,8 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.XmlSuppressableInspectionTool;
+import com.intellij.jam.JamElement;
+import com.intellij.jam.JamPomTarget;
 import com.intellij.javaee.web.WebRoot;
 import com.intellij.javaee.web.WebUtil;
 import com.intellij.javaee.web.facet.WebFacet;
@@ -15,10 +17,13 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
+import com.intellij.pom.PomTarget;
+import com.intellij.pom.PomTargetPsiElement;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceUtil;
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileSystemItemUtil;
@@ -30,13 +35,20 @@ import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.spring.contexts.model.SpringModel;
+import com.intellij.spring.model.CommonSpringBean;
 import com.intellij.spring.model.SpringBeanPointer;
+import com.intellij.spring.model.SpringBeanPsiTarget;
 import com.intellij.spring.model.xml.DomSpringBean;
 import com.intellij.spring.model.xml.DomSpringBeanPointer;
 import com.intellij.spring.model.xml.mvc.Resources;
+import com.intellij.spring.model.xml.mvc.ViewController;
+import com.intellij.spring.web.mvc.SpringControllerClassInfo;
 import com.intellij.spring.web.mvc.SpringMVCModel;
+import com.intellij.spring.web.mvc.jam.SpringMVCRequestMapping;
+import com.intellij.spring.web.mvc.views.ViewResolver;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
+import com.intellij.util.containers.MultiMap;
 import com.intellij.xml.XmlNamespaceHelper;
 import com.intellij.xml.util.XmlUtil;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +58,9 @@ import org.thymeleaf.extras.idea.editor.ThymeleafUtil;
 import org.thymeleaf.extras.idea.integration.spring.MySpringMVCUtil;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.intellij.patterns.XmlPatterns.*;
@@ -283,6 +297,66 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
                                 // TODO Dirty hack
                                 final String linkExpr = ThymeleafUtil.createLinkExpression(mapping.replace("**", relativePath));
                                 items.add(linkExpr);
+                            }
+                        }
+                    }
+                }
+
+                final List<SpringMVCModel.Variant> urls = springMVCModel.getAllUrls();
+                final List<ViewResolver> resolvers = springMVCModel.getViewResolvers();
+
+                final MultiMap<PsiMethod, SpringMVCModel.Variant> method2urls = new MultiMap<PsiMethod, SpringMVCModel.Variant>() {
+                    @Override
+                    protected Collection<SpringMVCModel.Variant> createCollection() {
+                        return new HashSet<SpringMVCModel.Variant>();
+                    }
+                };
+
+                for (SpringMVCModel.Variant url : urls) {
+                    final PsiElement psiElement = url.psiElementPointer.getPsiElement();
+                    if (!(psiElement instanceof PomTargetPsiElement)) continue;
+
+                    final PomTarget pomTarget = ((PomTargetPsiElement) psiElement).getTarget();
+                    if ((pomTarget instanceof JamPomTarget)) {
+                        final JamElement jamElement = ((JamPomTarget) pomTarget).getJamElement();
+                        if (!(jamElement instanceof SpringMVCRequestMapping.MethodMapping)) continue;
+
+                        final PsiMethod psiMethod = ((SpringMVCRequestMapping.MethodMapping) jamElement).getPsiElement();
+                        method2urls.putValue(psiMethod, url);
+                    } else if ((pomTarget instanceof SpringBeanPsiTarget)) {
+                        final CommonSpringBean springBean = ((SpringBeanPsiTarget) pomTarget).getSpringBean();
+                        if (!(springBean instanceof ViewController)) continue;
+
+                        final ViewController viewController = (ViewController) springBean;
+                        for (ViewResolver resolver : resolvers) {
+                            PsiElement viewPsiElement = resolver.resolveFinalView(viewController.getViewName().getValue(), springMVCModel);
+                            if ((viewPsiElement != null) && (Comparing.equal(targetFile, viewPsiElement.getContainingFile().getVirtualFile()))) {
+                                // TODO Improve the generated URL for HardcodedResourceUrlInspection
+                                items.add(ThymeleafUtil.createLinkExpression(viewController.getPath().getValue()));
+                            }
+                        }
+                    }
+                }
+
+                for (SpringBeanPointer pointer : springMVCModel.getControllers()) {
+                    final PsiClass beanClass = pointer.getBeanClass();
+                    if (beanClass != null) {
+                        final SpringControllerClassInfo info = SpringControllerClassInfo.getInfo(beanClass);
+                        final MultiMap<String, PsiMethod> views = info.getViews(null);
+
+                        for (String view : views.keySet()) {
+                            for (ViewResolver resolver : resolvers) {
+                                PsiElement psiElement = resolver.resolveFinalView(view, springMVCModel);
+                                if ((psiElement != null) && (Comparing.equal(targetFile, psiElement.getContainingFile().getVirtualFile()))) {
+                                    for (PsiMethod method : views.get(view)) {
+                                        for (SpringMVCModel.Variant url : method2urls.get(method)) {
+                                            // TODO Improve the generated URL for HardcodedResourceUrlInspection
+                                            final String urlString = "/" + url.lookupString;
+                                            items.add(ThymeleafUtil.createLinkExpression(urlString));
+                                        }
+                                        // items.add(new GotoRelatedItem(method, "Spring MVC"));
+                                    }
+                                }
                             }
                         }
                     }
