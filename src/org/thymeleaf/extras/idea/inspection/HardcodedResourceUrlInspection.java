@@ -75,7 +75,8 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
     private static final ElementPattern<XmlAttributeValue> SRC_ATTRIBUTE_PATTERN = buildPattern("src");
     private static final ElementPattern<XmlAttributeValue> HREF_ATTRIBUTE_PATTERN = buildPattern("href");
     private static final ElementPattern<XmlAttributeValue> ACTION_ATTRIBUTE_PATTERN = buildPattern("action");
-    private static final ElementPattern<XmlAttributeValue> ANY_URL_ATTRIBUTE_PATTERN = or(SRC_ATTRIBUTE_PATTERN, HREF_ATTRIBUTE_PATTERN, ACTION_ATTRIBUTE_PATTERN);
+    private static final ElementPattern<XmlAttributeValue> ANY_URL_ATTRIBUTE_PATTERN =
+            or(SRC_ATTRIBUTE_PATTERN, HREF_ATTRIBUTE_PATTERN, ACTION_ATTRIBUTE_PATTERN);
 
     private static ElementPattern<XmlAttributeValue> buildPattern(@NonNls @NotNull String localName) {
         return xmlAttributeValue()

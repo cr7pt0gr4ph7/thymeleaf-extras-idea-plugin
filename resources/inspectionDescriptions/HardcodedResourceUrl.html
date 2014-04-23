@@ -2,10 +2,10 @@
 <body>
 Hardcoded Resource URL.
 <!-- tooltip end -->
-This inspection reports &lt;script/&gt; and &lt;link/&gt; tags that contain a <b>src</b> or <b>href</b> attribute
-using a relative path to refer to application resources, so that the resource files won't be found when viewing
-the application on the server.
+This inspection reports HTML tags like &lt;form/&gt;, &lt;a/&gt;, &lt;script/&gt; and &lt;link/&gt; that contain a
+<b>src</b>, <b>href</b> or <b>action</b> attribute using a relative path to refer to application resources, so that the
+resource files won't be found when viewing the application on the server.
 <br/>
-The solution is to add a <b>th:src</b>/<b>th:href</b> attribute so that the reference also works on the server.
+The solution is to add a <b>th:src</b>/<b>th:href</b>/<b>th:action</b> attribute so that the reference also works on the server.
 </body>
 </html>
