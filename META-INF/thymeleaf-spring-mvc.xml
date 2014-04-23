@@ -6,6 +6,6 @@
         <spring.mvc.viewResolverFactory
                 implementation="org.thymeleaf.extras.idea.integration.spring.views.ThymeleafSpring4ViewResolverFactory"/>
         <psi.referenceContributor language="ThFS"
-                                  implementation="org.thymeleaf.extras.idea.integration.spring.ThymeleafViewReferenceContributor"/>
+                                  implementation="org.thymeleaf.extras.idea.integration.spring.references.ThymeleafViewReferenceContributor"/>
     </extensions>
 </idea-plugin>

@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.integration.spring;
+package org.thymeleaf.extras.idea.integration.spring.references;
 
 import com.intellij.codeInsight.daemon.EmptyResolveMessageProvider;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -12,6 +12,7 @@ import com.intellij.spring.web.mvc.views.ViewResolver;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import org.thymeleaf.extras.idea.integration.spring.MySpringMVCUtil;
 
 import java.util.ArrayList;
 import java.util.List;

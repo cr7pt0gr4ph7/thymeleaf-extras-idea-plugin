@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.integration.spring;
+package org.thymeleaf.extras.idea.integration.spring.references;
 
 import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceRegistrar;
