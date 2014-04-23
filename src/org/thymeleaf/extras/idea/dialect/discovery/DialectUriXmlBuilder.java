@@ -72,7 +72,7 @@ public class DialectUriXmlBuilder extends NanoXmlUtil.BaseXmlBuilder {
 
         // Is the root tag a <dialect/> tag with the appropriate namespace?
         if (isInDialectTag() && isDialectSchemaUri(nsURI)) {
-            this.myDialectFound = true;
+            myDialectFound = true;
         } else {
             stop();
         }
@@ -103,28 +103,28 @@ public class DialectUriXmlBuilder extends NanoXmlUtil.BaseXmlBuilder {
      * Returns true if this is a dialect descriptor file.
      */
     public boolean isDialectDescriptor() {
-        return this.myDialectFound;
+        return myDialectFound;
     }
 
     /**
      * Whether a @namespace-uri attribute was found.
      */
     public boolean isUriFound() {
-        return this.myUriFound;
+        return myUriFound;
     }
 
     /**
      * Whether a @prefix attribute was found.
      */
     public boolean isPrefixFound() {
-        return this.myPrefixFound;
+        return myPrefixFound;
     }
 
     public String getUri() {
-        return this.myUri;
+        return myUri;
     }
 
     public String getPrefix() {
-        return this.myPrefix;
+        return myPrefix;
     }
 }

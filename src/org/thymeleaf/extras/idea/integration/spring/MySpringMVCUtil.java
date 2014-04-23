@@ -66,7 +66,8 @@ public class MySpringMVCUtil {
     private static PsiFile getTopLevelFile(final PsiElement element) {
         // NOTE: InjectedLanguageUtil.getTopLevelFile seems to return the file
         //       that is shown in the *top level window*, not the conceptual containing file.
-        PsiFile current, next = element.getContainingFile();
+        PsiFile current;
+        PsiFile next = element.getContainingFile();
         do {
             current = next;
             next = getNextLevelFile(current);

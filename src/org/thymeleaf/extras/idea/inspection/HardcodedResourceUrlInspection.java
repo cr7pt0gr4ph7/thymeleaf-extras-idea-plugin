@@ -126,11 +126,11 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
         private final String myQuickFixName;
 
         private AddThymeleafUrlAttributeFix(String namespaceUri, String namespacePrefix, String localName) {
-            this.myNamespaceUri = namespaceUri;
-            this.myNamespacePrefix = namespacePrefix;
-            this.myLocalName = localName;
+            myNamespaceUri = namespaceUri;
+            myNamespacePrefix = namespacePrefix;
+            myLocalName = localName;
 
-            this.myQuickFixName = MessageFormat.format("Add a {0} attribute", buildQName(namespacePrefix, localName));
+            myQuickFixName = MessageFormat.format("Add a {0} attribute", buildQName(namespacePrefix, localName));
         }
 
         @NotNull

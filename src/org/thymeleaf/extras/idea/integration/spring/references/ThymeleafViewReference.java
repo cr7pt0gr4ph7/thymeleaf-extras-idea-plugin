@@ -26,7 +26,7 @@ public class ThymeleafViewReference extends PsiReferenceBase<PsiElement>
 
     public ThymeleafViewReference(PsiElement element, List<ViewResolver> resolvers, TextRange range, boolean soft) {
         super(element, range, soft);
-        this.myResolvers = resolvers;
+        myResolvers = resolvers;
     }
 
     @Override
@@ -35,10 +35,10 @@ public class ThymeleafViewReference extends PsiReferenceBase<PsiElement>
         if (model == null) return null;
 
         String viewName = getCanonicalText();
-        for (ViewResolver resolver : this.myResolvers) {
+        for (ViewResolver resolver : myResolvers) {
             PsiElement psiElement = resolver.resolveView(viewName, model);
             if (psiElement != null) {
-                this.myResolver = resolver;
+                myResolver = resolver;
                 return psiElement;
             }
         }
@@ -61,18 +61,18 @@ public class ThymeleafViewReference extends PsiReferenceBase<PsiElement>
     }
 
     public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
-        LOG.assertTrue(this.myResolver != null, "Trying to bind a non-resolved reference? Resolvers: " + this.myResolvers + ", element: " + element);
+        LOG.assertTrue(myResolver != null, "Trying to bind a non-resolved reference? Resolvers: " + myResolvers + ", element: " + element);
 
-        String newName = this.myResolver.bindToElement(element);
+        String newName = myResolver.bindToElement(element);
         return newName == null ? getElement() : ElementManipulators.getManipulator(getElement()).handleContentChange(getElement(), newName);
     }
 
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        return super.handleElementRename(this.myResolver.handleElementRename(newElementName));
+        return super.handleElementRename(myResolver.handleElementRename(newElementName));
     }
 
     @NotNull
     public String getUnresolvedMessagePattern() {
-        return (this.myResolvers.isEmpty() ? "No view resolvers found" : "Cannot resolve MVC View ''{0}''");
+        return (myResolvers.isEmpty() ? "No view resolvers found" : "Cannot resolve MVC View ''{0}''");
     }
 }

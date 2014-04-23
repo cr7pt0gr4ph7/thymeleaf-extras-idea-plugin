@@ -25,7 +25,7 @@
     <depends optional="true" config-file="thymeleaf-spring-mvc.xml">com.intellij.spring.mvc</depends>
 
     <!-- TODO Configure a correct vendor -->
-    <vendor logo="/icons/handlebars_icon.png" url="https://github.com/cr7pt0gr4ph7">cr7pt0gr4ph7</vendor>
+    <vendor url="https://github.com/cr7pt0gr4ph7">cr7pt0gr4ph7</vendor>
 
     <idea-version since-build="135.480"/>
     <!--<idea-version since-build="110.000" until-build="128.18"/>-->

@@ -12,7 +12,7 @@ public class ThymeleafBundle {
     private static Reference<ResourceBundle> ourBundle;
 
     @NonNls
-    private static final String PATH_TO_BUNDLE = "messages.ThymeleafBundle";
+    private static final String PATH_TO_BUNDLE = "resources.messages.ThymeleafBundle";
 
     private ThymeleafBundle() {
     }
