@@ -13,6 +13,7 @@ import com.intellij.xml.impl.schema.AnyXmlAttributeDescriptor;
 import com.intellij.xml.util.XmlUtil;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder;
@@ -52,7 +53,7 @@ public class DialectXmlAttributeDescriptorsHolder {
                 continue;
             }
 
-            final String prefix = context.getPrefixByNamespace(dialectUrl);
+            @NonNls final String prefix = context.getPrefixByNamespace(dialectUrl);
             if (prefix == null) {
                 // No prefix available for this namespace. This should not happen in practice.
                 continue;
@@ -107,7 +108,7 @@ public class DialectXmlAttributeDescriptorsHolder {
     private static class ThymeleafXmlAttributeDescriptor extends AnyXmlAttributeDescriptor {
         private final AttributeProcessor myDeclaration;
 
-        public ThymeleafXmlAttributeDescriptor(String name, AttributeProcessor declaration) {
+        public ThymeleafXmlAttributeDescriptor(@NonNls String name, AttributeProcessor declaration) {
             super(name);
 
             myDeclaration = declaration;

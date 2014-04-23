@@ -46,6 +46,7 @@ public class AttributeProcessorSyntaxInjector implements MultiHostInjector, Dumb
                 }
             }));
 
+    @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar, @NotNull PsiElement psiElement) {
         // TODO Are the restrictions to the filetypes XML, XHTML and HTML overly restrictive?
         final FileType fileType = psiElement.getContainingFile().getFileType();

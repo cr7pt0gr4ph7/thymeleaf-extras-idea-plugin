@@ -6,7 +6,6 @@ import com.intellij.javaee.ResourceRegistrar;
 import com.intellij.javaee.StandardResourceProvider;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 
 public class ThymeleafDialectSchemaProvider implements StandardResourceProvider {

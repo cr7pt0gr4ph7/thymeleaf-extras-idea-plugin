@@ -12,6 +12,7 @@ import com.intellij.spring.web.mvc.views.ViewResolver;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.integration.spring.MySpringMVCUtil;
 
 import java.util.ArrayList;
@@ -29,6 +30,23 @@ public class ThymeleafViewReference extends PsiReferenceBase<PsiElement>
         myResolvers = resolvers;
     }
 
+    @NotNull
+    @Override
+    public Object[] getVariants() {
+        final SpringMVCModel model = MySpringMVCUtil.getSpringMVCModelForPsiElement(getElement());
+        if (model == null) {
+            return EMPTY_ARRAY;
+        }
+        final List<LookupElement> allViews = new ArrayList<LookupElement>();
+
+        for (final ViewResolver resolver : myResolvers) {
+            allViews.addAll(resolver.getAllViews(model));
+        }
+
+        return ArrayUtil.toObjectArray(allViews);
+    }
+
+    @Nullable
     @Override
     public PsiElement resolve() {
         SpringMVCModel model = MySpringMVCUtil.getSpringMVCModelForPsiElement(getElement());
@@ -45,21 +63,7 @@ public class ThymeleafViewReference extends PsiReferenceBase<PsiElement>
         return null;
     }
 
-    @NotNull
-    public Object[] getVariants() {
-        final SpringMVCModel model = MySpringMVCUtil.getSpringMVCModelForPsiElement(getElement());
-        if (model == null) {
-            return EMPTY_ARRAY;
-        }
-        final List<LookupElement> allViews = new ArrayList<LookupElement>();
-
-        for (final ViewResolver resolver : myResolvers) {
-            allViews.addAll(resolver.getAllViews(model));
-        }
-
-        return ArrayUtil.toObjectArray(allViews);
-    }
-
+    @Override
     public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
         LOG.assertTrue(myResolver != null, "Trying to bind a non-resolved reference? Resolvers: " + myResolvers + ", element: " + element);
 
@@ -67,11 +71,13 @@ public class ThymeleafViewReference extends PsiReferenceBase<PsiElement>
         return newName == null ? getElement() : ElementManipulators.getManipulator(getElement()).handleContentChange(getElement(), newName);
     }
 
+    @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
         return super.handleElementRename(myResolver.handleElementRename(newElementName));
     }
 
     @NotNull
+    @Override
     public String getUnresolvedMessagePattern() {
         return (myResolvers.isEmpty() ? "No view resolvers found" : "Cannot resolve MVC View ''{0}''");
     }

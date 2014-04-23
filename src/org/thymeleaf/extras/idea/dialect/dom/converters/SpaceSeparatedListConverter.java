@@ -6,8 +6,7 @@ import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.converters.DelimitedListConverter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.lang.String;
+import java.util.List;
 
 public class SpaceSeparatedListConverter extends DelimitedListConverter<String> {
     private static final String SEPARATOR = " ";

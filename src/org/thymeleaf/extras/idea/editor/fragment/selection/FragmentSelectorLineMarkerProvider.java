@@ -32,6 +32,7 @@ public class FragmentSelectorLineMarkerProvider implements LineMarkerProvider {
                         setEmptyPopupText(ThymeleafBundle.message("annotators.html.goto.fragment.declaration.not.found")).
                         setTargets(new NotNullLazyValue<Collection<? extends PsiElement>>() {
                             @NotNull
+                            @Override
                             protected Collection<PsiElement> compute() {
                                 final FragmentSelectionExpression selector = (FragmentSelectionExpression) element;
                                 final List<PsiElement> results = new ArrayList<PsiElement>();

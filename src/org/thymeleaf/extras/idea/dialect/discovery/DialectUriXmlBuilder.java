@@ -8,17 +8,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Reader;
 
+@NonNls
 public class DialectUriXmlBuilder extends NanoXmlUtil.BaseXmlBuilder {
-
-    @NonNls
     private static final String DIALECT_TAG = "dialect";
-    @NonNls
     private static final String DIALECT_SCHEMA_URI = "http://www.thymeleaf.org/extras/dialect";
-    @NonNls
     private static final String NAMESPACE_URI_ATTR = "namespace-uri";
-    @NonNls
     private static final String PREFIX_ATTR = "prefix";
     private static final String DIALECT_LOCATION = NanoXmlUtil.createLocation(DIALECT_TAG);
+
     private String myPrefix;
     private String myUri;
     private boolean myPrefixFound;
