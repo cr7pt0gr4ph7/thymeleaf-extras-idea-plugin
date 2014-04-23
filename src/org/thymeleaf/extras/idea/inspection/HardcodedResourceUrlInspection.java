@@ -122,7 +122,7 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
         private final String myNamespaceUri;
         private final String myNamespacePrefix;
         private final String myLocalName;
-        //
+
         private final String myQuickFixName;
 
         private AddThymeleafUrlAttributeFix(String namespaceUri, String namespacePrefix, String localName) {

@@ -13,11 +13,9 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
+import org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes;
 import org.thymeleaf.extras.idea.lang.expression.psi.ThymeleafExpressionTokenGroups;
-import org.thymeleaf.extras.idea.lang.fragment.selection.FragmentSelectorFile;
-import org.thymeleaf.extras.idea.lang.fragment.selection.FragmentSelectorLanguage;
 import org.thymeleaf.extras.idea.lang.fragment.selection.lexer.FragmentSelectorLexer;
-import org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorElementTypes;
 import org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorParser;
 
 public class ThymeleafExpressionParserDefinition implements ParserDefinition {
@@ -54,7 +52,7 @@ public class ThymeleafExpressionParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiElement createElement(ASTNode node) {
-        return FragmentSelectorElementTypes.Factory.createElement(node);
+        return ThymeleafExpressionElementTypes.Factory.createElement(node);
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {

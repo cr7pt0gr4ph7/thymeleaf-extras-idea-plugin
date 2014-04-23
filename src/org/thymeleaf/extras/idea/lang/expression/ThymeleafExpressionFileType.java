@@ -21,7 +21,7 @@ public class ThymeleafExpressionFileType extends LanguageFileType {
 
     @NotNull
     public String getDescription() {
-        return "Thymeleaf fragment selectors - some/demo :: fragment.";
+        return "Thymeleaf expression language - ${model.property}, #{some.message.key], *{form.field} and so on.";
     }
 
     @NotNull

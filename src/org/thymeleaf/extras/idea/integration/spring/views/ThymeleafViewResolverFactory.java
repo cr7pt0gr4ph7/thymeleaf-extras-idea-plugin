@@ -13,10 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import static org.thymeleaf.extras.idea.integration.spring.MySpringPropertyUtils.getBeanForProperty;
 
 /**
- * Base classes for the view resolvers for {@code thymeleaf-spring3} and {@code thymeleaf-spring4}.
- *
- * @see org.thymeleaf.extras.idea.integration.spring.views.ThymeleafSpring3ViewResolverFactory
- * @see org.thymeleaf.extras.idea.integration.spring.views.ThymeleafSpring4ViewResolverFactory
+ * Models the view resolvers for both {@code thymeleaf-spring3} and {@code thymeleaf-spring4}.
  */
 public class ThymeleafViewResolverFactory extends ViewResolverFactory {
     private static final Logger LOGGER = Logger.getInstance(ThymeleafViewResolverFactory.class);

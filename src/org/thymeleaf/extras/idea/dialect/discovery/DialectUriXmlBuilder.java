@@ -28,6 +28,10 @@ public class DialectUriXmlBuilder extends NanoXmlUtil.BaseXmlBuilder {
     public DialectUriXmlBuilder() {
         myPrefix = "";
         myUri = "";
+
+        myPrefixFound = false;
+        myUriFound = false;
+        myDialectFound = false;
     }
 
     public static DialectUriXmlBuilder computeInfo(@NotNull final CharSequence text) {
@@ -61,6 +65,7 @@ public class DialectUriXmlBuilder extends NanoXmlUtil.BaseXmlBuilder {
         }
     }
 
+    @Override
     public void startElement(String name, String nsPrefix, String nsURI, String systemID, int lineNr)
             throws Exception {
         super.startElement(name, nsPrefix, nsURI, systemID, lineNr);
@@ -86,7 +91,7 @@ public class DialectUriXmlBuilder extends NanoXmlUtil.BaseXmlBuilder {
         stop();
     }
 
-    private boolean isDialectSchemaUri(@Nullable String nsUri) {
+    private static boolean isDialectSchemaUri(@Nullable String nsUri) {
         return DIALECT_SCHEMA_URI.equals(nsUri);
     }
 

@@ -76,7 +76,7 @@ public class MyXmlUtil {
     }
 
     @Nullable
-    public static String getPrefixByNamespace(XmlAttributeValue value, String namespaceUrl) {
+    public static String getPrefixByNamespace(XmlElement value, String namespaceUrl) {
         XmlTag tag = PsiTreeUtil.getParentOfType(value, XmlTag.class);
         if (tag == null) return null;
         return tag.getPrefixByNamespace(namespaceUrl);
