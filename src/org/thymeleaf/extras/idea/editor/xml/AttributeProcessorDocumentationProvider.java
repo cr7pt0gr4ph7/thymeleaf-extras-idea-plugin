@@ -1,10 +1,9 @@
 package org.thymeleaf.extras.idea.editor.xml;
 
+import com.intellij.codeInsight.documentation.DocumentationManager;
 import com.intellij.lang.documentation.DocumentationProvider;
-import com.intellij.psi.ElementDescriptionLocation;
-import com.intellij.psi.ElementDescriptionProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.FakePsiElement;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
@@ -84,15 +83,23 @@ public class AttributeProcessorDocumentationProvider implements DocumentationPro
         if (element instanceof XmlTag) {
             final DialectXmlAttributeDescriptorsHolder holder = DialectXmlAttributeDescriptorsHolder.getInstance(element.getProject());
             final DialectItem dialectItem = holder.findDialectItemFromDocumentationXmlTag((XmlTag) element);
-
             if (dialectItem == null) return null;
-            final Documentation documentation = dialectItem.getDocumentation();
 
+            final Documentation documentation = dialectItem.getDocumentation();
             if (documentation.exists()) {
-                return documentation.getValue();
-            } else {
-                return "No documentation available for this attribute processor.";
+                final String docString = documentation.getValue();
+                if (!StringUtil.isEmpty(docString)) {
+                    return docString;
+                }
             }
+
+            final PsiClass implementor = dialectItem.getImplementationClass().getValue();
+            if (implementor != null) {
+                return DocumentationManager.getProviderFromElement(implementor).generateDoc(implementor, null);
+            }
+
+            // Fallback
+            return "No documentation available for this attribute processor.";
         }
 
         return null;
