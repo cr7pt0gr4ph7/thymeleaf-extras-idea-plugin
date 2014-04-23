@@ -13,10 +13,10 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
+import org.thymeleaf.extras.idea.lang.expression.lexer.ThymeleafExpressionLexer;
 import org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes;
+import org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionParser;
 import org.thymeleaf.extras.idea.lang.expression.psi.ThymeleafExpressionTokenGroups;
-import org.thymeleaf.extras.idea.lang.fragment.selection.lexer.FragmentSelectorLexer;
-import org.thymeleaf.extras.idea.lang.fragment.selection.parser.FragmentSelectorParser;
 
 public class ThymeleafExpressionParserDefinition implements ParserDefinition {
     public static final IFileElementType THYMELEAF_EXPRESSION_FILE_ELEMENT_TYPE = new IFileElementType(ThymeleafExpressionLanguage.ID, ThymeleafExpressionLanguage.INSTANCE);
@@ -24,11 +24,11 @@ public class ThymeleafExpressionParserDefinition implements ParserDefinition {
 
     @NotNull
     public Lexer createLexer(Project project) {
-        return new FragmentSelectorLexer();
+        return new ThymeleafExpressionLexer();
     }
 
     public PsiParser createParser(Project project) {
-        return new FragmentSelectorParser();
+        return new ThymeleafExpressionParser();
     }
 
     public IFileElementType getFileNodeType() {
