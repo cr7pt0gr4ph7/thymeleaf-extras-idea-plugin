@@ -28,7 +28,7 @@ public class FragmentSelectorLineMarkerProvider implements LineMarkerProvider {
         final NavigationGutterIconBuilder<PsiElement> gutterIconBuilder =
                 NavigationGutterIconBuilder.create(AllIcons.Gutter.ImplementingMethod).
                         setAlignment(GutterIconRenderer.Alignment.LEFT).
-                        setTooltipText(ThymeleafBundle.message("annotators.html.goto.fragment.declaration")).
+                            setTooltipText(ThymeleafBundle.message("annotators.html.goto.fragment.declaration")).
                         setEmptyPopupText(ThymeleafBundle.message("annotators.html.goto.fragment.declaration.not.found")).
                         setTargets(new NotNullLazyValue<Collection<? extends PsiElement>>() {
                             @NotNull

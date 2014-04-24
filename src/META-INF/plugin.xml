@@ -23,6 +23,7 @@
     <depends>com.intellij.modules.lang</depends>
     <!--<depends>com.intellij.spring</depends>-->
     <depends optional="true" config-file="thymeleaf-spring-mvc.xml">com.intellij.spring.mvc</depends>
+    <depends optional="true" config-file="thymeleaf-properties.xml">com.intellij.properties</depends>
 
     <!-- TODO Configure a correct vendor -->
     <vendor url="https://github.com/cr7pt0gr4ph7">cr7pt0gr4ph7</vendor>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<idea-plugin version="2">
+    <extensions defaultExtensionNs="com.intellij">
+        <psi.referenceContributor language="ThEL"
+                                  implementation="org.thymeleaf.extras.idea.integration.properties.PropertiesReferenceContributor"/>
+    </extensions>
+</idea-plugin>

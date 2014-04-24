@@ -89,11 +89,11 @@ public class DialectDescriptorsHolder {
         try {
             schema = VfsUtil.findFileByURL(new URL(location));
         } catch (MalformedURLException ignore) {
-            LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: Malformed dialect help file location url.", location), ignore);
+            LOG.warn(MessageFormat.format("Could not read dialect help file at {0}: Malformed dialect help file location url.", location), ignore);
             return null;
         }
         if (schema == null) {
-            LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: Failed to load file.", location));
+            LOG.warn(MessageFormat.format("Could not read dialect help file at {0}: Failed to load file.", location));
             return null;
         }
 
@@ -108,7 +108,7 @@ public class DialectDescriptorsHolder {
         final PsiFile psiFile = PsiManager.getInstance(myProject).findFile(schemaFile);
 
         if (!(psiFile instanceof XmlFile)) {
-            LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: File is not an xml file.", schemaFile.getPath()));
+            LOG.warn(MessageFormat.format("Could not read dialect help file at {0}: File is not an xml file.", schemaFile.getPath()));
             return null;
         }
 
@@ -116,7 +116,7 @@ public class DialectDescriptorsHolder {
         final DomFileElement<Dialect> domFileElement = manager.getFileElement((XmlFile) psiFile, Dialect.class);
 
         if (domFileElement == null) {
-            LOG.warn(MessageFormat.format("Could not read dialect help file at {0} for dialect {1}: Could not read xml file into DOM.", schemaFile.getPath()));
+            LOG.warn(MessageFormat.format("Could not read dialect help file at {0}: Could not read xml file into DOM.", schemaFile.getPath()));
             return null;
         }
 
