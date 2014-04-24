@@ -16,15 +16,15 @@ public class LinkExprImpl extends GenericSelectionExprImpl implements LinkExpr {
     super(node);
   }
 
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof Visitor) ((Visitor)visitor).visitLinkExpr(this);
+    else super.accept(visitor);
+  }
+
   @Override
   @Nullable
   public PsiElement getString() {
     return findChildByType(STRING);
-  }
-
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) ((Visitor)visitor).visitLinkExpr(this);
-    else super.accept(visitor);
   }
 
 }

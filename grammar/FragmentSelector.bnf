@@ -40,8 +40,8 @@ root ::= fragment_selection_expression
 
 fragment_selection_expression ::=  fragment_spec [fragment_arguments] {
     methods=[
-        template_name="/fragment_spec/template_name"
-        dom_selector="/fragment_spec/dom_selector"
+        template_name="fragment_spec/template_name"
+        dom_selector="fragment_spec/dom_selector"
     ]
 }
 

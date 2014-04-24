@@ -16,15 +16,15 @@ public class MessageExprImpl extends GenericSelectionExprImpl implements Message
     super(node);
   }
 
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof Visitor) ((Visitor)visitor).visitMessageExpr(this);
+    else super.accept(visitor);
+  }
+
   @Override
   @Nullable
   public PsiElement getString() {
     return findChildByType(STRING);
-  }
-
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) ((Visitor)visitor).visitMessageExpr(this);
-    else super.accept(visitor);
   }
 
 }
