@@ -1,12 +1,12 @@
-package org.thymeleaf.extras.idea.integration.properties;
+package org.thymeleaf.extras.idea.integration.properties.references;
 
 import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceRegistrar;
 
 /**
- * Boilerplate code for registering {@link org.thymeleaf.extras.idea.integration.properties.PropertiesReferenceProvider}.
+ * Boilerplate code for registering {@link PropertiesReferenceProvider}.
  *
- * @see org.thymeleaf.extras.idea.integration.properties.PropertiesReferenceProvider
+ * @see PropertiesReferenceProvider
  */
 public class PropertiesReferenceContributor extends PsiReferenceContributor {
     @Override

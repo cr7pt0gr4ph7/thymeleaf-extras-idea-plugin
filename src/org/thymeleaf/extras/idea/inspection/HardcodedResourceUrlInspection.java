@@ -153,7 +153,9 @@ public class HardcodedResourceUrlInspection extends XmlSuppressableInspectionToo
 
                 // TODO What is with conditional comments, which create a separate tree?
                 final XmlFile file = XmlUtil.getContainingFile(value);
-                if (file == null) return;
+                if (file == null) {
+                    return;
+                }
 
                 // Handle cases where the Thymeleaf namespace doesn't exist
                 final String prefix = getPrefixByNamespace(value, myNamespaceUri);

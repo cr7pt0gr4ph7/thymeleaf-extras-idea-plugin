@@ -7,7 +7,6 @@ package org.thymeleaf.extras.idea.lang.expression;
 import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import org.thymeleaf.extras.idea.lang.expression.ThymeleafExpressionLanguage;
 
 public class ThymeleafExpressionLanguageInjector {
 

@@ -4,7 +4,7 @@
 
   psiPackage="org.thymeleaf.extras.idea.lang.expression.psi"
   psiImplPackage="org.thymeleaf.extras.idea.lang.expression.psi.impl"
-  // psiImplUtilClass="org.thymeleaf.extras.idea.lang.expression.psi.impl.ThymeleafExpressionPsiImplUtil"
+  psiImplUtilClass="org.thymeleaf.extras.idea.lang.expression.psi.impl.ThymeleafExpressionPsiImplUtil"
 
   elementTypeHolderClass="org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes"
   elementTypeClass="org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionCompositeElementType"
@@ -34,6 +34,10 @@
   methods("(variable|selection|message|link)_expr")=[
     getSelectionString="/string[0]"
   ]
+
+  // Enable PsiReferenceContributor on all generic_selection_expr subtypes
+  implements("generic_selection_expr")="com.intellij.psi.ContributedReferenceHost"
+  methods("generic_selection_expr")=[getReferences]
 }
 
 root ::= expression

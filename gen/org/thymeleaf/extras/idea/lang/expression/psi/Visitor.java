@@ -4,6 +4,7 @@ package org.thymeleaf.extras.idea.lang.expression.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ContributedReferenceHost;
 
 public class Visitor extends PsiElementVisitor {
 
@@ -13,6 +14,7 @@ public class Visitor extends PsiElementVisitor {
 
   public void visitGenericSelectionExpr(@NotNull GenericSelectionExpr o) {
     visitExpression(o);
+    // visitContributedReferenceHost(o);
   }
 
   public void visitLinkExpr(@NotNull LinkExpr o) {

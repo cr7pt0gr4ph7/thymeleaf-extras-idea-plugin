@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes.*;
 import org.thymeleaf.extras.idea.lang.expression.psi.*;
+import com.intellij.psi.PsiReference;
 
 public class GenericSelectionExprImpl extends ExpressionImpl implements GenericSelectionExpr {
 
@@ -19,6 +20,11 @@ public class GenericSelectionExprImpl extends ExpressionImpl implements GenericS
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof Visitor) ((Visitor)visitor).visitGenericSelectionExpr(this);
     else super.accept(visitor);
+  }
+
+  @NotNull
+  public PsiReference[] getReferences() {
+    return ThymeleafExpressionPsiImplUtil.getReferences(this);
   }
 
 }

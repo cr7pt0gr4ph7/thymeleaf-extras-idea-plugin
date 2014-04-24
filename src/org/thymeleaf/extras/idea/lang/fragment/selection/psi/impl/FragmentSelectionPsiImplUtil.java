@@ -8,7 +8,7 @@ import org.thymeleaf.extras.idea.lang.fragment.selection.psi.TemplateName;
 
 public class FragmentSelectionPsiImplUtil {
     /**
-     * Infrastructure method. Use {@see FragmentSelectionExpression#getCompositeReferences} instead.
+     * Infrastructure method. Use {@link FragmentSelectionExpression#getCompositeReferences} instead.
      */
     public static PsiReference[] getCompositeReferences(@NotNull final FragmentSelectionExpression selector) {
         final DomSelector domSelector = selector.getDomSelector();

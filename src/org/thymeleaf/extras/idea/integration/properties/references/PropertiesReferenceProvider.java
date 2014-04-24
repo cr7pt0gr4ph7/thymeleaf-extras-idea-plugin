@@ -1,4 +1,4 @@
-package org.thymeleaf.extras.idea.integration.properties;
+package org.thymeleaf.extras.idea.integration.properties.references;
 
 import com.intellij.lang.properties.IProperty;
 import com.intellij.lang.properties.references.PropertyReference;
@@ -41,7 +41,7 @@ public class PropertiesReferenceProvider extends PsiReferenceProvider {
 
             if (messageExpr.getString() != null) {
                 final String bundleName = null;
-                final boolean soft = false;
+                final boolean soft = myDefaultSoft;
 
                 final PsiReference reference = new PropertyReference(messageExpr.getString().getText(), messageExpr.getString(), bundleName, soft);
                 return new PsiReference[]{reference};
