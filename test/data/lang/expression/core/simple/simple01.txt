@@ -1,0 +1,3 @@
+ThymeleafExpressionFile: simple01.thel
+  TokenExprImpl(TOKEN_EXPR)
+    PsiElement(string)('simple')

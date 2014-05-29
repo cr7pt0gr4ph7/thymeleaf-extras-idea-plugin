@@ -1,0 +1,10 @@
+ThymeleafExpressionFile: conditional01.thel
+  ConditionalExprImpl(CONDITIONAL_EXPR)
+    VariableExprImpl(VARIABLE_EXPR)
+      PsiElement(${)('${')
+      PsiElement(string)('cond')
+      PsiElement(})('}')
+    PsiElement(?)('?')
+    PsiElement(string)('do_it')
+    PsiElement(:)(':')
+    PsiElement(string)('dont')
