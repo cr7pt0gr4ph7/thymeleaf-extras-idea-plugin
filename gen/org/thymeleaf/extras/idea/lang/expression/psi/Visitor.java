@@ -29,6 +29,10 @@ public class Visitor extends PsiElementVisitor {
     visitGenericSelectionExpr(o);
   }
 
+  public void visitTokenExpr(@NotNull TokenExpr o) {
+    visitExpression(o);
+  }
+
   public void visitVariableExpr(@NotNull VariableExpr o) {
     visitGenericSelectionExpr(o);
   }

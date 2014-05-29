@@ -36,6 +36,10 @@ STRING=([^\{\n\}]+)
   "@{"                        { return LINK_EXPR_START; }
   "}"                         { return EXPRESSION_END; }
 
+  "${{"                       { return CONVERTED_VARIABLE_EXPR_START; }
+  "*{{"                       { return CONVERTED_SELECTION_EXPR_START; }
+  "}}"                        { return CONVERTED_EXPRESSION_END; }
+
   {STRING}                    { return STRING; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }

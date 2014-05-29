@@ -13,8 +13,12 @@ public interface ThymeleafExpressionElementTypes {
   IElementType LINK_EXPR = new ThymeleafExpressionCompositeElementType("LINK_EXPR");
   IElementType MESSAGE_EXPR = new ThymeleafExpressionCompositeElementType("MESSAGE_EXPR");
   IElementType SELECTION_EXPR = new ThymeleafExpressionCompositeElementType("SELECTION_EXPR");
+  IElementType TOKEN_EXPR = new ThymeleafExpressionCompositeElementType("TOKEN_EXPR");
   IElementType VARIABLE_EXPR = new ThymeleafExpressionCompositeElementType("VARIABLE_EXPR");
 
+  IElementType CONVERTED_EXPRESSION_END = new ThymeleafExpressionElementType("}}");
+  IElementType CONVERTED_SELECTION_EXPR_START = new ThymeleafExpressionElementType("*{{");
+  IElementType CONVERTED_VARIABLE_EXPR_START = new ThymeleafExpressionElementType("${{");
   IElementType EXPRESSION_END = new ThymeleafExpressionElementType("}");
   IElementType LINK_EXPR_START = new ThymeleafExpressionElementType("@{");
   IElementType MESSAGE_EXPR_START = new ThymeleafExpressionElementType("#{");
@@ -39,6 +43,9 @@ public interface ThymeleafExpressionElementTypes {
       }
       else if (type == SELECTION_EXPR) {
         return new SelectionExprImpl(node);
+      }
+      else if (type == TOKEN_EXPR) {
+        return new TokenExprImpl(node);
       }
       else if (type == VARIABLE_EXPR) {
         return new VariableExprImpl(node);

@@ -17,6 +17,10 @@
     LINK_EXPR_START='@{'
     EXPRESSION_END='}'
 
+    CONVERTED_VARIABLE_EXPR_START='${{'
+    CONVERTED_SELECTION_EXPR_START='*{{'
+    CONVERTED_EXPRESSION_END='}}'
+
     // comment='regexp:--.*'
     string='regexp:([^\{\}\n]+)'
   ]
@@ -42,16 +46,32 @@
 
 root ::= expression
 
-expression ::= generic_selection_expr
+expression ::= token_expr | generic_selection_expr
 
 // Selectors: ${...}, *{...}, #{...} and @{...}
 generic_selection_expr ::= variable_expr | selection_expr | link_expr | message_expr {recoverUntil=selection_expr_recover}
-private selection_expr_recover ::= !('}')
 
-variable_expr ::= '${' string '}' {pin=1}
-selection_expr ::= '*{' string '}' {pin=1}
+variable_expr ::= converted_variable_expr | standard_variable_expr
+selection_expr ::= converted_selection_expr | standard_selection_expr
 message_expr ::= '#{' string '}' {pin=1}
 link_expr ::= '@{' string '}' {pin=1}
+
+private converted_variable_expr ::= '${{' string '}}' {pin=1 recoverWhile=converted_expr_recover}
+private converted_selection_expr ::= '*{{' string '}}' {pin=1 recoverWhile=converted_expr_recover}
+private converted_expr_recover ::= !('}}')
+
+private standard_variable_expr ::= '${' string '}' {pin=1 recoverWhile=selection_expr_recover}
+private standard_selection_expr ::= '*{' string '}' {pin=1 recoverWhile=selection_expr_recover}
+private selection_expr_recover ::= !('}')
+
+// Conditionals: (cond ? then : else) or also (cond ? then)
+// conditional_expr ::=
+
+// Text tokens: something
+token_expr ::= string
+
+// Text literals: 'something'
+// text_literal_expr ::= "'" string "'" {pin=1}
 
 //expr ::= factor plus_expr *
 //left plus_expr ::= plus_op factor
