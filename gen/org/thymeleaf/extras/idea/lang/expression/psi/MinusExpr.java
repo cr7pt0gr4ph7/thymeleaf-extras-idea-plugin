@@ -10,4 +10,10 @@ public interface MinusExpr extends Expression {
   @NotNull
   List<Expression> getExpressionList();
 
+  @NotNull
+  Expression getLeft();
+
+  @Nullable
+  Expression getRight();
+
 }

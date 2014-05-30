@@ -27,4 +27,18 @@ public class MinusExprImpl extends ExpressionImpl implements MinusExpr {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, Expression.class);
   }
 
+  @Override
+  @NotNull
+  public Expression getLeft() {
+    List<Expression> p1 = getExpressionList();
+    return p1.get(0);
+  }
+
+  @Override
+  @Nullable
+  public Expression getRight() {
+    List<Expression> p1 = getExpressionList();
+    return p1.size() < 2 ? null : p1.get(1);
+  }
+
 }

@@ -51,6 +51,11 @@
     getSelectionString="/string[0]"
   ]
 
+  methods("(mul|div|rem|plus|minus)_expr")=[
+    left="expression[0]"
+    right="expression[1]"
+  ]
+
   // Enable PsiReferenceContributor on all generic_selection_expr subtypes
   implements("generic_selection_expr")="com.intellij.psi.ContributedReferenceHost"
   methods("generic_selection_expr")=[getReferences]
