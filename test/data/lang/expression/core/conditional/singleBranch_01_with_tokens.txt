@@ -1,4 +1,4 @@
-ThymeleafExpressionFile: conditional01.thel
+ThymeleafExpressionFile: singleBranch_01_with_tokens.thel
   ConditionalExprImpl(CONDITIONAL_EXPR)
     TokenExprImpl(TOKEN_EXPR)
       PsiElement(token)('cond')
@@ -7,8 +7,3 @@ ThymeleafExpressionFile: conditional01.thel
     PsiWhiteSpace(' ')
     TokenExprImpl(TOKEN_EXPR)
       PsiElement(token)('do_it')
-    PsiWhiteSpace(' ')
-    PsiElement(:)(':')
-    PsiWhiteSpace(' ')
-    TokenExprImpl(TOKEN_EXPR)
-      PsiElement(token)('dont')

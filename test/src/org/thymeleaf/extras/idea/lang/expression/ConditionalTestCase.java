@@ -5,11 +5,19 @@ public class ConditionalTestCase extends AbstractExpressionParsingTestCase {
         super("lang/expression/core/conditional");
     }
 
-    public void testConditional01() {
+    public void testConditional_01_with_tokens() {
         doTest(true);
     }
 
-    public void testConditional02() {
+    public void testConditional_02_with_variable_expression() {
+        doTest(true);
+    }
+
+    public void testSingleBranch_01_with_tokens() {
+        doTest(true);
+    }
+
+    public void testDefaultExpr_01_with_tokens() {
         doTest(true);
     }
 }

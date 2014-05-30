@@ -74,8 +74,19 @@ private primary_group ::= token_expr | generic_selection_expr
 //
 // public rules for each expression
 //
-conditional_expr ::= expression '?' expression ':' expression
-default_expr ::= expression '?:' expression
+conditional_expr ::= expression '?' expression [':' expression] {
+    methods=[
+        condition="expression[0]"
+        then_expression="expression[1]"
+        else_expression="expression[0]"
+    ]
+}
+default_expr ::= expression '?:' expression {
+    methods=[
+        queried_expression="expression[0]"
+        default_expression="expression[1]"
+    ]
+}
 mul_expr ::= expression '*' expression
 div_expr ::= expression '/' expression
 remainder_expr ::= expression '%' expression

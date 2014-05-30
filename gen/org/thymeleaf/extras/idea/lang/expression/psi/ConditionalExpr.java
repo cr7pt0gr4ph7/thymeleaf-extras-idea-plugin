@@ -10,4 +10,13 @@ public interface ConditionalExpr extends Expression {
   @NotNull
   List<Expression> getExpressionList();
 
+  @NotNull
+  Expression getCondition();
+
+  @Nullable
+  Expression getThenExpression();
+
+  @NotNull
+  Expression getElseExpression();
+
 }

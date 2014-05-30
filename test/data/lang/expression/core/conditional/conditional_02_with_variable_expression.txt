@@ -1,4 +1,4 @@
-ThymeleafExpressionFile: conditional02.thel
+ThymeleafExpressionFile: conditional_02_with_variable_expression.thel
   ConditionalExprImpl(CONDITIONAL_EXPR)
     VariableExprImpl(VARIABLE_EXPR)
       PsiElement(${)('${')

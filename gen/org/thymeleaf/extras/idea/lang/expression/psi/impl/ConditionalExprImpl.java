@@ -27,4 +27,25 @@ public class ConditionalExprImpl extends ExpressionImpl implements ConditionalEx
     return PsiTreeUtil.getChildrenOfTypeAsList(this, Expression.class);
   }
 
+  @Override
+  @NotNull
+  public Expression getCondition() {
+    List<Expression> p1 = getExpressionList();
+    return p1.get(0);
+  }
+
+  @Override
+  @Nullable
+  public Expression getThenExpression() {
+    List<Expression> p1 = getExpressionList();
+    return p1.size() < 2 ? null : p1.get(1);
+  }
+
+  @Override
+  @NotNull
+  public Expression getElseExpression() {
+    List<Expression> p1 = getExpressionList();
+    return p1.get(0);
+  }
+
 }

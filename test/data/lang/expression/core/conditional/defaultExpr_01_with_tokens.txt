@@ -1,0 +1,9 @@
+ThymeleafExpressionFile: defaultExpr_01_with_tokens.thel
+  DefaultExprImpl(DEFAULT_EXPR)
+    TokenExprImpl(TOKEN_EXPR)
+      PsiElement(token)('maybeNullValue')
+    PsiWhiteSpace(' ')
+    PsiElement(?:)('?:')
+    PsiWhiteSpace(' ')
+    TokenExprImpl(TOKEN_EXPR)
+      PsiElement(token)('defaultValue')

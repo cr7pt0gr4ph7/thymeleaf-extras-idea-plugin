@@ -10,4 +10,10 @@ public interface DefaultExpr extends Expression {
   @NotNull
   List<Expression> getExpressionList();
 
+  @NotNull
+  Expression getQueriedExpression();
+
+  @Nullable
+  Expression getDefaultExpression();
+
 }

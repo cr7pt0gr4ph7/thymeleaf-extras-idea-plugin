@@ -345,9 +345,16 @@ public class ThymeleafExpressionParser implements PsiParser {
     return result_;
   }
 
-  // ':' expression
+  // [':' expression]
   private static boolean conditional_expr_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conditional_expr_1")) return false;
+    conditional_expr_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // ':' expression
+  private static boolean conditional_expr_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "conditional_expr_1_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, OP_COLON);
