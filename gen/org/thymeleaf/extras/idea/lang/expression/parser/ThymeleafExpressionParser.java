@@ -155,14 +155,15 @@ public class ThymeleafExpressionParser implements PsiParser {
   // '*{{' converted_expr_content '}}'
   static boolean converted_selection_expr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "converted_selection_expr")) return false;
+    if (!nextTokenIs(builder_, CONVERTED_SELECTION_EXPR_START)) return false;
     boolean result_ = false;
     boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<expression>");
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, CONVERTED_SELECTION_EXPR_START);
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, converted_expr_content(builder_, level_ + 1));
     result_ = pinned_ && consumeToken(builder_, CONVERTED_EXPRESSION_END) && result_;
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, converted_expr_recover_parser_);
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
   }
 

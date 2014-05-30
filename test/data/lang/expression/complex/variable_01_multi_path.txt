@@ -1,0 +1,5 @@
+ThymeleafExpressionFile: variable_01_multi_path.thel
+  VariableExprImpl(VARIABLE_EXPR)
+    PsiElement(${)('${')
+    PsiElement(expression_string)('user.name')
+    PsiElement(})('}')

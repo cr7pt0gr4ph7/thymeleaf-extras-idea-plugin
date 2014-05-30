@@ -1,0 +1,5 @@
+ThymeleafExpressionFile: selection_03_with_addition_inside.thel
+  SelectionExprImpl(SELECTION_EXPR)
+    PsiElement(*{)('*{')
+    PsiElement(expression_string)('name + ' - ' + nationality')
+    PsiElement(})('}')

@@ -155,7 +155,7 @@ message_expr ::= '#{' standard_expr_content '}' {pin=1}
 link_expr ::= '@{' standard_expr_content '}' {pin=1}
 
 private converted_variable_expr ::= '${{' converted_expr_content '}}' {pin=1}
-private converted_selection_expr ::= '*{{' converted_expr_content '}}' {pin=1 recoverWhile=converted_expr_recover}
+private converted_selection_expr ::= '*{{' converted_expr_content '}}' {pin=1}
 private converted_expr_content ::= expression_string {recoverWhile=converted_expr_recover}
 private converted_expr_recover ::= !('}}')
 
