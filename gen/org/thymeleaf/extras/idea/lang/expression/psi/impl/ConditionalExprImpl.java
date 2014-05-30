@@ -36,14 +36,14 @@ public class ConditionalExprImpl extends ExpressionImpl implements ConditionalEx
 
   @Override
   @Nullable
-  public Expression getThenExpression() {
+  public Expression getThen() {
     List<Expression> p1 = getExpressionList();
     return p1.size() < 2 ? null : p1.get(1);
   }
 
   @Override
   @NotNull
-  public Expression getElseExpression() {
+  public Expression getElse() {
     List<Expression> p1 = getExpressionList();
     return p1.get(0);
   }

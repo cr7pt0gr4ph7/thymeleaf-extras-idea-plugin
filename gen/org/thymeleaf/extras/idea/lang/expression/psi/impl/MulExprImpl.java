@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes.*;
 import org.thymeleaf.extras.idea.lang.expression.psi.*;
 
-public class MulExprImpl extends ExpressionImpl implements MulExpr {
+public class MulExprImpl extends FakeBinaryExpressionImpl implements MulExpr {
 
   public MulExprImpl(ASTNode node) {
     super(node);
@@ -25,20 +25,6 @@ public class MulExprImpl extends ExpressionImpl implements MulExpr {
   @NotNull
   public List<Expression> getExpressionList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, Expression.class);
-  }
-
-  @Override
-  @NotNull
-  public Expression getLeft() {
-    List<Expression> p1 = getExpressionList();
-    return p1.get(0);
-  }
-
-  @Override
-  @Nullable
-  public Expression getRight() {
-    List<Expression> p1 = getExpressionList();
-    return p1.size() < 2 ? null : p1.get(1);
   }
 
 }

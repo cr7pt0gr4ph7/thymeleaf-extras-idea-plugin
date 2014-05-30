@@ -10,21 +10,21 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes.*;
 import org.thymeleaf.extras.idea.lang.expression.psi.*;
 
-public class MinusExprImpl extends FakeBinaryExpressionImpl implements MinusExpr {
+public class NegationExprImpl extends ExpressionImpl implements NegationExpr {
 
-  public MinusExprImpl(ASTNode node) {
+  public NegationExprImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) ((Visitor)visitor).visitMinusExpr(this);
+    if (visitor instanceof Visitor) ((Visitor)visitor).visitNegationExpr(this);
     else super.accept(visitor);
   }
 
   @Override
-  @NotNull
-  public List<Expression> getExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, Expression.class);
+  @Nullable
+  public Expression getExpression() {
+    return findChildByClass(Expression.class);
   }
 
 }

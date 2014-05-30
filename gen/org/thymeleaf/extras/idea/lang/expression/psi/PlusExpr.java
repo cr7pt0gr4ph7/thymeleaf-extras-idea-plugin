@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PlusExpr extends Expression {
+public interface PlusExpr extends FakeBinaryExpression {
 
   @NotNull
   List<Expression> getExpressionList();
-
-  @NotNull
-  Expression getLeft();
-
-  @Nullable
-  Expression getRight();
 
 }

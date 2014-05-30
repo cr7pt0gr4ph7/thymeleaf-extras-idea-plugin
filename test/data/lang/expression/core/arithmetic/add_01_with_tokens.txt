@@ -1,0 +1,9 @@
+ThymeleafExpressionFile: add_01_with_tokens.thel
+  PlusExprImpl(PLUS_EXPR)
+    TokenExprImpl(TOKEN_EXPR)
+      PsiElement(token)('do')
+    PsiWhiteSpace(' ')
+    PsiElement(+)('+')
+    PsiWhiteSpace(' ')
+    TokenExprImpl(TOKEN_EXPR)
+      PsiElement(token)('it')

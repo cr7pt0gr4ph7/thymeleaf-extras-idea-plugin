@@ -8,6 +8,10 @@ import com.intellij.psi.ContributedReferenceHost;
 
 public class Visitor extends PsiElementVisitor {
 
+  public void visitAndExpr(@NotNull AndExpr o) {
+    visitFakeBinaryExpression(o);
+  }
+
   public void visitConditionalExpr(@NotNull ConditionalExpr o) {
     visitExpression(o);
   }
@@ -17,11 +21,19 @@ public class Visitor extends PsiElementVisitor {
   }
 
   public void visitDivExpr(@NotNull DivExpr o) {
-    visitExpression(o);
+    visitFakeBinaryExpression(o);
+  }
+
+  public void visitEqExpr(@NotNull EqExpr o) {
+    visitFakeBinaryExpression(o);
   }
 
   public void visitExpression(@NotNull Expression o) {
     visitPsiElement(o);
+  }
+
+  public void visitFakeBinaryExpression(@NotNull FakeBinaryExpression o) {
+    visitExpression(o);
   }
 
   public void visitGenericSelectionExpr(@NotNull GenericSelectionExpr o) {
@@ -29,8 +41,24 @@ public class Visitor extends PsiElementVisitor {
     // visitContributedReferenceHost(o);
   }
 
+  public void visitGtEqExpr(@NotNull GtEqExpr o) {
+    visitFakeBinaryExpression(o);
+  }
+
+  public void visitGtExpr(@NotNull GtExpr o) {
+    visitFakeBinaryExpression(o);
+  }
+
   public void visitLinkExpr(@NotNull LinkExpr o) {
     visitGenericSelectionExpr(o);
+  }
+
+  public void visitLtEqExpr(@NotNull LtEqExpr o) {
+    visitFakeBinaryExpression(o);
+  }
+
+  public void visitLtExpr(@NotNull LtExpr o) {
+    visitFakeBinaryExpression(o);
   }
 
   public void visitMessageExpr(@NotNull MessageExpr o) {
@@ -38,15 +66,27 @@ public class Visitor extends PsiElementVisitor {
   }
 
   public void visitMinusExpr(@NotNull MinusExpr o) {
-    visitExpression(o);
+    visitFakeBinaryExpression(o);
   }
 
   public void visitMulExpr(@NotNull MulExpr o) {
+    visitFakeBinaryExpression(o);
+  }
+
+  public void visitNegationExpr(@NotNull NegationExpr o) {
     visitExpression(o);
   }
 
+  public void visitNeqExpr(@NotNull NeqExpr o) {
+    visitFakeBinaryExpression(o);
+  }
+
+  public void visitOrExpr(@NotNull OrExpr o) {
+    visitFakeBinaryExpression(o);
+  }
+
   public void visitPlusExpr(@NotNull PlusExpr o) {
-    visitExpression(o);
+    visitFakeBinaryExpression(o);
   }
 
   public void visitRemainderExpr(@NotNull RemainderExpr o) {
@@ -58,6 +98,10 @@ public class Visitor extends PsiElementVisitor {
   }
 
   public void visitTokenExpr(@NotNull TokenExpr o) {
+    visitExpression(o);
+  }
+
+  public void visitUnaryMinusExpr(@NotNull UnaryMinusExpr o) {
     visitExpression(o);
   }
 

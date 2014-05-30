@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes.*;
 import org.thymeleaf.extras.idea.lang.expression.psi.*;
 
-public class MinusExprImpl extends FakeBinaryExpressionImpl implements MinusExpr {
+public class NeqExprImpl extends FakeBinaryExpressionImpl implements NeqExpr {
 
-  public MinusExprImpl(ASTNode node) {
+  public NeqExprImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) ((Visitor)visitor).visitMinusExpr(this);
+    if (visitor instanceof Visitor) ((Visitor)visitor).visitNeqExpr(this);
     else super.accept(visitor);
   }
 

@@ -29,14 +29,14 @@ public class DefaultExprImpl extends ExpressionImpl implements DefaultExpr {
 
   @Override
   @NotNull
-  public Expression getQueriedExpression() {
+  public Expression getQueried() {
     List<Expression> p1 = getExpressionList();
     return p1.get(0);
   }
 
   @Override
   @Nullable
-  public Expression getDefaultExpression() {
+  public Expression getDefault() {
     List<Expression> p1 = getExpressionList();
     return p1.size() < 2 ? null : p1.get(1);
   }

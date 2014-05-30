@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface DefaultExpr extends Expression {
-
-  @NotNull
-  List<Expression> getExpressionList();
-
-  @NotNull
-  Expression getQueried();
+public interface UnaryMinusExpr extends Expression {
 
   @Nullable
-  Expression getDefault();
+  Expression getExpression();
 
 }

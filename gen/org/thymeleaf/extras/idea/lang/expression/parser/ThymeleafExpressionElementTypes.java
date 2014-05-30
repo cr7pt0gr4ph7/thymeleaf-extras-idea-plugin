@@ -8,19 +8,29 @@ import org.thymeleaf.extras.idea.lang.expression.psi.impl.*;
 
 public interface ThymeleafExpressionElementTypes {
 
+  IElementType AND_EXPR = new ThymeleafExpressionCompositeElementType("AND_EXPR");
   IElementType CONDITIONAL_EXPR = new ThymeleafExpressionCompositeElementType("CONDITIONAL_EXPR");
   IElementType DEFAULT_EXPR = new ThymeleafExpressionCompositeElementType("DEFAULT_EXPR");
   IElementType DIV_EXPR = new ThymeleafExpressionCompositeElementType("DIV_EXPR");
+  IElementType EQ_EXPR = new ThymeleafExpressionCompositeElementType("EQ_EXPR");
   IElementType EXPRESSION = new ThymeleafExpressionCompositeElementType("EXPRESSION");
   IElementType GENERIC_SELECTION_EXPR = new ThymeleafExpressionCompositeElementType("GENERIC_SELECTION_EXPR");
+  IElementType GT_EQ_EXPR = new ThymeleafExpressionCompositeElementType("GT_EQ_EXPR");
+  IElementType GT_EXPR = new ThymeleafExpressionCompositeElementType("GT_EXPR");
   IElementType LINK_EXPR = new ThymeleafExpressionCompositeElementType("LINK_EXPR");
+  IElementType LT_EQ_EXPR = new ThymeleafExpressionCompositeElementType("LT_EQ_EXPR");
+  IElementType LT_EXPR = new ThymeleafExpressionCompositeElementType("LT_EXPR");
   IElementType MESSAGE_EXPR = new ThymeleafExpressionCompositeElementType("MESSAGE_EXPR");
   IElementType MINUS_EXPR = new ThymeleafExpressionCompositeElementType("MINUS_EXPR");
   IElementType MUL_EXPR = new ThymeleafExpressionCompositeElementType("MUL_EXPR");
+  IElementType NEGATION_EXPR = new ThymeleafExpressionCompositeElementType("NEGATION_EXPR");
+  IElementType NEQ_EXPR = new ThymeleafExpressionCompositeElementType("NEQ_EXPR");
+  IElementType OR_EXPR = new ThymeleafExpressionCompositeElementType("OR_EXPR");
   IElementType PLUS_EXPR = new ThymeleafExpressionCompositeElementType("PLUS_EXPR");
   IElementType REMAINDER_EXPR = new ThymeleafExpressionCompositeElementType("REMAINDER_EXPR");
   IElementType SELECTION_EXPR = new ThymeleafExpressionCompositeElementType("SELECTION_EXPR");
   IElementType TOKEN_EXPR = new ThymeleafExpressionCompositeElementType("TOKEN_EXPR");
+  IElementType UNARY_MINUS_EXPR = new ThymeleafExpressionCompositeElementType("UNARY_MINUS_EXPR");
   IElementType VARIABLE_EXPR = new ThymeleafExpressionCompositeElementType("VARIABLE_EXPR");
 
   IElementType CONVERTED_EXPRESSION_END = new ThymeleafExpressionElementType("}}");
@@ -45,7 +55,10 @@ public interface ThymeleafExpressionElementTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == CONDITIONAL_EXPR) {
+       if (type == AND_EXPR) {
+        return new AndExprImpl(node);
+      }
+      else if (type == CONDITIONAL_EXPR) {
         return new ConditionalExprImpl(node);
       }
       else if (type == DEFAULT_EXPR) {
@@ -54,14 +67,29 @@ public interface ThymeleafExpressionElementTypes {
       else if (type == DIV_EXPR) {
         return new DivExprImpl(node);
       }
+      else if (type == EQ_EXPR) {
+        return new EqExprImpl(node);
+      }
       else if (type == EXPRESSION) {
         return new ExpressionImpl(node);
       }
       else if (type == GENERIC_SELECTION_EXPR) {
         return new GenericSelectionExprImpl(node);
       }
+      else if (type == GT_EQ_EXPR) {
+        return new GtEqExprImpl(node);
+      }
+      else if (type == GT_EXPR) {
+        return new GtExprImpl(node);
+      }
       else if (type == LINK_EXPR) {
         return new LinkExprImpl(node);
+      }
+      else if (type == LT_EQ_EXPR) {
+        return new LtEqExprImpl(node);
+      }
+      else if (type == LT_EXPR) {
+        return new LtExprImpl(node);
       }
       else if (type == MESSAGE_EXPR) {
         return new MessageExprImpl(node);
@@ -71,6 +99,15 @@ public interface ThymeleafExpressionElementTypes {
       }
       else if (type == MUL_EXPR) {
         return new MulExprImpl(node);
+      }
+      else if (type == NEGATION_EXPR) {
+        return new NegationExprImpl(node);
+      }
+      else if (type == NEQ_EXPR) {
+        return new NeqExprImpl(node);
+      }
+      else if (type == OR_EXPR) {
+        return new OrExprImpl(node);
       }
       else if (type == PLUS_EXPR) {
         return new PlusExprImpl(node);
@@ -83,6 +120,9 @@ public interface ThymeleafExpressionElementTypes {
       }
       else if (type == TOKEN_EXPR) {
         return new TokenExprImpl(node);
+      }
+      else if (type == UNARY_MINUS_EXPR) {
+        return new UnaryMinusExprImpl(node);
       }
       else if (type == VARIABLE_EXPR) {
         return new VariableExprImpl(node);

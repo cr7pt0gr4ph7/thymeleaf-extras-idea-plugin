@@ -45,15 +45,11 @@
   //       Therefore, match-all patterns like ".*expr" have to come last.
 
   extends("(variable|selection|message|link)_expr")='generic_selection_expr'
-  extends(".*expr")=expression
+  extends("(and|or|eq|neq||gt|gt_eq|lt|lt_eq|mul|div|rem|plus|minus)_expr")='fake_binary_expression'
+  extends(".*(expr|expression)")=expression
 
   methods("(variable|selection|message|link)_expr")=[
     getSelectionString="/string[0]"
-  ]
-
-  methods("(mul|div|rem|plus|minus)_expr")=[
-    left="expression[0]"
-    right="expression[1]"
   ]
 
   // Enable PsiReferenceContributor on all generic_selection_expr subtypes
@@ -66,12 +62,21 @@ root ::= expression
 //
 // the root expression rule
 //
-expression ::= conditional_group | add_group | mul_group | primary_group
+// TODO Check if comparison operators are parsed correctly w.r.t. precedence
+expression ::= conditional_expr | default_expr
+    | or_expr | and_expr
+    | equality_group | comparator_group
+    | add_group
+    | mul_group
+    | unary_minus_expr
+    | negation_expr
+    | primary_group
 
 ///
 // private rules to define operators with the same priority
 //
-private conditional_group ::= conditional_expr | default_expr
+private equality_group ::= eq_expr | neq_expr
+private comparator_group ::= gt_expr | gt_eq_expr | lt_expr | lt_eq_expr
 private mul_group ::= mul_expr | div_expr | remainder_expr
 private add_group ::= plus_expr | minus_expr
 private primary_group ::= token_expr | generic_selection_expr
@@ -82,21 +87,51 @@ private primary_group ::= token_expr | generic_selection_expr
 conditional_expr ::= expression '?' expression [':' expression] {
     methods=[
         condition="expression[0]"
-        then_expression="expression[1]"
-        else_expression="expression[0]"
+        then="expression[1]"
+        else="expression[0]"
     ]
 }
+
 default_expr ::= expression '?:' expression {
     methods=[
-        queried_expression="expression[0]"
-        default_expression="expression[1]"
+        queried="expression[0]"
+        default="expression[1]"
     ]
 }
+
+// AND OR
+and_expr ::= expression 'and' expression
+or_expr ::= expression 'or' expression
+
+// == !=
+eq_expr ::= expression '==' expression
+neq_expr ::= expression '!=' expression
+
+// < > <= >=
+gt_expr ::= expression '>' expression
+lt_expr ::= expression '<' expression
+gt_eq_expr ::= expression '>=' expression
+lt_eq_expr ::= expression '<=' expression
+
+// * / %
 mul_expr ::= expression '*' expression
 div_expr ::= expression '/' expression
 remainder_expr ::= expression '%' expression
+
+// + -
 plus_expr ::= expression '+' expression
 minus_expr ::= expression '-' expression
+
+// -
+unary_minus_expr ::= '-' expression
+negation_expr ::= ('!' | 'not') expression
+
+fake fake_binary_expression ::= expression+ {
+    methods=[
+        left="expression[0]"
+        right="expression[1]"
+    ]
+}
 
 // Selectors: ${...}, *{...}, #{...} and @{...}
 generic_selection_expr ::= variable_expr | selection_expr | link_expr | message_expr
@@ -116,11 +151,8 @@ private standard_selection_expr ::= '*{' standard_expr_content '}' {pin=1}
 private standard_expr_content ::= string {recoverWhile=standard_expr_recover}
 private standard_expr_recover ::= !('}')
 
-// Conditionals: (cond ? then : else) or also (cond ? then)
-// conditional_expr ::=
-
 // Text tokens: something
 token_expr ::= token
 
 // Text literals: 'something'
-// text_literal_expr ::= "'" string "'" {pin=1}
+// text_literal_expr ::= string "'" {pin=1}
