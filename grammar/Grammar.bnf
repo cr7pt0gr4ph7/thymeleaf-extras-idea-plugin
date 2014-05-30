@@ -61,9 +61,23 @@
   extends("(and|or|eq|neq||gt|gt_eq|lt|lt_eq|mul|div|rem|plus|minus)_expr")='fake_binary_expression'
   extends(".*(expr|expression)")=expression
 
-  // Enable PsiReferenceContributor on all generic_selection_expr subtypes
-  implements("generic_selection_expr")="com.intellij.psi.ContributedReferenceHost"
-  methods("generic_selection_expr")=[getReferences]
+  // Enable PsiReferenceContributor & PsiLanguageInjectionHost on all generic_selection_expr subtypes
+  implements("generic_selection_expr")=[
+    "com.intellij.psi.ContributedReferenceHost"
+    "com.intellij.psi.PsiLanguageInjectionHost"
+  ]
+
+  methods("generic_selection_expr")=[
+    // ContributedReferenceHost
+    getReferences
+
+    // PsiLanguageInjectionHost
+    isValidHost
+    updateText
+    createLiteralTextEscaper
+
+    getString
+  ]
 
   methods("(variable|selection|message|link)_expr")=[
     string="expression_string"

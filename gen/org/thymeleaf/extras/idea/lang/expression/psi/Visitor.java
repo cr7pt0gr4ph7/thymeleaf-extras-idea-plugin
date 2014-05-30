@@ -5,6 +5,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ContributedReferenceHost;
+import com.intellij.psi.PsiLanguageInjectionHost;
 
 public class Visitor extends PsiElementVisitor {
 
@@ -39,6 +40,7 @@ public class Visitor extends PsiElementVisitor {
   public void visitGenericSelectionExpr(@NotNull GenericSelectionExpr o) {
     visitExpression(o);
     // visitContributedReferenceHost(o);
+    // visitPsiLanguageInjectionHost(o);
   }
 
   public void visitGtEqExpr(@NotNull GtEqExpr o) {

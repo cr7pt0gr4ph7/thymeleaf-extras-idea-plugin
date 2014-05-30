@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes.*;
 import org.thymeleaf.extras.idea.lang.expression.psi.*;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiReference;
 
 public class GenericSelectionExprImpl extends ExpressionImpl implements GenericSelectionExpr {
@@ -25,6 +26,24 @@ public class GenericSelectionExprImpl extends ExpressionImpl implements GenericS
   @NotNull
   public PsiReference[] getReferences() {
     return ThymeleafExpressionPsiImplUtil.getReferences(this);
+  }
+
+  public boolean isValidHost() {
+    return ThymeleafExpressionPsiImplUtil.isValidHost(this);
+  }
+
+  public PsiLanguageInjectionHost updateText(String text) {
+    return ThymeleafExpressionPsiImplUtil.updateText(this, text);
+  }
+
+  @NotNull
+  public GenericSelectionEscaper createLiteralTextEscaper() {
+    return ThymeleafExpressionPsiImplUtil.createLiteralTextEscaper(this);
+  }
+
+  @Nullable
+  public PsiElement getString() {
+    return ThymeleafExpressionPsiImplUtil.getString(this);
   }
 
 }
