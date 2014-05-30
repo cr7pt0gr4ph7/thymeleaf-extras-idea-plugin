@@ -17,15 +17,27 @@
     LINK_EXPR_START='@{'
     EXPRESSION_END='}'
 
-    OP_CONDITIONAL='?'
-    OP_COLON=':'
-    OP_DEFAULT='?:'
+    OP_CONDITIONAL  = '?'
+    OP_COLON        = ':'
+    OP_DEFAULT      = '?:'
 
-    OP_MUL='*'
-    OP_DIV='/'
-    OP_REMAINDER='%'
-    OP_PLUS='+'
-    OP_MINUS='-'
+    OP_AND          = 'and'
+    OP_OR           = 'or'
+    OP_NOT          = 'not'
+    OP_NOT_SYM      = '!'
+
+    OP_EQ           = '=='
+    OP_NOT_EQ       = '!='
+    OP_LT           = '<'
+    OP_LT_EQ        = '<='
+    OP_GT           = '>'
+    OP_GT_EQ        = '>='
+
+    OP_MUL          = '*'
+    OP_DIV          = '/'
+    OP_REMAINDER    = '%'
+    OP_PLUS         = '+'
+    OP_MINUS        = '-'
 
     CONVERTED_VARIABLE_EXPR_START='${{'
     CONVERTED_SELECTION_EXPR_START='*{{'
@@ -34,7 +46,8 @@
     // comment='regexp:--.*'
     // The actual definition of token is a bit more complicated
     token='regexp:(.+)'
-    string='regexp:([^\{\}\n]+)'
+    expression_string='regexp:([^\{\}\n]+)'
+    string="regexp:\'([^\']+)\'"
   ]
 
   name(".*expr")='expression'
@@ -48,13 +61,13 @@
   extends("(and|or|eq|neq||gt|gt_eq|lt|lt_eq|mul|div|rem|plus|minus)_expr")='fake_binary_expression'
   extends(".*(expr|expression)")=expression
 
-  methods("(variable|selection|message|link)_expr")=[
-    getSelectionString="/string[0]"
-  ]
-
   // Enable PsiReferenceContributor on all generic_selection_expr subtypes
   implements("generic_selection_expr")="com.intellij.psi.ContributedReferenceHost"
   methods("generic_selection_expr")=[getReferences]
+
+  methods("(variable|selection|message|link)_expr")=[
+    string="expression_string"
+  ]
 }
 
 root ::= expression
@@ -79,7 +92,7 @@ private equality_group ::= eq_expr | neq_expr
 private comparator_group ::= gt_expr | gt_eq_expr | lt_expr | lt_eq_expr
 private mul_group ::= mul_expr | div_expr | remainder_expr
 private add_group ::= plus_expr | minus_expr
-private primary_group ::= token_expr | generic_selection_expr
+private primary_group ::= token_expr | text_literal_expr | generic_selection_expr
 
 //
 // public rules for each expression
@@ -143,16 +156,16 @@ link_expr ::= '@{' standard_expr_content '}' {pin=1}
 
 private converted_variable_expr ::= '${{' converted_expr_content '}}' {pin=1}
 private converted_selection_expr ::= '*{{' converted_expr_content '}}' {pin=1 recoverWhile=converted_expr_recover}
-private converted_expr_content ::= string {recoverWhile=converted_expr_recover}
+private converted_expr_content ::= expression_string {recoverWhile=converted_expr_recover}
 private converted_expr_recover ::= !('}}')
 
 private standard_variable_expr ::= '${' standard_expr_content '}' {pin=1}
 private standard_selection_expr ::= '*{' standard_expr_content '}' {pin=1}
-private standard_expr_content ::= string {recoverWhile=standard_expr_recover}
+private standard_expr_content ::= expression_string {recoverWhile=standard_expr_recover}
 private standard_expr_recover ::= !('}')
 
 // Text tokens: something
 token_expr ::= token
 
 // Text literals: 'something'
-// text_literal_expr ::= string "'" {pin=1}
+text_literal_expr ::= string {pin=1}

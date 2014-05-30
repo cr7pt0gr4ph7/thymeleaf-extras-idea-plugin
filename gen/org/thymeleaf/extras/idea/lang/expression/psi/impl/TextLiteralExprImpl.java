@@ -10,21 +10,21 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes.*;
 import org.thymeleaf.extras.idea.lang.expression.psi.*;
 
-public class LinkExprImpl extends GenericSelectionExprImpl implements LinkExpr {
+public class TextLiteralExprImpl extends ExpressionImpl implements TextLiteralExpr {
 
-  public LinkExprImpl(ASTNode node) {
+  public TextLiteralExprImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) ((Visitor)visitor).visitLinkExpr(this);
+    if (visitor instanceof Visitor) ((Visitor)visitor).visitTextLiteralExpr(this);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getString() {
-    return findChildByType(EXPRESSION_STRING);
+    return findNotNullChildByType(STRING);
   }
 
 }

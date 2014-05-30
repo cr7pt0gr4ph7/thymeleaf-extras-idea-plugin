@@ -29,6 +29,7 @@ public interface ThymeleafExpressionElementTypes {
   IElementType PLUS_EXPR = new ThymeleafExpressionCompositeElementType("PLUS_EXPR");
   IElementType REMAINDER_EXPR = new ThymeleafExpressionCompositeElementType("REMAINDER_EXPR");
   IElementType SELECTION_EXPR = new ThymeleafExpressionCompositeElementType("SELECTION_EXPR");
+  IElementType TEXT_LITERAL_EXPR = new ThymeleafExpressionCompositeElementType("TEXT_LITERAL_EXPR");
   IElementType TOKEN_EXPR = new ThymeleafExpressionCompositeElementType("TOKEN_EXPR");
   IElementType UNARY_MINUS_EXPR = new ThymeleafExpressionCompositeElementType("UNARY_MINUS_EXPR");
   IElementType VARIABLE_EXPR = new ThymeleafExpressionCompositeElementType("VARIABLE_EXPR");
@@ -37,14 +38,25 @@ public interface ThymeleafExpressionElementTypes {
   IElementType CONVERTED_SELECTION_EXPR_START = new ThymeleafExpressionElementType("*{{");
   IElementType CONVERTED_VARIABLE_EXPR_START = new ThymeleafExpressionElementType("${{");
   IElementType EXPRESSION_END = new ThymeleafExpressionElementType("}");
+  IElementType EXPRESSION_STRING = new ThymeleafExpressionElementType("expression_string");
   IElementType LINK_EXPR_START = new ThymeleafExpressionElementType("@{");
   IElementType MESSAGE_EXPR_START = new ThymeleafExpressionElementType("#{");
+  IElementType OP_AND = new ThymeleafExpressionElementType("and");
   IElementType OP_COLON = new ThymeleafExpressionElementType(":");
   IElementType OP_CONDITIONAL = new ThymeleafExpressionElementType("?");
   IElementType OP_DEFAULT = new ThymeleafExpressionElementType("?:");
   IElementType OP_DIV = new ThymeleafExpressionElementType("/");
+  IElementType OP_EQ = new ThymeleafExpressionElementType("==");
+  IElementType OP_GT = new ThymeleafExpressionElementType(">");
+  IElementType OP_GT_EQ = new ThymeleafExpressionElementType(">=");
+  IElementType OP_LT = new ThymeleafExpressionElementType("<");
+  IElementType OP_LT_EQ = new ThymeleafExpressionElementType("<=");
   IElementType OP_MINUS = new ThymeleafExpressionElementType("-");
   IElementType OP_MUL = new ThymeleafExpressionElementType("*");
+  IElementType OP_NOT = new ThymeleafExpressionElementType("not");
+  IElementType OP_NOT_EQ = new ThymeleafExpressionElementType("!=");
+  IElementType OP_NOT_SYM = new ThymeleafExpressionElementType("!");
+  IElementType OP_OR = new ThymeleafExpressionElementType("or");
   IElementType OP_PLUS = new ThymeleafExpressionElementType("+");
   IElementType OP_REMAINDER = new ThymeleafExpressionElementType("%");
   IElementType SELECTION_EXPR_START = new ThymeleafExpressionElementType("*{");
@@ -117,6 +129,9 @@ public interface ThymeleafExpressionElementTypes {
       }
       else if (type == SELECTION_EXPR) {
         return new SelectionExprImpl(node);
+      }
+      else if (type == TEXT_LITERAL_EXPR) {
+        return new TextLiteralExprImpl(node);
       }
       else if (type == TOKEN_EXPR) {
         return new TokenExprImpl(node);

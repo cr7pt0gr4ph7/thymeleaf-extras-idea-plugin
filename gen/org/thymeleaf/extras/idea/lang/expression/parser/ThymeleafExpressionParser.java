@@ -84,6 +84,9 @@ public class ThymeleafExpressionParser implements PsiParser {
     else if (root_ == SELECTION_EXPR) {
       result_ = selection_expr(builder_, 0);
     }
+    else if (root_ == TEXT_LITERAL_EXPR) {
+      result_ = text_literal_expr(builder_, 0);
+    }
     else if (root_ == TOKEN_EXPR) {
       result_ = token_expr(builder_, 0);
     }
@@ -110,18 +113,19 @@ public class ThymeleafExpressionParser implements PsiParser {
       GT_EXPR, LINK_EXPR, LT_EQ_EXPR, LT_EXPR,
       MESSAGE_EXPR, MINUS_EXPR, MUL_EXPR, NEGATION_EXPR,
       NEQ_EXPR, OR_EXPR, PLUS_EXPR, REMAINDER_EXPR,
-      SELECTION_EXPR, TOKEN_EXPR, UNARY_MINUS_EXPR, VARIABLE_EXPR),
+      SELECTION_EXPR, TEXT_LITERAL_EXPR, TOKEN_EXPR, UNARY_MINUS_EXPR,
+      VARIABLE_EXPR),
     create_token_set_(GENERIC_SELECTION_EXPR, LINK_EXPR, MESSAGE_EXPR, SELECTION_EXPR,
       VARIABLE_EXPR),
   };
 
   /* ********************************************************** */
-  // string
+  // expression_string
   static boolean converted_expr_content(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "converted_expr_content")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, STRING);
+    result_ = consumeToken(builder_, EXPRESSION_STRING);
     exit_section_(builder_, level_, marker_, null, result_, false, converted_expr_recover_parser_);
     return result_;
   }
@@ -230,12 +234,12 @@ public class ThymeleafExpressionParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // string
+  // expression_string
   static boolean standard_expr_content(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "standard_expr_content")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, STRING);
+    result_ = consumeToken(builder_, EXPRESSION_STRING);
     exit_section_(builder_, level_, marker_, null, result_, false, standard_expr_recover_parser_);
     return result_;
   }
@@ -319,7 +323,7 @@ public class ThymeleafExpressionParser implements PsiParser {
   // 7: BINARY(mul_expr) BINARY(div_expr) BINARY(remainder_expr)
   // 8: PREFIX(unary_minus_expr)
   // 9: PREFIX(negation_expr)
-  // 10: ATOM(token_expr) ATOM(generic_selection_expr)
+  // 10: ATOM(token_expr) ATOM(text_literal_expr) ATOM(generic_selection_expr)
   public static boolean expression(PsiBuilder builder_, int level_, int priority_) {
     if (!recursion_guard_(builder_, level_, "expression")) return false;
     boolean result_ = false;
@@ -328,6 +332,7 @@ public class ThymeleafExpressionParser implements PsiParser {
     result_ = unary_minus_expr(builder_, level_ + 1);
     if (!result_) result_ = negation_expr(builder_, level_ + 1);
     if (!result_) result_ = token_expr(builder_, level_ + 1);
+    if (!result_) result_ = text_literal_expr(builder_, level_ + 1);
     if (!result_) result_ = generic_selection_expr(builder_, level_ + 1);
     pinned_ = result_;
     result_ = result_ && expression_0(builder_, level_ + 1, priority_);
@@ -353,42 +358,42 @@ public class ThymeleafExpressionParser implements PsiParser {
         marker_.drop();
         left_marker_.precede().done(DEFAULT_EXPR);
       }
-      else if (priority_ < 2 && consumeToken(builder_, "or")) {
+      else if (priority_ < 2 && consumeToken(builder_, OP_OR)) {
         result_ = report_error_(builder_, expression(builder_, level_, 2));
         marker_.drop();
         left_marker_.precede().done(OR_EXPR);
       }
-      else if (priority_ < 3 && consumeToken(builder_, "and")) {
+      else if (priority_ < 3 && consumeToken(builder_, OP_AND)) {
         result_ = report_error_(builder_, expression(builder_, level_, 3));
         marker_.drop();
         left_marker_.precede().done(AND_EXPR);
       }
-      else if (priority_ < 4 && consumeToken(builder_, "==")) {
+      else if (priority_ < 4 && consumeToken(builder_, OP_EQ)) {
         result_ = report_error_(builder_, expression(builder_, level_, 4));
         marker_.drop();
         left_marker_.precede().done(EQ_EXPR);
       }
-      else if (priority_ < 4 && consumeToken(builder_, "!=")) {
+      else if (priority_ < 4 && consumeToken(builder_, OP_NOT_EQ)) {
         result_ = report_error_(builder_, expression(builder_, level_, 4));
         marker_.drop();
         left_marker_.precede().done(NEQ_EXPR);
       }
-      else if (priority_ < 5 && consumeToken(builder_, ">")) {
+      else if (priority_ < 5 && consumeToken(builder_, OP_GT)) {
         result_ = report_error_(builder_, expression(builder_, level_, 5));
         marker_.drop();
         left_marker_.precede().done(GT_EXPR);
       }
-      else if (priority_ < 5 && consumeToken(builder_, ">=")) {
+      else if (priority_ < 5 && consumeToken(builder_, OP_GT_EQ)) {
         result_ = report_error_(builder_, expression(builder_, level_, 5));
         marker_.drop();
         left_marker_.precede().done(GT_EQ_EXPR);
       }
-      else if (priority_ < 5 && consumeToken(builder_, "<")) {
+      else if (priority_ < 5 && consumeToken(builder_, OP_LT)) {
         result_ = report_error_(builder_, expression(builder_, level_, 5));
         marker_.drop();
         left_marker_.precede().done(LT_EXPR);
       }
-      else if (priority_ < 5 && consumeToken(builder_, "<=")) {
+      else if (priority_ < 5 && consumeToken(builder_, OP_LT_EQ)) {
         result_ = report_error_(builder_, expression(builder_, level_, 5));
         marker_.drop();
         left_marker_.precede().done(LT_EQ_EXPR);
@@ -459,6 +464,7 @@ public class ThymeleafExpressionParser implements PsiParser {
 
   public static boolean negation_expr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "negation_expr")) return false;
+    if (!nextTokenIs(builder_, "<expression>", OP_NOT_SYM, OP_NOT)) return false;
     boolean result_ = false;
     boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
@@ -474,8 +480,8 @@ public class ThymeleafExpressionParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "negation_expr_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, "!");
-    if (!result_) result_ = consumeToken(builder_, "not");
+    result_ = consumeToken(builder_, OP_NOT_SYM);
+    if (!result_) result_ = consumeToken(builder_, OP_NOT);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -488,6 +494,17 @@ public class ThymeleafExpressionParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, TOKEN);
     exit_section_(builder_, marker_, TOKEN_EXPR, result_);
+    return result_;
+  }
+
+  // string
+  public static boolean text_literal_expr(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "text_literal_expr")) return false;
+    if (!nextTokenIs(builder_, STRING)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, STRING);
+    exit_section_(builder_, marker_, TEXT_LITERAL_EXPR, result_);
     return result_;
   }
 

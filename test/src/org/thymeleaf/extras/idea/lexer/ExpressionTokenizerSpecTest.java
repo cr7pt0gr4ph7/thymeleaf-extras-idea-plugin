@@ -16,26 +16,26 @@ public class ExpressionTokenizerSpecTest extends GeneralLexerTest {
 
     public void testVariableExpression() {
         TokenizerResult result = tokenize("${simple}");
-        result.shouldMatchTokenTypes(VARIABLE_EXPR_START, STRING, EXPRESSION_END);
-        result.shouldBeToken(1, STRING, "simple");
+        result.shouldMatchTokenTypes(VARIABLE_EXPR_START, EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldBeToken(1, EXPRESSION_STRING, "simple");
     }
 
     public void testConvertToStringVariableExpression() {
         TokenizerResult result = tokenize("${{simple}}");
-        result.shouldMatchTokenTypes(CONVERTED_VARIABLE_EXPR_START, STRING, CONVERTED_EXPRESSION_END);
-        result.shouldBeToken(1, STRING, "simple");
+        result.shouldMatchTokenTypes(CONVERTED_VARIABLE_EXPR_START, EXPRESSION_STRING, CONVERTED_EXPRESSION_END);
+        result.shouldBeToken(1, EXPRESSION_STRING, "simple");
     }
 
     public void testSelectionExpression() {
         TokenizerResult result = tokenize("*{simple}");
-        result.shouldMatchTokenTypes(SELECTION_EXPR_START, STRING, EXPRESSION_END);
-        result.shouldBeToken(1, STRING, "simple");
+        result.shouldMatchTokenTypes(SELECTION_EXPR_START, EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldBeToken(1, EXPRESSION_STRING, "simple");
     }
 
     public void testConvertToStringSelectionExpression() {
         TokenizerResult result = tokenize("*{{simple}}");
-        result.shouldMatchTokenTypes(CONVERTED_SELECTION_EXPR_START, STRING, CONVERTED_EXPRESSION_END);
-        result.shouldBeToken(1, STRING, "simple");
+        result.shouldMatchTokenTypes(CONVERTED_SELECTION_EXPR_START, EXPRESSION_STRING, CONVERTED_EXPRESSION_END);
+        result.shouldBeToken(1, EXPRESSION_STRING, "simple");
     }
 
     public void testOpAddAlone() {

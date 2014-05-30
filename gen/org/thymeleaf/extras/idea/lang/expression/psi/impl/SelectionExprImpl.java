@@ -24,7 +24,7 @@ public class SelectionExprImpl extends GenericSelectionExprImpl implements Selec
   @Override
   @Nullable
   public PsiElement getString() {
-    return findChildByType(STRING);
+    return findChildByType(EXPRESSION_STRING);
   }
 
 }

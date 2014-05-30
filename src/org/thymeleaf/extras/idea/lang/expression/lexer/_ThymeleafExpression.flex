@@ -24,8 +24,6 @@ EOL="\r"|"\n"|"\r\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
-STRING=([^\{\n\}]+)
-
 // The definition of Token is taken from the Thymeleaf method isTokenChar(...)
 // Mind the special role of '-'!
 SURELY_NOT_A_TOKEN_CHAR=[\ \n()\'\"<>{}=,;:+*$%&#]
@@ -33,17 +31,23 @@ MAYBE_A_TOKEN_CHAR=[a-zA-Z0-9\[\]\._-\u00B7\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02
 TOKEN_CHAR=!({SURELY_NOT_A_TOKEN_CHAR}|!{MAYBE_A_TOKEN_CHAR})
 TOKEN=({TOKEN_CHAR}+)
 
+// Text literals: '...'
+STRING=\' ([^\']+) \'
 
-%state EMBEDDEDEXPR
+// Selectors: ${...} *{...}: The text inside the curly brackets
+EXPRESSION_STRING=([^\{\}]+)
+
+%state EMBEDDEDEXPR INSTRING
 
 %%
+// Selection expressions:
 <YYINITIAL, EMBEDDEDEXPR> {
   // These rules are specified for both states for better error recovery in the parser
   "}"                         { yybegin(YYINITIAL); return EXPRESSION_END; }
   "}}"                        { yybegin(YYINITIAL); return CONVERTED_EXPRESSION_END; }
 }
 <EMBEDDEDEXPR> {
-  {STRING}                    { return STRING; }
+  {EXPRESSION_STRING}         { return EXPRESSION_STRING; }
 }
 <YYINITIAL> {
   {WHITE_SPACE}               { return com.intellij.psi.TokenType.WHITE_SPACE; }
@@ -51,6 +55,19 @@ TOKEN=({TOKEN_CHAR}+)
   "?"                         { return OP_CONDITIONAL; }
   ":"                         { return OP_COLON; }
   "?:"                        { return OP_DEFAULT; }
+
+  "and"                       { return OP_AND; }
+  "or"                        { return OP_OR; }
+  "not"                       { return OP_NOT; }
+  "!"                         { return OP_NOT_SYM; }
+
+  "=="                        { return OP_EQ; }
+  "!="                        { return OP_NOT_EQ; }
+
+  "<"                         { return OP_LT; }
+  "<="                        { return OP_LT_EQ; }
+  ">"                         { return OP_GT; }
+  ">="                        { return OP_GT_EQ; }
 
   "*"                         { return OP_MUL; }
   "/"                         { return OP_DIV; }
@@ -67,6 +84,7 @@ TOKEN=({TOKEN_CHAR}+)
   "*{{"                       { yybegin(EMBEDDEDEXPR); return CONVERTED_SELECTION_EXPR_START; }
 
   {TOKEN}                     { return TOKEN; }
+  {STRING}                    { return STRING; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
