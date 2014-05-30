@@ -5,7 +5,7 @@ public class SimpleTestCase extends AbstractExpressionParsingTestCase {
         super("lang/expression/core/simple");
     }
 
-    public void testSimple01() {
+    public void testSingleToken_01() {
         doTest(true);
     }
 }
