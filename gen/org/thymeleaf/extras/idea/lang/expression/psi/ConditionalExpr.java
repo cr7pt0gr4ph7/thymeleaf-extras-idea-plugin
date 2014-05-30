@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TokenExpr extends Expression {
+public interface ConditionalExpr extends Expression {
 
   @NotNull
-  PsiElement getToken();
+  List<Expression> getExpressionList();
 
 }

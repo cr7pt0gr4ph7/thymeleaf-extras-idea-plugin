@@ -17,11 +17,23 @@
     LINK_EXPR_START='@{'
     EXPRESSION_END='}'
 
+    OP_CONDITIONAL='?'
+    OP_COLON=':'
+    OP_DEFAULT='?:'
+
+    OP_MUL='*'
+    OP_DIV='/'
+    OP_REMAINDER='%'
+    OP_PLUS='+'
+    OP_MINUS='-'
+
     CONVERTED_VARIABLE_EXPR_START='${{'
     CONVERTED_SELECTION_EXPR_START='*{{'
     CONVERTED_EXPRESSION_END='}}'
 
     // comment='regexp:--.*'
+    // The actual definition of token is a bit more complicated
+    token='regexp:(.+)'
     string='regexp:([^\{\}\n]+)'
   ]
 
@@ -46,42 +58,53 @@
 
 root ::= expression
 
-expression ::= token_expr | generic_selection_expr
+//
+// the root expression rule
+//
+expression ::= conditional_group | add_group | mul_group | primary_group
+
+///
+// private rules to define operators with the same priority
+//
+private conditional_group ::= conditional_expr | default_expr
+private mul_group ::= mul_expr | div_expr | remainder_expr
+private add_group ::= plus_expr | minus_expr
+private primary_group ::= token_expr | generic_selection_expr
+
+//
+// public rules for each expression
+//
+conditional_expr ::= expression '?' expression ':' expression
+default_expr ::= expression '?:' expression
+mul_expr ::= expression '*' expression
+div_expr ::= expression '/' expression
+remainder_expr ::= expression '%' expression
+plus_expr ::= expression '+' expression
+minus_expr ::= expression '-' expression
 
 // Selectors: ${...}, *{...}, #{...} and @{...}
-generic_selection_expr ::= variable_expr | selection_expr | link_expr | message_expr {recoverUntil=selection_expr_recover}
+generic_selection_expr ::= variable_expr | selection_expr | link_expr | message_expr
 
 variable_expr ::= converted_variable_expr | standard_variable_expr
 selection_expr ::= converted_selection_expr | standard_selection_expr
-message_expr ::= '#{' string '}' {pin=1}
-link_expr ::= '@{' string '}' {pin=1}
+message_expr ::= '#{' standard_expr_content '}' {pin=1}
+link_expr ::= '@{' standard_expr_content '}' {pin=1}
 
-private converted_variable_expr ::= '${{' string '}}' {pin=1 recoverWhile=converted_expr_recover}
-private converted_selection_expr ::= '*{{' string '}}' {pin=1 recoverWhile=converted_expr_recover}
+private converted_variable_expr ::= '${{' converted_expr_content '}}' {pin=1}
+private converted_selection_expr ::= '*{{' converted_expr_content '}}' {pin=1 recoverWhile=converted_expr_recover}
+private converted_expr_content ::= string {recoverWhile=converted_expr_recover}
 private converted_expr_recover ::= !('}}')
 
-private standard_variable_expr ::= '${' string '}' {pin=1 recoverWhile=selection_expr_recover}
-private standard_selection_expr ::= '*{' string '}' {pin=1 recoverWhile=selection_expr_recover}
-private selection_expr_recover ::= !('}')
+private standard_variable_expr ::= '${' standard_expr_content '}' {pin=1}
+private standard_selection_expr ::= '*{' standard_expr_content '}' {pin=1}
+private standard_expr_content ::= string {recoverWhile=standard_expr_recover}
+private standard_expr_recover ::= !('}')
 
 // Conditionals: (cond ? then : else) or also (cond ? then)
 // conditional_expr ::=
 
 // Text tokens: something
-token_expr ::= string
+token_expr ::= token
 
 // Text literals: 'something'
 // text_literal_expr ::= "'" string "'" {pin=1}
-
-//expr ::= factor plus_expr *
-//left plus_expr ::= plus_op factor
-//private plus_op ::= '+'|'-'
-//private factor ::= primary mul_expr *
-//left mul_expr  ::= mul_op primary
-//private mul_op ::= '*'|'/'
-//private primary ::= primary_inner factorial_expr ?
-//left factorial_expr ::= '!'
-//private primary_inner ::= literal_expr | ref_expr | paren_expr
-//paren_expr ::= '(' expr ')' {pin=1}
-//ref_expr ::= id
-//literal_expr ::= number | string | float

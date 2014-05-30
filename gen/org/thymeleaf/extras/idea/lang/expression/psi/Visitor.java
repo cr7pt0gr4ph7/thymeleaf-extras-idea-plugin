@@ -8,6 +8,18 @@ import com.intellij.psi.ContributedReferenceHost;
 
 public class Visitor extends PsiElementVisitor {
 
+  public void visitConditionalExpr(@NotNull ConditionalExpr o) {
+    visitExpression(o);
+  }
+
+  public void visitDefaultExpr(@NotNull DefaultExpr o) {
+    visitExpression(o);
+  }
+
+  public void visitDivExpr(@NotNull DivExpr o) {
+    visitExpression(o);
+  }
+
   public void visitExpression(@NotNull Expression o) {
     visitPsiElement(o);
   }
@@ -23,6 +35,22 @@ public class Visitor extends PsiElementVisitor {
 
   public void visitMessageExpr(@NotNull MessageExpr o) {
     visitGenericSelectionExpr(o);
+  }
+
+  public void visitMinusExpr(@NotNull MinusExpr o) {
+    visitExpression(o);
+  }
+
+  public void visitMulExpr(@NotNull MulExpr o) {
+    visitExpression(o);
+  }
+
+  public void visitPlusExpr(@NotNull PlusExpr o) {
+    visitExpression(o);
+  }
+
+  public void visitRemainderExpr(@NotNull RemainderExpr o) {
+    visitExpression(o);
   }
 
   public void visitSelectionExpr(@NotNull SelectionExpr o) {

@@ -8,10 +8,17 @@ import org.thymeleaf.extras.idea.lang.expression.psi.impl.*;
 
 public interface ThymeleafExpressionElementTypes {
 
+  IElementType CONDITIONAL_EXPR = new ThymeleafExpressionCompositeElementType("CONDITIONAL_EXPR");
+  IElementType DEFAULT_EXPR = new ThymeleafExpressionCompositeElementType("DEFAULT_EXPR");
+  IElementType DIV_EXPR = new ThymeleafExpressionCompositeElementType("DIV_EXPR");
   IElementType EXPRESSION = new ThymeleafExpressionCompositeElementType("EXPRESSION");
   IElementType GENERIC_SELECTION_EXPR = new ThymeleafExpressionCompositeElementType("GENERIC_SELECTION_EXPR");
   IElementType LINK_EXPR = new ThymeleafExpressionCompositeElementType("LINK_EXPR");
   IElementType MESSAGE_EXPR = new ThymeleafExpressionCompositeElementType("MESSAGE_EXPR");
+  IElementType MINUS_EXPR = new ThymeleafExpressionCompositeElementType("MINUS_EXPR");
+  IElementType MUL_EXPR = new ThymeleafExpressionCompositeElementType("MUL_EXPR");
+  IElementType PLUS_EXPR = new ThymeleafExpressionCompositeElementType("PLUS_EXPR");
+  IElementType REMAINDER_EXPR = new ThymeleafExpressionCompositeElementType("REMAINDER_EXPR");
   IElementType SELECTION_EXPR = new ThymeleafExpressionCompositeElementType("SELECTION_EXPR");
   IElementType TOKEN_EXPR = new ThymeleafExpressionCompositeElementType("TOKEN_EXPR");
   IElementType VARIABLE_EXPR = new ThymeleafExpressionCompositeElementType("VARIABLE_EXPR");
@@ -22,14 +29,32 @@ public interface ThymeleafExpressionElementTypes {
   IElementType EXPRESSION_END = new ThymeleafExpressionElementType("}");
   IElementType LINK_EXPR_START = new ThymeleafExpressionElementType("@{");
   IElementType MESSAGE_EXPR_START = new ThymeleafExpressionElementType("#{");
+  IElementType OP_COLON = new ThymeleafExpressionElementType(":");
+  IElementType OP_CONDITIONAL = new ThymeleafExpressionElementType("?");
+  IElementType OP_DEFAULT = new ThymeleafExpressionElementType("?:");
+  IElementType OP_DIV = new ThymeleafExpressionElementType("/");
+  IElementType OP_MINUS = new ThymeleafExpressionElementType("-");
+  IElementType OP_MUL = new ThymeleafExpressionElementType("*");
+  IElementType OP_PLUS = new ThymeleafExpressionElementType("+");
+  IElementType OP_REMAINDER = new ThymeleafExpressionElementType("%");
   IElementType SELECTION_EXPR_START = new ThymeleafExpressionElementType("*{");
   IElementType STRING = new ThymeleafExpressionElementType("string");
+  IElementType TOKEN = new ThymeleafExpressionElementType("token");
   IElementType VARIABLE_EXPR_START = new ThymeleafExpressionElementType("${");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == EXPRESSION) {
+       if (type == CONDITIONAL_EXPR) {
+        return new ConditionalExprImpl(node);
+      }
+      else if (type == DEFAULT_EXPR) {
+        return new DefaultExprImpl(node);
+      }
+      else if (type == DIV_EXPR) {
+        return new DivExprImpl(node);
+      }
+      else if (type == EXPRESSION) {
         return new ExpressionImpl(node);
       }
       else if (type == GENERIC_SELECTION_EXPR) {
@@ -40,6 +65,18 @@ public interface ThymeleafExpressionElementTypes {
       }
       else if (type == MESSAGE_EXPR) {
         return new MessageExprImpl(node);
+      }
+      else if (type == MINUS_EXPR) {
+        return new MinusExprImpl(node);
+      }
+      else if (type == MUL_EXPR) {
+        return new MulExprImpl(node);
+      }
+      else if (type == PLUS_EXPR) {
+        return new PlusExprImpl(node);
+      }
+      else if (type == REMAINDER_EXPR) {
+        return new RemainderExprImpl(node);
       }
       else if (type == SELECTION_EXPR) {
         return new SelectionExprImpl(node);

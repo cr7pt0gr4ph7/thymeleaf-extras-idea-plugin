@@ -52,9 +52,15 @@ public class ExpressionTokenizerSpecTest extends GeneralLexerTest {
 
     public void testOpAdd() {
         TokenizerResult result = tokenize("do + it+now");
-        result.shouldMatchTokenTypes(STRING, WHITE_SPACE, OP_PLUS, WHITE_SPACE, STRING, OP_PLUS, STRING);
-        result.shouldBeToken(0, STRING, "do");
-        result.shouldBeToken(4, STRING, "it");
-        result.shouldBeToken(6, STRING, "now");
+        result.shouldMatchTokenTypes(TOKEN, WHITE_SPACE, OP_PLUS, WHITE_SPACE, TOKEN, OP_PLUS, TOKEN);
+        result.shouldBeToken(0, TOKEN, "do");
+        result.shouldBeToken(4, TOKEN, "it");
+        result.shouldBeToken(6, TOKEN, "now");
+    }
+
+    public void testOpConditional() {
+        TokenizerResult result = tokenize("a ? b : c");
+        result.shouldMatchTokenTypes(TOKEN, WHITE_SPACE, OP_CONDITIONAL, WHITE_SPACE, TOKEN,
+                WHITE_SPACE, OP_COLON, WHITE_SPACE, TOKEN);
     }
 }

@@ -10,21 +10,21 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes.*;
 import org.thymeleaf.extras.idea.lang.expression.psi.*;
 
-public class TokenExprImpl extends ExpressionImpl implements TokenExpr {
+public class RemainderExprImpl extends ExpressionImpl implements RemainderExpr {
 
-  public TokenExprImpl(ASTNode node) {
+  public RemainderExprImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) ((Visitor)visitor).visitTokenExpr(this);
+    if (visitor instanceof Visitor) ((Visitor)visitor).visitRemainderExpr(this);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
-  public PsiElement getToken() {
-    return findNotNullChildByType(TOKEN);
+  public List<Expression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, Expression.class);
   }
 
 }

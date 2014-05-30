@@ -1,7 +1,9 @@
-ThymeleafExpressionFile: conditional01.thel
+ThymeleafExpressionFile: conditional02.thel
   ConditionalExprImpl(CONDITIONAL_EXPR)
-    TokenExprImpl(TOKEN_EXPR)
-      PsiElement(token)('cond')
+    VariableExprImpl(VARIABLE_EXPR)
+      PsiElement(${)('${')
+      PsiElement(string)('cond')
+      PsiElement(})('}')
     PsiWhiteSpace(' ')
     PsiElement(?)('?')
     PsiWhiteSpace(' ')

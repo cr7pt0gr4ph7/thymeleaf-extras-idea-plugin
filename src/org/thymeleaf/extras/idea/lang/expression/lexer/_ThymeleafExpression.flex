@@ -48,8 +48,13 @@ TOKEN=({TOKEN_CHAR}+)
 <YYINITIAL> {
   {WHITE_SPACE}               { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
+  "?"                         { return OP_CONDITIONAL; }
+  ":"                         { return OP_COLON; }
+  "?:"                        { return OP_DEFAULT; }
+
   "*"                         { return OP_MUL; }
   "/"                         { return OP_DIV; }
+  "%"                         { return OP_REMAINDER; }
   "+"                         { return OP_PLUS; }
   "-"                         { return OP_MINUS; }
 
@@ -61,7 +66,7 @@ TOKEN=({TOKEN_CHAR}+)
   "${{"                       { yybegin(EMBEDDEDEXPR); return CONVERTED_VARIABLE_EXPR_START; }
   "*{{"                       { yybegin(EMBEDDEDEXPR); return CONVERTED_SELECTION_EXPR_START; }
 
-  {TOKEN}                     { return STRING; }
+  {TOKEN}                     { return TOKEN; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }

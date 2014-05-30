@@ -8,4 +8,8 @@ public class ConditionalTestCase extends AbstractExpressionParsingTestCase {
     public void testConditional01() {
         doTest(true);
     }
+
+    public void testConditional02() {
+        doTest(true);
+    }
 }

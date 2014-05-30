@@ -1,1 +1,1 @@
-${cond} ? do_it : dont
+cond ? do_it : dont
