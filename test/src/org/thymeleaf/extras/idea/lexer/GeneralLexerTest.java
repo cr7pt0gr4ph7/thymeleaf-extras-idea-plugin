@@ -32,7 +32,7 @@ public abstract class GeneralLexerTest extends TestCase {
         _lexer = createLexer();
     }
 
-    TokenizerResult tokenize(String string) {
+    protected TokenizerResult tokenize(String string) {
         List<Token> tokens = new ArrayList<Token>();
         IElementType currentElement;
 
@@ -46,7 +46,11 @@ public abstract class GeneralLexerTest extends TestCase {
         return new TokenizerResult(tokens);
     }
 
-    static class Token {
+    protected static Token token(IElementType elementType, String elementContent) {
+        return new Token(elementType, elementContent);
+    }
+
+    protected static class Token {
         private final IElementType _elementType;
         private final String _elementContent;
 
@@ -64,11 +68,21 @@ public abstract class GeneralLexerTest extends TestCase {
         }
     }
 
-    static class TokenizerResult {
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+    protected static class TokenizerResult {
         private final List<Token> _tokens;
 
-        public TokenizerResult(List<Token> tokens) {
+        public TokenizerResult(final List<Token> tokens) {
             _tokens = tokens;
+        }
+
+        public void shouldMatchTokens(Token... expectedTokens) {
+            for (int i = 0; i < Math.min(_tokens.size(), expectedTokens.length); i++) {
+                Assert.assertEquals(expectedTokens[i].getElementType(), _tokens.get(i).getElementType());
+                Assert.assertEquals(expectedTokens[i].getElementContent(), _tokens.get(i).getElementContent());
+            }
+
+            Assert.assertEquals(expectedTokens.length, _tokens.size());
         }
 
         /**
