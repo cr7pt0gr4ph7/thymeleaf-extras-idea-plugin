@@ -39,7 +39,9 @@ public abstract class GeneralLexerTest extends TestCase {
         _lexer.start(string);
 
         while ((currentElement = _lexer.getTokenType()) != null) {
-            tokens.add(new Token(currentElement, _lexer.getTokenText()));
+            final Token currentToken = new Token(currentElement, _lexer.getTokenText());
+            System.out.println(currentToken);
+            tokens.add(currentToken);
             _lexer.advance();
         }
 
@@ -65,6 +67,11 @@ public abstract class GeneralLexerTest extends TestCase {
 
         public String getElementContent() {
             return _elementContent;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s: %s", _elementType, _elementContent);
         }
     }
 

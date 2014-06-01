@@ -9,6 +9,8 @@ import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressi
   public _ThymeleafExpressionLexer() {
     this((java.io.Reader)null);
   }
+
+  private int nestedBraceCount = 0;
 %}
 
 %public
@@ -34,20 +36,31 @@ TOKEN=({TOKEN_CHAR}+)
 // Text literals: '...'
 STRING=\' ([^\']+) \'
 
-// Selectors: ${...} *{...}: The text inside the curly brackets
-EXPRESSION_STRING=([^\{\}]+)
-
-%state EMBEDDEDEXPR INSTRING
+%state NESTEDBRACES_IN_EMBEDDED_EXPR, EMBEDDED_EXPR, EMBEDDED_EXPR_END, INSTRING
 
 %%
 // Selection expressions:
-<YYINITIAL, EMBEDDEDEXPR> {
+<NESTEDBRACES_IN_EMBEDDED_EXPR> {
+  "{"                         { nestedBraceCount++; }
+  "}"                         { if(nestedBraceCount > 0) { nestedBraceCount--; }
+                                else { // Outer ${ } (or not inside ${ })
+                                  yypushback(1);
+                                  yybegin(EMBEDDED_EXPR);
+                                  return EXPRESSION_STRING;
+                                } }
+}
+<EMBEDDED_EXPR> {
+  "{"                         { yypushback(1); yybegin(NESTEDBRACES_IN_EMBEDDED_EXPR); }
+  "}"                         { yypushback(1); yybegin(EMBEDDED_EXPR_END); return EXPRESSION_STRING; }
+  "}}"                        { yypushback(2); yybegin(EMBEDDED_EXPR_END); return EXPRESSION_STRING; }
+}
+<NESTEDBRACES_IN_EMBEDDED_EXPR, EMBEDDED_EXPR> {
+  [^\}\{]                     { return EXPRESSION_STRING; }
+}
+<YYINITIAL, EMBEDDED_EXPR_END> {
   // These rules are specified for both states for better error recovery in the parser
   "}"                         { yybegin(YYINITIAL); return EXPRESSION_END; }
   "}}"                        { yybegin(YYINITIAL); return CONVERTED_EXPRESSION_END; }
-}
-<EMBEDDEDEXPR> {
-  {EXPRESSION_STRING}         { return EXPRESSION_STRING; }
 }
 <YYINITIAL> {
   {WHITE_SPACE}               { return com.intellij.psi.TokenType.WHITE_SPACE; }
@@ -75,13 +88,13 @@ EXPRESSION_STRING=([^\{\}]+)
   "+"                         { return OP_PLUS; }
   "-"                         { return OP_MINUS; }
 
-  "${"                        { yybegin(EMBEDDEDEXPR); return VARIABLE_EXPR_START; }
-  "*{"                        { yybegin(EMBEDDEDEXPR); return SELECTION_EXPR_START; }
-  "#{"                        { yybegin(EMBEDDEDEXPR); return MESSAGE_EXPR_START; }
-  "@{"                        { yybegin(EMBEDDEDEXPR); return LINK_EXPR_START; }
+  "${"                        { yybegin(EMBEDDED_EXPR); return VARIABLE_EXPR_START; }
+  "*{"                        { yybegin(EMBEDDED_EXPR); return SELECTION_EXPR_START; }
+  "#{"                        { yybegin(EMBEDDED_EXPR); return MESSAGE_EXPR_START; }
+  "@{"                        { yybegin(EMBEDDED_EXPR); return LINK_EXPR_START; }
 
-  "${{"                       { yybegin(EMBEDDEDEXPR); return CONVERTED_VARIABLE_EXPR_START; }
-  "*{{"                       { yybegin(EMBEDDEDEXPR); return CONVERTED_SELECTION_EXPR_START; }
+  "${{"                       { yybegin(EMBEDDED_EXPR); return CONVERTED_VARIABLE_EXPR_START; }
+  "*{{"                       { yybegin(EMBEDDED_EXPR); return CONVERTED_SELECTION_EXPR_START; }
 
   {TOKEN}                     { return TOKEN; }
   {STRING}                    { return STRING; }
