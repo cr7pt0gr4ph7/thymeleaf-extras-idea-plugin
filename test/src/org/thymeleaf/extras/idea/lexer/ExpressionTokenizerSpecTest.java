@@ -63,4 +63,20 @@ public class ExpressionTokenizerSpecTest extends GeneralLexerTest {
         result.shouldMatchTokenTypes(TOKEN, WHITE_SPACE, OP_CONDITIONAL, WHITE_SPACE, TOKEN,
                 WHITE_SPACE, OP_COLON, WHITE_SPACE, TOKEN);
     }
+
+    public void testELExpressionWithNestedBraces() {
+        TokenizerResult result = tokenize("${ new int[]{1,2,3} }");
+        result.shouldMatchTokenTypes(SELECTION_EXPR_START, EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldBeToken(0, SELECTION_EXPR_START, "${");
+        result.shouldBeToken(1, EXPRESSION_STRING, " new int[]{1,2,3} ");
+        result.shouldBeToken(2, EXPRESSION_END, "}");
+    }
+
+    public void testELExpressionWithBracesAtEnd() {
+        TokenizerResult result = tokenize("${new int[]{4,5,6}}");
+        result.shouldMatchTokenTypes(SELECTION_EXPR_START, EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldBeToken(0, SELECTION_EXPR_START, "${");
+        result.shouldBeToken(1, EXPRESSION_STRING, "new int[]{4,5,6} ");
+        result.shouldBeToken(2, EXPRESSION_END, "}");
+    }
 }
