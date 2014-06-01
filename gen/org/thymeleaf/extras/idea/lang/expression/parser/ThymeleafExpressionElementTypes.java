@@ -4,6 +4,7 @@ package org.thymeleaf.extras.idea.lang.expression.parser;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import org.thymeleaf.extras.idea.lang.expression.parser.el.ThymeleafExpressionStringElementType;
 import org.thymeleaf.extras.idea.lang.expression.psi.impl.*;
 
 public interface ThymeleafExpressionElementTypes {
