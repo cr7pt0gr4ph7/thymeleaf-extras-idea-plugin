@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressionElementTypes.*;
 import org.thymeleaf.extras.idea.lang.expression.psi.*;
+import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiReference;
 
@@ -37,7 +38,7 @@ public class GenericSelectionExprImpl extends ExpressionImpl implements GenericS
   }
 
   @NotNull
-  public GenericSelectionEscaper createLiteralTextEscaper() {
+  public LiteralTextEscaper<GenericSelectionExpr> createLiteralTextEscaper() {
     return ThymeleafExpressionPsiImplUtil.createLiteralTextEscaper(this);
   }
 

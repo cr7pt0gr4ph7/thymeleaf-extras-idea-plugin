@@ -56,7 +56,8 @@ public class ThymeleafExpressionPsiImplUtil {
      * @return
      */
     @NotNull
-    public static GenericSelectionEscaper createLiteralTextEscaper(GenericSelectionExpr expr) {
+    public static LiteralTextEscaper<GenericSelectionExpr> createLiteralTextEscaper(GenericSelectionExpr expr) {
+        // return new GenericSelectionEscaper(expr);
         return new GenericSelectionEscaper(expr);
     }
 }

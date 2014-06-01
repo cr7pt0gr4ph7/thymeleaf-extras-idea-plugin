@@ -24,7 +24,7 @@ public class GenericSelectionEscaper extends LiteralTextEscaper<GenericSelection
     public int getOffsetInHost(int offsetInDecoded, @NotNull TextRange rangeInsideHost) {
         // We do not perform any encoding,
         // so offsets in injected text directly map to host offsets
-        return (offsetInDecoded >= 0 && offsetInDecoded < rangeInsideHost.getLength()) ? offsetInDecoded : -1;
+        return rangeInsideHost.getStartOffset() + offsetInDecoded;
     }
 
     @Override

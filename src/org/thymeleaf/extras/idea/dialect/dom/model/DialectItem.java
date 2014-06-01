@@ -4,6 +4,7 @@
 package org.thymeleaf.extras.idea.dialect.dom.model;
 
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiType;
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -44,4 +45,12 @@ public interface DialectItem extends DomElement {
      * @return {@link Dialect} this object is for.
      */
     Dialect getDialect();
+
+    /**
+     * Gets the {@link com.intellij.psi.PsiType} for the {@link com.intellij.psi.PsiClass}
+     * referenced by {@link #getImplementationClass()}, or {@code null}.
+     *
+     * @return a {@link com.intellij.psi.PsiType} or {@code null}
+     */
+    PsiType getImplementationType();
 }
