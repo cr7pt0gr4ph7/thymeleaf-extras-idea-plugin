@@ -7,6 +7,10 @@ import com.intellij.javaee.StandardResourceProvider;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class ThymeleafDefaultDialectsProvider implements StandardResourceProvider {
     public static final String STANDARD_DIALECT_URL = "http://www.thymeleaf.org";
@@ -16,20 +20,31 @@ public class ThymeleafDefaultDialectsProvider implements StandardResourceProvide
 
     @Override
     public void registerResources(ResourceRegistrar registrar) {
-        registrar.addStdResource(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, "/dialects/Standard-Dialect.xml", getClass());
-        registrar.addStdResource(ThymeleafDefaultDialectsProvider.SPRING_STANDARD_DIALECT_URL, "/dialects/Spring-Standard-Dialect.xml", getClass());
-        registrar.addStdResource(ThymeleafDefaultDialectsProvider.SPRING_SECURITY_DIALECT_URL, "/dialects/Spring-Security-Dialect.xml", getClass());
-        registrar.addStdResource(ThymeleafDefaultDialectsProvider.TILES_DIALECT_URL, "/dialects/Tiles-Dialect.xml", getClass());
+        registrar.addStdResource(STANDARD_DIALECT_URL, "/resources/dialects/Standard-Dialect.xml", getClass());
+        registrar.addStdResource(SPRING_STANDARD_DIALECT_URL, "/resources/dialects/Spring-Standard-Dialect.xml", getClass());
+        registrar.addStdResource(SPRING_SECURITY_DIALECT_URL, "/resources/dialects/Spring-Security-Dialect.xml", getClass());
+        registrar.addStdResource(TILES_DIALECT_URL, "/resources/dialects/Tiles-Dialect.xml", getClass());
     }
 
-    @NotNull
-    public static VirtualFile getSchemaFile(@NotNull String url) {
-        String location = ((ExternalResourceManagerEx) ExternalResourceManager.getInstance()).getStdResource(url, null);
-        assert location != null : "cannot find a standard resource for " + url;
+    @Nullable
+    public static VirtualFile getStandardSchemaFile(@NotNull String schemaUrl) {
+        final String location = ((ExternalResourceManagerEx) ExternalResourceManager.getInstance()).getStdResource(schemaUrl, null);
+        if (location == null) {
+            // No mapping found. This is the point where we filter out namespaces that do not refer to dialects.
+            return null;
+        }
 
-        VirtualFile result = VfsUtil.findRelativeFile(location, null);
-        assert result != null : "cannot find a schema file for URL: " + url + " location: " + location;
+        final VirtualFile result = VfsUtil.findFileByURL(createURL(location));
+        assert result != null : "cannot find a schema file for URL: " + schemaUrl + " location: " + location;
 
         return result;
+    }
+
+    private static URL createURL(String url) {
+        try {
+            return new URL(url);
+        } catch (MalformedURLException wrapped) {
+            throw new IllegalArgumentException("Malformed URL parameter: " + url, wrapped);
+        }
     }
 }

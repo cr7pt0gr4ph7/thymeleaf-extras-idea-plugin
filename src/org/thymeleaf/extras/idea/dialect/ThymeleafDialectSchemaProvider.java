@@ -13,17 +13,6 @@ public class ThymeleafDialectSchemaProvider implements StandardResourceProvider 
 
     @Override
     public void registerResources(ResourceRegistrar registrar) {
-        registrar.addStdResource(ThymeleafDialectSchemaProvider.DIALECT_HELP_SCHEMA_URL, "/schemas/thymeleaf-dialect-help.xsd", getClass());
-    }
-
-    @NotNull
-    public static VirtualFile getSchemaFile(@NotNull String url) {
-        String location = ((ExternalResourceManagerEx) ExternalResourceManager.getInstance()).getStdResource(url, null);
-        assert location != null : "cannot find a standard resource for " + url;
-
-        VirtualFile result = VfsUtil.findRelativeFile(location, null);
-        assert result != null : "cannot find a schema file for URL: " + url + " location: " + location;
-
-        return result;
+        registrar.addStdResource(DIALECT_HELP_SCHEMA_URL, "/resources/schemas/thymeleaf-dialect-help.xsd", getClass());
     }
 }

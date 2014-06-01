@@ -1,13 +1,10 @@
 package org.thymeleaf.extras.idea.dialect;
 
-import com.intellij.javaee.ExternalResourceManager;
-import com.intellij.javaee.ExternalResourceManagerEx;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -22,8 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.discovery.DialectDescriptorIndex;
 import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -46,7 +41,7 @@ public class DialectDescriptorsHolder {
     @Nullable
     public String getDefaultPrefix(@NotNull String schemaUrl, @NotNull PsiElement context) {
         final Dialect dialect = getDialectForSchemaUrl(schemaUrl, context);
-        if(dialect == null) return null;
+        if (dialect == null) return null;
         return dialect.getPrefix().getValue();
     }
 
@@ -77,27 +72,12 @@ public class DialectDescriptorsHolder {
 
     @Nullable
     public Dialect getStdDialectForSchemaUrl(@NotNull String schemaUrl) {
-        // String location = ExternalResourceManager.getInstance().getResourceLocation(schemaUrl, project);
-        final String location = ((ExternalResourceManagerEx) ExternalResourceManager.getInstance()).getStdResource(schemaUrl, null);
-
-        if (location == null) {
+        final VirtualFile schemaFile = ThymeleafDefaultDialectsProvider.getStandardSchemaFile(schemaUrl);
+        if (schemaFile == null) {
             // No mapping found. This is the point where we filter out namespaces that do not refer to dialects.
             return null;
         }
-
-        final VirtualFile schema;
-        try {
-            schema = VfsUtil.findFileByURL(new URL(location));
-        } catch (MalformedURLException ignore) {
-            LOG.warn(MessageFormat.format("Could not read dialect help file at {0}: Malformed dialect help file location url.", location), ignore);
-            return null;
-        }
-        if (schema == null) {
-            LOG.warn(MessageFormat.format("Could not read dialect help file at {0}: Failed to load file.", location));
-            return null;
-        }
-
-        return findDialectByVirtualFile(schema);
+        return findDialectByVirtualFile(schemaFile);
     }
 
     /**
