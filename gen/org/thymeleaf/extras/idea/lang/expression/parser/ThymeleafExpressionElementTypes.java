@@ -38,7 +38,7 @@ public interface ThymeleafExpressionElementTypes {
   IElementType CONVERTED_SELECTION_EXPR_START = new ThymeleafExpressionElementType("*{{");
   IElementType CONVERTED_VARIABLE_EXPR_START = new ThymeleafExpressionElementType("${{");
   IElementType EXPRESSION_END = new ThymeleafExpressionElementType("}");
-  IElementType EXPRESSION_STRING = new ThymeleafExpressionElementType("expression_string");
+  IElementType EXPRESSION_STRING = new ThymeleafExpressionStringElementType("expression_string");
   IElementType LINK_EXPR_START = new ThymeleafExpressionElementType("@{");
   IElementType MESSAGE_EXPR_START = new ThymeleafExpressionElementType("#{");
   IElementType OP_AND = new ThymeleafExpressionElementType("and");

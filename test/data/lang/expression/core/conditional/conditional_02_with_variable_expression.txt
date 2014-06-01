@@ -2,7 +2,9 @@ ThymeleafExpressionFile: conditional_02_with_variable_expression.thel
   ConditionalExprImpl(CONDITIONAL_EXPR)
     VariableExprImpl(VARIABLE_EXPR)
       PsiElement(${)('${')
-      PsiElement(expression_string)('cond')
+      ELExpressionHolder
+        ELVariable
+          PsiElement(EL_IDENTIFIER)('cond')
       PsiElement(})('}')
     PsiWhiteSpace(' ')
     PsiElement(?)('?')

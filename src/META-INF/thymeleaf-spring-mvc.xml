@@ -5,9 +5,9 @@
                 implementation="org.thymeleaf.extras.idea.integration.spring.views.ThymeleafViewResolverFactory"/>
         <psi.referenceContributor language="ThFS"
                                   implementation="org.thymeleaf.extras.idea.integration.spring.references.ThymeleafViewReferenceContributor"/>
-        <multiHostInjector
+        <!--<multiHostInjector
                 implementation="org.thymeleaf.extras.idea.integration.spring.injections.SelectionOrVariableSyntaxInjector"/>
         <lang.elementManipulator forClass="org.thymeleaf.extras.idea.lang.expression.psi.GenericSelectionExpr"
-                                 implementationClass="org.thymeleaf.extras.idea.lang.expression.psi.impl.GenericSelectionManipulator"/>
+                                 implementationClass="org.thymeleaf.extras.idea.lang.expression.psi.impl.GenericSelectionManipulator"/>-->
     </extensions>
 </idea-plugin>

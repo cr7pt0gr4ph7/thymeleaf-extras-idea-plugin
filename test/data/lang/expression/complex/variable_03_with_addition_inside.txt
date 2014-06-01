@@ -1,5 +1,27 @@
 ThymeleafExpressionFile: variable_03_with_addition_inside.thel
   VariableExprImpl(VARIABLE_EXPR)
     PsiElement(${)('${')
-    PsiElement(expression_string)('user.name + ' - ' + user.nationality')
+    ELExpressionHolder
+      ELBinaryExpression
+        ELBinaryExpression
+          ELSelectExpression
+            ELVariable
+              PsiElement(EL_IDENTIFIER)('user')
+            PsiElement(EL_DOT)('.')
+            ELVariable
+              PsiElement(EL_IDENTIFIER)('name')
+          PsiWhiteSpace(' ')
+          PsiElement(EL_PLUS)('+')
+          PsiWhiteSpace(' ')
+          ELLiteral
+            PsiElement(EL_STRING_LITERAL)('' - '')
+        PsiWhiteSpace(' ')
+        PsiElement(EL_PLUS)('+')
+        PsiWhiteSpace(' ')
+        ELSelectExpression
+          ELVariable
+            PsiElement(EL_IDENTIFIER)('user')
+          PsiElement(EL_DOT)('.')
+          ELVariable
+            PsiElement(EL_IDENTIFIER)('nationality')
     PsiElement(})('}')

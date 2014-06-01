@@ -6,7 +6,9 @@ ThymeleafExpressionFile: combined_01_with_selection_variable_and_add.thel
           PlusExprImpl(PLUS_EXPR)
             SelectionExprImpl(SELECTION_EXPR)
               PsiElement(*{)('*{')
-              PsiElement(expression_string)('name')
+              ELExpressionHolder
+                ELVariable
+                  PsiElement(EL_IDENTIFIER)('name')
               PsiElement(})('}')
             PsiWhiteSpace(' ')
             PsiElement(+)('+')
@@ -18,7 +20,9 @@ ThymeleafExpressionFile: combined_01_with_selection_variable_and_add.thel
           PsiWhiteSpace(' ')
           SelectionExprImpl(SELECTION_EXPR)
             PsiElement(*{)('*{')
-            PsiElement(expression_string)('nationality')
+            ELExpressionHolder
+              ELVariable
+                PsiElement(EL_IDENTIFIER)('nationality')
             PsiElement(})('}')
         PsiWhiteSpace(' ')
         PsiElement(+)('+')
@@ -30,7 +34,9 @@ ThymeleafExpressionFile: combined_01_with_selection_variable_and_add.thel
       PsiWhiteSpace(' ')
       VariableExprImpl(VARIABLE_EXPR)
         PsiElement(${)('${')
-        PsiElement(expression_string)('applicationName')
+        ELExpressionHolder
+          ELVariable
+            PsiElement(EL_IDENTIFIER)('applicationName')
         PsiElement(})('}')
     PsiWhiteSpace(' ')
     PsiElement(+)('+')

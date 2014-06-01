@@ -1,5 +1,19 @@
 ThymeleafExpressionFile: selection_03_with_addition_inside.thel
   SelectionExprImpl(SELECTION_EXPR)
     PsiElement(*{)('*{')
-    PsiElement(expression_string)('name + ' - ' + nationality')
+    ELExpressionHolder
+      ELBinaryExpression
+        ELBinaryExpression
+          ELVariable
+            PsiElement(EL_IDENTIFIER)('name')
+          PsiWhiteSpace(' ')
+          PsiElement(EL_PLUS)('+')
+          PsiWhiteSpace(' ')
+          ELLiteral
+            PsiElement(EL_STRING_LITERAL)('' - '')
+        PsiWhiteSpace(' ')
+        PsiElement(EL_PLUS)('+')
+        PsiWhiteSpace(' ')
+        ELVariable
+          PsiElement(EL_IDENTIFIER)('nationality')
     PsiElement(})('}')
