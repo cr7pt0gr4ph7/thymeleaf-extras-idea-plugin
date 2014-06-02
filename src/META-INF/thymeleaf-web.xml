@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<idea-plugin version="2">
+    <extensions defaultExtensionNs="com.intellij">
+        <facetType implementation="org.thymeleaf.extras.idea.facet.ThymeleafFacetType"/>
+
+        <frameworkSupport implementation="org.thymeleaf.extras.idea.facet.ThymeleafFrameworkSupportProvider"/>
+        <framework.detector implementation="org.thymeleaf.extras.idea.facet.ThymeleafFrameworkDetector"/>
+        <library.type implementation="org.thymeleaf.extras.idea.facet.ThymeleafLibraryType"/>
+    </extensions>
+</idea-plugin>
