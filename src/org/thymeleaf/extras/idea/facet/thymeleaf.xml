@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<artifacts>
-    <artifact name="Thymeleaf" version="2.1.3.RELEASE">
-        <item name="thymeleaf.jar" version="2.1.3.RELEASE"
-              url="http://central.maven.org/maven2/org/thymeleaf/thymeleaf/2.1.3.RELEASE/thymeleaf-2.1.3.RELEASE.jar">
-            <required-class fqn="org.thymeleaf.standard.StandardDialect"/>
-        </item>
-    </artifact>
-</artifacts>
