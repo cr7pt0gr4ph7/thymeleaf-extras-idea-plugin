@@ -3,8 +3,10 @@
 
 package org.thymeleaf.extras.idea.dialect.dom.model;
 
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Required;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,8 +75,15 @@ public interface Dialect extends DomElement {
      */
     AttributeProcessor addAttributeProcessor();
 
+    /**
+     * Returns the attribute-processor with the specified name,
+     * or {@code null} if no attribute-processor with that name exists.
+     *
+     * @param name the attribute-processor name to search for
+     * @return the attribute-processor with the specified name, or {@code null}
+     */
     @Nullable
-    AttributeProcessor findAttributeProcessor(String name);
+    AttributeProcessor findAttributeProcessor(@NotNull final String name);
 
     /**
      * Returns the list of element-processor children.
@@ -92,6 +101,16 @@ public interface Dialect extends DomElement {
     ElementProcessor addElementProcessor();
 
     /**
+     * Returns the element-processor with the specified name,
+     * or {@code null} if no element-processor with that name exists.
+     *
+     * @param name the element-processor name to search for
+     * @return the element-processor with the specified name, or {@code null}
+     */
+    @Nullable
+    ElementProcessor findElementProcessor(@NotNull final String name);
+
+    /**
      * Returns the list of expression-object children.
      *
      * @return the list of expression-object children.
@@ -105,6 +124,16 @@ public interface Dialect extends DomElement {
      * @return created child
      */
     ExpressionObject addExpressionObject();
+
+    /**
+     * Returns the expression-object with the specified name,
+     * or {@code null} if no expression-object with that name exists.
+     *
+     * @param name the expression-object name to search for
+     * @return the expression-object with the specified name, or {@code null}
+     */
+    @Nullable
+    ExpressionObject findExpressionObject(@NotNull final String name);
 
     /**
      * Returns the list of expression-object-method children.
