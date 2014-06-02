@@ -1,8 +1,8 @@
 package org.thymeleaf.extras.idea.dialect.dom.model.impl;
 
-import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
+import com.intellij.psi.util.PsiTypesUtil;
 import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
 import org.thymeleaf.extras.idea.dialect.dom.model.DialectItem;
 
@@ -15,7 +15,7 @@ public abstract class DialectItemImpl implements DialectItem {
     @Override
     public PsiType getImplementationType() {
         final PsiClass psiClass = getImplementationClass().getValue();
-        if(psiClass == null) return null;
-        return JavaPsiFacade.getElementFactory(psiClass.getProject()).createType(psiClass);
+        if (psiClass == null) return null;
+        return PsiTypesUtil.getClassType(psiClass);
     }
 }
