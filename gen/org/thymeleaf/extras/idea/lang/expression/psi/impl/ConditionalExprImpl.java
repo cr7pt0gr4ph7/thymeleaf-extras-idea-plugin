@@ -42,10 +42,10 @@ public class ConditionalExprImpl extends ExpressionImpl implements ConditionalEx
   }
 
   @Override
-  @NotNull
+  @Nullable
   public Expression getElse() {
     List<Expression> p1 = getExpressionList();
-    return p1.get(0);
+    return p1.size() < 3 ? null : p1.get(2);
   }
 
 }

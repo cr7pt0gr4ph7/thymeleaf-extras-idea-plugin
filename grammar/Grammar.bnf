@@ -115,7 +115,7 @@ conditional_expr ::= expression '?' expression [':' expression] {
     methods=[
         condition="expression[0]"
         then="expression[1]"
-        else="expression[0]"
+        else="expression[2]"
     ]
 }
 

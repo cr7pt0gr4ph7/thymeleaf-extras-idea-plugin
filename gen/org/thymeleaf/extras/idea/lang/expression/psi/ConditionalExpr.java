@@ -16,7 +16,7 @@ public interface ConditionalExpr extends Expression {
   @Nullable
   Expression getThen();
 
-  @NotNull
+  @Nullable
   Expression getElse();
 
 }
