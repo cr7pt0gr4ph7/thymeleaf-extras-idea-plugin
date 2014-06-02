@@ -29,6 +29,10 @@ public class ComplexTestCase extends AbstractExpressionParsingTestCase {
         doTest(true);
     }
 
+    public void testSelection_04_with_array_inside() {
+        doTest(true);
+    }
+
     public void testCombined_01_with_selection_variable_and_add() {
         doTest(true);
     }

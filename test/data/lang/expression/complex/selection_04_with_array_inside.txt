@@ -1,0 +1,32 @@
+ThymeleafExpressionFile: selection_04_with_array_inside.thel
+  VariableExprImpl(VARIABLE_EXPR)
+    PsiElement(${)('${')
+    ELExpressionHolder
+      QualifiedTypeExpression(SPEL_NEW)
+        PsiElement(SPEL_NEW)('new')
+        PsiWhiteSpace(' ')
+        SpringELQualifiedType(SPEL_QUALIFIED_TYPE)
+          SpringELIdentifier(SPEL_IDENTIFIER)
+            PsiElement(EL_IDENTIFIER)('int')
+        PsiElement(EL_LBRACKET)('[')
+        PsiElement(EL_RBRACKET)(']')
+      PsiElement(SPEL_LCURLY)('{')
+      ELLiteral
+        PsiElement(EL_INT_LITERAL)('1')
+      PsiElement(EL_COMMA)(',')
+      PsiWhiteSpace(' ')
+      ELMethodCallExpression
+        ELVariable
+          PsiElement(EL_IDENTIFIER)('do')
+        PsiElement(EL_DOT)('.')
+        ELVariable
+          PsiElement(EL_IDENTIFIER)('it')
+        ELParameterList
+          PsiElement(EL_LPARENTH)('(')
+          PsiElement(EL_RPARENTH)(')')
+      PsiElement(EL_COMMA)(',')
+      PsiWhiteSpace(' ')
+      ELLiteral
+        PsiElement(EL_INT_LITERAL)('3')
+      PsiElement(EL_END)('}')
+    PsiElement(})('}')
