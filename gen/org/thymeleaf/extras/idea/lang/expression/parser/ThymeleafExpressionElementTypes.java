@@ -4,7 +4,8 @@ package org.thymeleaf.extras.idea.lang.expression.parser;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
-import org.thymeleaf.extras.idea.lang.expression.parser.el.ThymeleafExpressionStringElementType;
+import com.intellij.spring.el.SpringELLanguage;
+import com.intellij.spring.el.parser.SpringELElementType;
 import org.thymeleaf.extras.idea.lang.expression.psi.impl.*;
 
 public interface ThymeleafExpressionElementTypes {
@@ -39,7 +40,7 @@ public interface ThymeleafExpressionElementTypes {
   IElementType CONVERTED_SELECTION_EXPR_START = new ThymeleafExpressionElementType("*{{");
   IElementType CONVERTED_VARIABLE_EXPR_START = new ThymeleafExpressionElementType("${{");
   IElementType EXPRESSION_END = new ThymeleafExpressionElementType("}");
-  IElementType EXPRESSION_STRING = new ThymeleafExpressionStringElementType("expression_string");
+  IElementType EXPRESSION_STRING = SpringELElementType.SPEL_HOLDER;
   IElementType LINK_EXPR_START = new ThymeleafExpressionElementType("@{");
   IElementType MESSAGE_EXPR_START = new ThymeleafExpressionElementType("#{");
   IElementType OP_AND = new ThymeleafExpressionElementType("and");
