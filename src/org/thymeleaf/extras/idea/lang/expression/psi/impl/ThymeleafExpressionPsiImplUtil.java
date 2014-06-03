@@ -3,13 +3,13 @@ package org.thymeleaf.extras.idea.lang.expression.psi.impl;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.thymeleaf.extras.idea.lang.expression.psi.GenericSelectionExpr;
+import org.thymeleaf.extras.idea.lang.expression.psi.*;
 
 public class ThymeleafExpressionPsiImplUtil {
 
     // TODO Get rid of this placeholder method (which is currently required to provide the type of getString() to Grammar-Kit)
     @Nullable
-    public static PsiElement getString(GenericSelectionExpr expr) {
+    public static PsiElement getExpressionString(GenericSelectionExpr expr) {
         throw new UnsupportedOperationException("Fake method that should be overriden");
     }
 

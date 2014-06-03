@@ -23,7 +23,7 @@ public class GenericSelectionManipulator extends AbstractElementManipulator<Gene
     public TextRange getRangeInElement(@NotNull GenericSelectionExpr expr) {
         // TODO Improve GenericSelectionManipulator.getRangeInElement
         // TODO How to work around the valueNode == null case? The current workaround produces incorrect result.
-        final PsiElement valueNode = expr.getString();
+        final PsiElement valueNode = expr.getExpressionString();
         if (valueNode == null) return new TextRange(0, 0);
         return makeRelativeTo(expr.getTextRange(), valueNode.getTextRange());
     }

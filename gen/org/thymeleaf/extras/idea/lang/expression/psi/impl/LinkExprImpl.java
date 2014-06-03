@@ -23,7 +23,7 @@ public class LinkExprImpl extends GenericSelectionExprImpl implements LinkExpr {
 
   @Override
   @Nullable
-  public PsiElement getSimpleExpressionString() {
+  public PsiElement getExpressionString() {
     return findChildByType(SIMPLE_EXPRESSION_STRING);
   }
 

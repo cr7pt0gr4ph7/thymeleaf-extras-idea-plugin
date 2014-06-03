@@ -102,7 +102,7 @@ public class ThymeleafELVariablesProvider extends ElVariablesProvider {
 
             if (outerExpression instanceof VariableExpr || outerExpression instanceof SelectionExpr) {
                 final GenericSelectionExpr selectionExpr = (GenericSelectionExpr) outerExpression;
-                final ELExpressionHolder elHolder = (ELExpressionHolder) selectionExpr.getString();
+                final ELExpressionHolder elHolder = (ELExpressionHolder) selectionExpr.getExpressionString();
                 // TODO findSelectionRoot fails with an Exception in some error conditions
                 final ELExpression expression = (ELExpression) elHolder.getFirstChild();
                 return expression;

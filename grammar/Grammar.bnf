@@ -77,11 +77,15 @@
     updateText
     createLiteralTextEscaper
 
-    getString
+    getExpressionString
   ]
 
-  methods("(variable|selection|message|link)_expr")=[
-    string="expression_string"
+  methods("(variable|selection)_expr")=[
+    expression_string="el_expression_string"
+  ]
+
+  methods("(message|link)_expr")=[
+    expression_string="simple_expression_string"
   ]
 }
 

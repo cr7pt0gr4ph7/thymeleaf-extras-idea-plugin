@@ -22,6 +22,6 @@ public interface GenericSelectionExpr extends Expression, ContributedReferenceHo
   LiteralTextEscaper<GenericSelectionExpr> createLiteralTextEscaper();
 
   @Nullable
-  PsiElement getString();
+  PsiElement getExpressionString();
 
 }

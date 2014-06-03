@@ -43,8 +43,8 @@ public class GenericSelectionExprImpl extends ExpressionImpl implements GenericS
   }
 
   @Nullable
-  public PsiElement getString() {
-    return ThymeleafExpressionPsiImplUtil.getString(this);
+  public PsiElement getExpressionString() {
+    return ThymeleafExpressionPsiImplUtil.getExpressionString(this);
   }
 
 }

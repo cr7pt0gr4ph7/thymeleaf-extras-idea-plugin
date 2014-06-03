@@ -39,11 +39,11 @@ public class PropertiesReferenceProvider extends PsiReferenceProvider {
         if (element instanceof MessageExpr) {
             final MessageExpr messageExpr = (MessageExpr) element;
 
-            if (messageExpr.getString() != null) {
+            if (messageExpr.getExpressionString() != null) {
                 final String bundleName = null;
                 final boolean soft = myDefaultSoft;
 
-                final PsiReference reference = new PropertyReference(messageExpr.getString().getText(), messageExpr.getString(), bundleName, soft);
+                final PsiReference reference = new PropertyReference(messageExpr.getExpressionString().getText(), messageExpr.getExpressionString(), bundleName, soft);
                 return new PsiReference[]{reference};
             }
         }
