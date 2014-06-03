@@ -35,7 +35,8 @@ public class MyXmlUtil {
             final BidirectionalMap<String, String> prefixNamespaceMap = new BidirectionalMap<String, String>();
 
             for (String namespace : knownNamespaces) {
-                prefixNamespaceMap.put(tag.getPrefixByNamespace(namespace), namespace);
+                final String prefix = tag.getPrefixByNamespace(namespace);
+                prefixNamespaceMap.put(StringUtil.notNullize(prefix), namespace);
             }
 
             // // The following alternate implementation walks up the the context node's ancestor chain

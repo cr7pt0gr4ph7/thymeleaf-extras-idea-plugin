@@ -14,6 +14,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
+import com.intellij.util.containers.BidirectionalMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder;
@@ -24,6 +25,7 @@ import org.thymeleaf.extras.idea.lang.expression.psi.Expression;
 import org.thymeleaf.extras.idea.lang.expression.psi.GenericSelectionExpr;
 import org.thymeleaf.extras.idea.lang.expression.psi.SelectionExpr;
 import org.thymeleaf.extras.idea.lang.expression.psi.VariableExpr;
+import org.thymeleaf.extras.idea.util.MyXmlUtil;
 
 import javax.swing.*;
 import java.util.List;
@@ -32,21 +34,33 @@ public class ThymeleafELVariablesProvider extends ElVariablesProvider {
 
     @Override
     public boolean processImplicitVariables(@NotNull PsiElement element, @NotNull ELExpressionHolder expressionHolder, @NotNull ELElementProcessor processor) {
-        // TODO Extend to other dialects beside Thymeleaf standard dialect
-        final Dialect dialect = DialectDescriptorsHolder.getInstance(element.getProject())
-                .getDialectForSchemaUrl("http://www.thymeleaf.org", element);
-        if (dialect == null) {
-            return false;
-        }
         if (isInsideSelectionExpression(expressionHolder)) {
             if (!processSelectionContext(expressionHolder, processor)) {
                 return false;
             }
         }
-        for (ExpressionObject expressionObject : dialect.getExpressionObjects()) {
-            //noinspection ObjectAllocationInLoop
-            if (!processor.processVariable(createVariable(element, expressionObject))) {
-                return false;
+
+        //
+        // Find all Dialects which are in scope (i.e. their namespace URI is assigned to a prefix)
+        //
+        //noinspection unchecked
+        final XmlTag outerTag = PsiTreeUtil.getContextOfType(element, XmlTag.class);
+
+        if (outerTag != null) {
+            final BidirectionalMap<String, String> knownNamespaces = MyXmlUtil.knownPrefixNamespacePairs(outerTag);
+            final DialectDescriptorsHolder holder = DialectDescriptorsHolder.getInstance(element.getProject());
+
+            for (String namespaceUri : knownNamespaces.values()) {
+                final Dialect dialect = holder.getDialectForSchemaUrl(namespaceUri, outerTag);
+                if (dialect == null) {
+                    continue;
+                }
+                for (ExpressionObject expressionObject : dialect.getExpressionObjects()) {
+                    //noinspection ObjectAllocationInLoop
+                    if (!processor.processVariable(createVariable(element, expressionObject))) {
+                        return false;
+                    }
+                }
             }
         }
         return true;
