@@ -52,33 +52,6 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
     @Nullable
     private static GlobalSearchScope computeAdditionalScope(Module module, @Nullable PsiFile context) {
         return module.getModuleWithDependenciesAndLibrariesScope(/*includeTests: */ false);
-        // return createFilterForProject(module.getProject());
-    }
-
-    private static GlobalSearchScope createFilterForProject(final Project project) {
-        final GlobalSearchScope projectScope = GlobalSearchScope.allScope(project);
-        return new GlobalSearchScope(project) {
-            @Override
-            public boolean contains(VirtualFile file) {
-                final VirtualFile parent = file.getParent();
-                return parent != null && projectScope.contains(file);
-            }
-
-            @Override
-            public int compare(VirtualFile file1, VirtualFile file2) {
-                return projectScope.compare(file1, file2);
-            }
-
-            @Override
-            public boolean isSearchInModuleContent(@NotNull Module aModule) {
-                return true;
-            }
-
-            @Override
-            public boolean isSearchInLibraries() {
-                return true;
-            }
-        };
     }
 
     // TODO Rename to getAllResources
