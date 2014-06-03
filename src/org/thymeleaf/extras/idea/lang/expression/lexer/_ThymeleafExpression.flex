@@ -10,7 +10,17 @@ import static org.thymeleaf.extras.idea.lang.expression.parser.ThymeleafExpressi
     this((java.io.Reader)null);
   }
 
+  private IElementType myExpressionStringToken = null;
   private int nestedBraceCount = 0;
+
+  private void setExpressionMode(IElementType expressionStringToken) {
+    myExpressionStringToken = expressionStringToken;
+  }
+
+  private IElementType getExpressionStringToken() {
+    assert myExpressionStringToken != null;
+    return myExpressionStringToken;
+  }
 %}
 
 %public
@@ -46,16 +56,16 @@ STRING=\' ([^\']+) \'
                                 else { // Outer ${ } (or not inside ${ })
                                   yypushback(1);
                                   yybegin(EMBEDDED_EXPR);
-                                  return EXPRESSION_STRING;
+                                  return getExpressionStringToken();
                                 } }
 }
 <EMBEDDED_EXPR> {
   "{"                         { yypushback(1); yybegin(NESTEDBRACES_IN_EMBEDDED_EXPR); }
-  "}"                         { yypushback(1); yybegin(EMBEDDED_EXPR_END); return EXPRESSION_STRING; }
-  "}}"                        { yypushback(2); yybegin(EMBEDDED_EXPR_END); return EXPRESSION_STRING; }
+  "}"                         { yypushback(1); yybegin(EMBEDDED_EXPR_END); return getExpressionStringToken(); }
+  "}}"                        { yypushback(2); yybegin(EMBEDDED_EXPR_END); return getExpressionStringToken(); }
 }
 <NESTEDBRACES_IN_EMBEDDED_EXPR, EMBEDDED_EXPR> {
-  [^\}\{]                     { return EXPRESSION_STRING; }
+  [^\}\{]                     { return getExpressionStringToken(); }
 }
 <YYINITIAL, EMBEDDED_EXPR_END> {
   // These rules are specified for both states for better error recovery in the parser
@@ -88,13 +98,13 @@ STRING=\' ([^\']+) \'
   "+"                         { return OP_PLUS; }
   "-"                         { return OP_MINUS; }
 
-  "${"                        { yybegin(EMBEDDED_EXPR); return VARIABLE_EXPR_START; }
-  "*{"                        { yybegin(EMBEDDED_EXPR); return SELECTION_EXPR_START; }
-  "#{"                        { yybegin(EMBEDDED_EXPR); return MESSAGE_EXPR_START; }
-  "@{"                        { yybegin(EMBEDDED_EXPR); return LINK_EXPR_START; }
+  "${"                        { yybegin(EMBEDDED_EXPR); setExpressionMode(EL_EXPRESSION_STRING); return VARIABLE_EXPR_START; }
+  "*{"                        { yybegin(EMBEDDED_EXPR); setExpressionMode(EL_EXPRESSION_STRING); return SELECTION_EXPR_START; }
+  "#{"                        { yybegin(EMBEDDED_EXPR); setExpressionMode(SIMPLE_EXPRESSION_STRING); return MESSAGE_EXPR_START; }
+  "@{"                        { yybegin(EMBEDDED_EXPR); setExpressionMode(SIMPLE_EXPRESSION_STRING); return LINK_EXPR_START; }
 
-  "${{"                       { yybegin(EMBEDDED_EXPR); return CONVERTED_VARIABLE_EXPR_START; }
-  "*{{"                       { yybegin(EMBEDDED_EXPR); return CONVERTED_SELECTION_EXPR_START; }
+  "${{"                       { yybegin(EMBEDDED_EXPR); setExpressionMode(EL_EXPRESSION_STRING); return CONVERTED_VARIABLE_EXPR_START; }
+  "*{{"                       { yybegin(EMBEDDED_EXPR); setExpressionMode(EL_EXPRESSION_STRING); return CONVERTED_SELECTION_EXPR_START; }
 
   {TOKEN}                     { return TOKEN; }
   {STRING}                    { return STRING; }

@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface LinkExpr extends GenericSelectionExpr {
 
   @Nullable
-  PsiElement getString();
+  PsiElement getSimpleExpressionString();
 
 }

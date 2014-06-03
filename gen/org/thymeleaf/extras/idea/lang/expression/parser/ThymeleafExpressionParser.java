@@ -120,12 +120,12 @@ public class ThymeleafExpressionParser implements PsiParser {
   };
 
   /* ********************************************************** */
-  // expression_string
+  // el_expression_string
   static boolean converted_expr_content(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "converted_expr_content")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, EXPRESSION_STRING);
+    result_ = consumeToken(builder_, EL_EXPRESSION_STRING);
     exit_section_(builder_, level_, marker_, null, result_, false, converted_expr_recover_parser_);
     return result_;
   }
@@ -184,7 +184,7 @@ public class ThymeleafExpressionParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // '@{' standard_expr_content '}'
+  // '@{' simple_expr_content '}'
   public static boolean link_expr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "link_expr")) return false;
     if (!nextTokenIs(builder_, LINK_EXPR_START)) return false;
@@ -193,14 +193,14 @@ public class ThymeleafExpressionParser implements PsiParser {
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LINK_EXPR_START);
     pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, standard_expr_content(builder_, level_ + 1));
+    result_ = result_ && report_error_(builder_, simple_expr_content(builder_, level_ + 1));
     result_ = pinned_ && consumeToken(builder_, EXPRESSION_END) && result_;
     exit_section_(builder_, level_, marker_, LINK_EXPR, result_, pinned_, null);
     return result_ || pinned_;
   }
 
   /* ********************************************************** */
-  // '#{' standard_expr_content '}'
+  // '#{' simple_expr_content '}'
   public static boolean message_expr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "message_expr")) return false;
     if (!nextTokenIs(builder_, MESSAGE_EXPR_START)) return false;
@@ -209,7 +209,7 @@ public class ThymeleafExpressionParser implements PsiParser {
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, MESSAGE_EXPR_START);
     pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, standard_expr_content(builder_, level_ + 1));
+    result_ = result_ && report_error_(builder_, simple_expr_content(builder_, level_ + 1));
     result_ = pinned_ && consumeToken(builder_, EXPRESSION_END) && result_;
     exit_section_(builder_, level_, marker_, MESSAGE_EXPR, result_, pinned_, null);
     return result_ || pinned_;
@@ -235,12 +235,44 @@ public class ThymeleafExpressionParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // expression_string
+  // simple_expression_string
+  static boolean simple_expr_content(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "simple_expr_content")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    result_ = consumeToken(builder_, SIMPLE_EXPRESSION_STRING);
+    exit_section_(builder_, level_, marker_, null, result_, false, simple_expr_recover_parser_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // !('}')
+  static boolean simple_expr_recover(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "simple_expr_recover")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
+    result_ = !simple_expr_recover_0(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, null, result_, false, null);
+    return result_;
+  }
+
+  // ('}')
+  private static boolean simple_expr_recover_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "simple_expr_recover_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, EXPRESSION_END);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // el_expression_string
   static boolean standard_expr_content(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "standard_expr_content")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, EXPRESSION_STRING);
+    result_ = consumeToken(builder_, EL_EXPRESSION_STRING);
     exit_section_(builder_, level_, marker_, null, result_, false, standard_expr_recover_parser_);
     return result_;
   }
@@ -525,6 +557,11 @@ public class ThymeleafExpressionParser implements PsiParser {
   final static Parser converted_expr_recover_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder_, int level_) {
       return converted_expr_recover(builder_, level_ + 1);
+    }
+  };
+  final static Parser simple_expr_recover_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder_, int level_) {
+      return simple_expr_recover(builder_, level_ + 1);
     }
   };
   final static Parser standard_expr_recover_parser_ = new Parser() {

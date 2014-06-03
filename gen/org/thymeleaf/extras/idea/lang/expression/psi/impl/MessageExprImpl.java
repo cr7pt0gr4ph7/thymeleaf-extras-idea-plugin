@@ -23,8 +23,8 @@ public class MessageExprImpl extends GenericSelectionExprImpl implements Message
 
   @Override
   @Nullable
-  public PsiElement getString() {
-    return findChildByType(EXPRESSION_STRING);
+  public PsiElement getSimpleExpressionString() {
+    return findChildByType(SIMPLE_EXPRESSION_STRING);
   }
 
 }

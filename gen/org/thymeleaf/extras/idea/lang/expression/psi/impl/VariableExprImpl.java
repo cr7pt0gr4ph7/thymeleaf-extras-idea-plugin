@@ -23,8 +23,8 @@ public class VariableExprImpl extends GenericSelectionExprImpl implements Variab
 
   @Override
   @Nullable
-  public PsiElement getString() {
-    return findChildByType(EXPRESSION_STRING);
+  public PsiElement getElExpressionString() {
+    return findChildByType(EL_EXPRESSION_STRING);
   }
 
 }

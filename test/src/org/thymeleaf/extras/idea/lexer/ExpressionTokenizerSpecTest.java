@@ -16,28 +16,40 @@ public class ExpressionTokenizerSpecTest extends GeneralLexerTest {
 
     public void testVariableExpression() {
         TokenizerResult result = tokenize("${simple}");
-        result.shouldMatchTokenTypes(VARIABLE_EXPR_START, EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldMatchTokenTypes(VARIABLE_EXPR_START, EL_EXPRESSION_STRING, EXPRESSION_END);
         result.shouldBeToken(0, VARIABLE_EXPR_START, "${");
-        result.shouldBeToken(1, EXPRESSION_STRING, "simple");
+        result.shouldBeToken(1, EL_EXPRESSION_STRING, "simple");
         result.shouldBeToken(2, EXPRESSION_END, "}");
     }
 
     public void testConvertToStringVariableExpression() {
         TokenizerResult result = tokenize("${{simple}}");
-        result.shouldMatchTokenTypes(CONVERTED_VARIABLE_EXPR_START, EXPRESSION_STRING, CONVERTED_EXPRESSION_END);
-        result.shouldBeToken(1, EXPRESSION_STRING, "simple");
+        result.shouldMatchTokenTypes(CONVERTED_VARIABLE_EXPR_START, EL_EXPRESSION_STRING, CONVERTED_EXPRESSION_END);
+        result.shouldBeToken(1, EL_EXPRESSION_STRING, "simple");
     }
 
     public void testSelectionExpression() {
         TokenizerResult result = tokenize("*{simple}");
-        result.shouldMatchTokenTypes(SELECTION_EXPR_START, EXPRESSION_STRING, EXPRESSION_END);
-        result.shouldBeToken(1, EXPRESSION_STRING, "simple");
+        result.shouldMatchTokenTypes(SELECTION_EXPR_START, EL_EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldBeToken(1, EL_EXPRESSION_STRING, "simple");
     }
 
     public void testConvertToStringSelectionExpression() {
         TokenizerResult result = tokenize("*{{simple}}");
-        result.shouldMatchTokenTypes(CONVERTED_SELECTION_EXPR_START, EXPRESSION_STRING, CONVERTED_EXPRESSION_END);
-        result.shouldBeToken(1, EXPRESSION_STRING, "simple");
+        result.shouldMatchTokenTypes(CONVERTED_SELECTION_EXPR_START, EL_EXPRESSION_STRING, CONVERTED_EXPRESSION_END);
+        result.shouldBeToken(1, EL_EXPRESSION_STRING, "simple");
+    }
+
+    public void testMessageExpression() {
+        TokenizerResult result = tokenize("#{some.message.id}");
+        result.shouldMatchTokenTypes(MESSAGE_EXPR_START, SIMPLE_EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldMatchTokenContent("#{", "some.message.id", "}");
+    }
+
+    public void testLinkExpression() {
+        TokenizerResult result = tokenize("@{/some/random/url}");
+        result.shouldMatchTokenTypes(LINK_EXPR_START, SIMPLE_EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldMatchTokenContent("@{", "/some/random/url", "}");
     }
 
     public void testOpAddAlone() {
@@ -68,17 +80,17 @@ public class ExpressionTokenizerSpecTest extends GeneralLexerTest {
 
     public void testELExpressionWithNestedBraces() {
         TokenizerResult result = tokenize("${ new int[]{1,2,3} }");
-        result.shouldMatchTokenTypes(VARIABLE_EXPR_START, EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldMatchTokenTypes(VARIABLE_EXPR_START, EL_EXPRESSION_STRING, EXPRESSION_END);
         result.shouldBeToken(0, VARIABLE_EXPR_START, "${");
-        result.shouldBeToken(1, EXPRESSION_STRING, " new int[]{1,2,3} ");
+        result.shouldBeToken(1, EL_EXPRESSION_STRING, " new int[]{1,2,3} ");
         result.shouldBeToken(2, EXPRESSION_END, "}");
     }
 
     public void testELExpressionWithBracesAtEnd() {
         TokenizerResult result = tokenize("${new int[]{4,5,6}}");
-        result.shouldMatchTokenTypes(VARIABLE_EXPR_START, EXPRESSION_STRING, EXPRESSION_END);
+        result.shouldMatchTokenTypes(VARIABLE_EXPR_START, EL_EXPRESSION_STRING, EXPRESSION_END);
         result.shouldBeToken(0, VARIABLE_EXPR_START, "${");
-        result.shouldBeToken(1, EXPRESSION_STRING, "new int[]{4,5,6}");
+        result.shouldBeToken(1, EL_EXPRESSION_STRING, "new int[]{4,5,6}");
         result.shouldBeToken(2, EXPRESSION_END, "}");
     }
 }

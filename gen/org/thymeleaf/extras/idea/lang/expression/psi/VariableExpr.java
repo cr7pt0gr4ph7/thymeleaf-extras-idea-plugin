@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface VariableExpr extends GenericSelectionExpr {
 
   @Nullable
-  PsiElement getString();
+  PsiElement getElExpressionString();
 
 }

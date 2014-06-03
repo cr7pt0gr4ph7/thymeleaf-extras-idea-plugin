@@ -46,7 +46,8 @@
     // comment='regexp:--.*'
     // The actual definition of token is a bit more complicated
     token='regexp:(.+)'
-    expression_string='regexp:([^\{\}\n]+)'
+    el_expression_string='regexp:([^\n]+)'
+    simple_expression_string='regexp:([^\{\}\n]+)'
     string="regexp:\'([^\']+)\'"
   ]
 
@@ -165,18 +166,21 @@ generic_selection_expr ::= variable_expr | selection_expr | link_expr | message_
 
 variable_expr ::= converted_variable_expr | standard_variable_expr
 selection_expr ::= converted_selection_expr | standard_selection_expr
-message_expr ::= '#{' standard_expr_content '}' {pin=1}
-link_expr ::= '@{' standard_expr_content '}' {pin=1}
+message_expr ::= '#{' simple_expr_content '}' {pin=1}
+link_expr ::= '@{' simple_expr_content '}' {pin=1}
 
 private converted_variable_expr ::= '${{' converted_expr_content '}}' {pin=1}
 private converted_selection_expr ::= '*{{' converted_expr_content '}}' {pin=1}
-private converted_expr_content ::= expression_string {recoverWhile=converted_expr_recover}
+private converted_expr_content ::= el_expression_string {recoverWhile=converted_expr_recover}
 private converted_expr_recover ::= !('}}')
 
 private standard_variable_expr ::= '${' standard_expr_content '}' {pin=1}
 private standard_selection_expr ::= '*{' standard_expr_content '}' {pin=1}
-private standard_expr_content ::= expression_string {recoverWhile=standard_expr_recover}
+private standard_expr_content ::= el_expression_string {recoverWhile=standard_expr_recover}
 private standard_expr_recover ::= !('}')
+
+private simple_expr_content ::= simple_expression_string {recoverWhile=simple_expr_recover}
+private simple_expr_recover ::= !('}')
 
 // Text tokens: something
 token_expr ::= token
