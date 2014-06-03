@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder;
 import org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider;
-import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
 import org.thymeleaf.extras.idea.dialect.dom.model.DialectItem;
 import org.thymeleaf.extras.idea.dialect.dom.model.Documentation;
+import org.thymeleaf.extras.idea.dialect.merged.DialectModel;
 
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +55,7 @@ public class AttributeProcessorDocumentationProvider implements DocumentationPro
                 final XmlAttribute attr = (XmlAttribute) psiElement;
 
                 if (ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL.equals(attr.getNamespace())) {
-                    Dialect dialect = DialectDescriptorsHolder.getInstance(psiManager.getProject())
+                    DialectModel dialect = DialectDescriptorsHolder.getInstance(psiManager.getProject())
                             .getDialectForSchemaUrl(ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL, psiElement);
 
                     if (dialect == null) return null;

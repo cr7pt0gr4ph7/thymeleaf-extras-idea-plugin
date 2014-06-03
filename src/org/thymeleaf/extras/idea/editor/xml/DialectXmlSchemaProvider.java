@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder;
 import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
+import org.thymeleaf.extras.idea.dialect.merged.DialectModel;
 import org.thymeleaf.extras.idea.editor.ThymeleafUtil;
 
 import java.util.Set;
@@ -44,11 +45,12 @@ public class DialectXmlSchemaProvider extends XmlSchemaProvider {
         }
         final Project project = context.getProject();
         final Module module = ModuleUtilCore.findModuleForFile(virtualFile, project);
-        final Dialect dialect = DialectDescriptorsHolder.getInstance(project).getDialectForSchemaUrl(namespace, module, context);
+        final DialectModel dialect = DialectDescriptorsHolder.getInstance(project).getDialectForSchemaUrl(namespace, module, context);
         if (dialect == null) {
             return null;
         }
-        return dialect.getPrefix().getValue();
+        // TODO HACK getDialects().get(0)
+        return dialect.getDialects().get(0).getPrefix().getValue();
     }
 
     @Nullable

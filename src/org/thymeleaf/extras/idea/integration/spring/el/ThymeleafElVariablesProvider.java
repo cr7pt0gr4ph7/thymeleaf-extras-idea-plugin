@@ -18,8 +18,8 @@ import com.intellij.util.containers.BidirectionalMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder;
-import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
 import org.thymeleaf.extras.idea.dialect.dom.model.ExpressionObject;
+import org.thymeleaf.extras.idea.dialect.merged.DialectModel;
 import org.thymeleaf.extras.idea.lang.expression.ThymeleafExpressionFile;
 import org.thymeleaf.extras.idea.lang.expression.psi.Expression;
 import org.thymeleaf.extras.idea.lang.expression.psi.GenericSelectionExpr;
@@ -51,7 +51,7 @@ public class ThymeleafELVariablesProvider extends ElVariablesProvider {
             final DialectDescriptorsHolder holder = DialectDescriptorsHolder.getInstance(element.getProject());
 
             for (String namespaceUri : knownNamespaces.values()) {
-                final Dialect dialect = holder.getDialectForSchemaUrl(namespaceUri, outerTag);
+                final DialectModel dialect = holder.getDialectForSchemaUrl(namespaceUri, outerTag);
                 if (dialect == null) {
                     continue;
                 }

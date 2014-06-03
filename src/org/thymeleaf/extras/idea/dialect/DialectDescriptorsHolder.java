@@ -10,6 +10,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlFile;
+import com.intellij.util.Function;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.MultiMap;
+import com.intellij.util.containers.OrderedSet;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.DomUtil;
@@ -18,9 +22,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.discovery.DialectDescriptorIndex;
 import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
+import org.thymeleaf.extras.idea.dialect.merged.DialectModel;
+import org.thymeleaf.extras.idea.dialect.merged.DialectModelImpl;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+
+import static org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider.SPRING_STANDARD_DIALECT_URL;
+import static org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL;
 
 /**
  * Provide the mapping (dialect namespace URI -> dialect descriptor file) for use with code completion,
@@ -28,7 +40,15 @@ import java.util.List;
  */
 public class DialectDescriptorsHolder {
     private static final Logger LOG = Logger.getInstance(DialectDescriptorsHolder.class);
+    private static final MergedDialectMap mergedDialects = new MergedDialectMap();
     private final Project myProject;
+
+    static {
+        mergedDialects.putValues(STANDARD_DIALECT_URL, Arrays.asList(
+                SPRING_STANDARD_DIALECT_URL,
+                STANDARD_DIALECT_URL
+        ));
+    }
 
     public DialectDescriptorsHolder(@NotNull Project project) {
         myProject = project;
@@ -39,7 +59,7 @@ public class DialectDescriptorsHolder {
     }
 
     @Nullable
-    public Dialect getDialectForSchemaUrl(@NotNull String schemaUrl, @NotNull PsiElement context) {
+    public DialectModel getDialectForSchemaUrl(@NotNull String schemaUrl, @NotNull PsiElement context) {
         final Module module = ModuleUtilCore.findModuleForPsiElement(context);
         final PsiFile containingFile = context.getContainingFile();
 
@@ -47,7 +67,23 @@ public class DialectDescriptorsHolder {
     }
 
     @Nullable
-    public Dialect getDialectForSchemaUrl(@NotNull String schemaUrl, @Nullable Module module, @Nullable PsiFile context) {
+    public DialectModel getDialectForSchemaUrl(@NotNull final String schemaUrl, @Nullable final Module module, @Nullable final PsiFile context) {
+        // TODO Caching of DialectModel!
+        if (mergedDialects.containsKey(schemaUrl)) {
+            return new DialectModelImpl(ContainerUtil.mapNotNull(mergedDialects.get(schemaUrl), new Function<String, Dialect>() {
+                @Override
+                public Dialect fun(String childSchemaUrl) {
+                    return getDialectForSchemaUrlCore(childSchemaUrl, module, context);
+                }
+            }));
+        } else {
+            final Dialect dialect = getDialectForSchemaUrlCore(schemaUrl, module, context);
+            return (dialect != null) ? new DialectModelImpl(Collections.singletonList(dialect)) : null;
+        }
+    }
+
+    @Nullable
+    private Dialect getDialectForSchemaUrlCore(@NotNull String schemaUrl, @Nullable Module module, @Nullable PsiFile context) {
         if (module != null && context != null) {
             final List<IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo>> candidates =
                     DialectDescriptorIndex.getResourcesByNamespace(schemaUrl, module, context);
@@ -64,7 +100,7 @@ public class DialectDescriptorsHolder {
     }
 
     @Nullable
-    public Dialect getStdDialectForSchemaUrl(@NotNull String schemaUrl) {
+    private Dialect getStdDialectForSchemaUrl(@NotNull String schemaUrl) {
         final VirtualFile schemaFile = ThymeleafDefaultDialectsProvider.getStandardSchemaFile(schemaUrl);
         if (schemaFile == null) {
             // No mapping found. This is the point where we filter out namespaces that do not refer to dialects.
@@ -77,7 +113,7 @@ public class DialectDescriptorsHolder {
      * Get the dialect DOM model from the virtual file of the dialect schema.
      */
     @Nullable
-    public Dialect findDialectByVirtualFile(@NotNull VirtualFile schemaFile) {
+    private Dialect findDialectByVirtualFile(@NotNull VirtualFile schemaFile) {
         final PsiFile psiFile = PsiManager.getInstance(myProject).findFile(schemaFile);
 
         if (!(psiFile instanceof XmlFile)) {
@@ -100,8 +136,17 @@ public class DialectDescriptorsHolder {
     @Nullable
     public XmlFile getDialectSchemaFile(String schemaUrl, Module module, PsiFile context) {
         // TODO Directly get the XML file, without creating an intermediate dialect DOM tree
-        final Dialect dialect = getDialectForSchemaUrl(schemaUrl, module, context);
+        // TODO This is a hack (get(0))
+        final Dialect dialect = getDialectForSchemaUrl(schemaUrl, module, context).getDialects().get(0);
         if (dialect == null || !dialect.isValid()) return null;
         return DomUtil.getFile(dialect);
+    }
+
+    private static class MergedDialectMap extends MultiMap<String, String> {
+        // TODO Override MergedDialectMap.createEmptyCollection()?
+        @Override
+        protected Collection<String> createCollection() {
+            return new OrderedSet<String>();
+        }
     }
 }

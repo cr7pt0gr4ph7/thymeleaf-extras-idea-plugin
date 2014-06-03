@@ -20,6 +20,7 @@ import org.thymeleaf.extras.idea.dialect.DialectDescriptorsHolder;
 import org.thymeleaf.extras.idea.dialect.dom.model.AttributeProcessor;
 import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
 import org.thymeleaf.extras.idea.dialect.dom.model.DialectItem;
+import org.thymeleaf.extras.idea.dialect.merged.DialectModel;
 import org.thymeleaf.extras.idea.util.MyXmlUtil;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class DialectXmlAttributeDescriptorsHolder {
         final DialectDescriptorsHolder dialectHolder = DialectDescriptorsHolder.getInstance(myProject);
 
         for (final String dialectUrl : visibleNamespaces) {
-            final Dialect dialect = dialectHolder.getDialectForSchemaUrl(dialectUrl, context);
+            final DialectModel dialect = dialectHolder.getDialectForSchemaUrl(dialectUrl, context);
 
             if (dialect == null) {
                 // Not a dialect namespace
@@ -82,7 +83,7 @@ public class DialectXmlAttributeDescriptorsHolder {
             return null;
         }
 
-        final Dialect dialect = DialectDescriptorsHolder.getInstance(myProject).getDialectForSchemaUrl(schemaUrl, context);
+        final DialectModel dialect = DialectDescriptorsHolder.getInstance(myProject).getDialectForSchemaUrl(schemaUrl, context);
         if (dialect == null) {
             // No mapping found for dialect, or namespace url is not a dialect namespace
             return null;
