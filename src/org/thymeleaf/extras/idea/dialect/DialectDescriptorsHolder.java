@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.thymeleaf.extras.idea.dialect.discovery.DialectDescriptorIndex;
 import org.thymeleaf.extras.idea.dialect.dom.model.Dialect;
+import org.thymeleaf.extras.idea.dialect.merged.DialectModelFactory;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -28,10 +29,12 @@ import java.util.List;
  */
 public class DialectDescriptorsHolder {
     private static final Logger LOG = Logger.getInstance(DialectDescriptorsHolder.class);
+    private final DialectModelFactory myDialectModelFactory;
     private final Project myProject;
 
     public DialectDescriptorsHolder(@NotNull Project project) {
         myProject = project;
+        myDialectModelFactory  = new DialectModelFactory(project);
     }
 
     public static DialectDescriptorsHolder getInstance(@NotNull Project project) {
@@ -48,23 +51,14 @@ public class DialectDescriptorsHolder {
 
     @Nullable
     public Dialect getDialectForSchemaUrl(@NotNull String schemaUrl, @Nullable Module module, @Nullable PsiFile context) {
-        if (module != null && context != null) {
-            final List<IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo>> candidates =
-                    DialectDescriptorIndex.getResourcesByNamespace(schemaUrl, module, context);
 
-            for (final IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo> candidate : candidates) {
-                final VirtualFile file = candidate.getFile();
-                if (file == null || !file.isValid()) continue;
-                final Dialect dialect = findDialectByVirtualFile(file);
-                if (dialect == null || !dialect.isValid()) continue;
-                return dialect;
-            }
-        }
+
+        // TODO Is this integration of standard dialects correct? There might be problems with std dialects & merge dialects.
         return getStdDialectForSchemaUrl(schemaUrl);
     }
 
     @Nullable
-    public Dialect getStdDialectForSchemaUrl(@NotNull String schemaUrl) {
+    private Dialect getStdDialectForSchemaUrl(@NotNull String schemaUrl) {
         final VirtualFile schemaFile = ThymeleafDefaultDialectsProvider.getStandardSchemaFile(schemaUrl);
         if (schemaFile == null) {
             // No mapping found. This is the point where we filter out namespaces that do not refer to dialects.
