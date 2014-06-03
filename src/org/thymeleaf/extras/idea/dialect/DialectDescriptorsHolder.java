@@ -31,8 +31,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider.SPRING_STANDARD_DIALECT_URL;
-import static org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider.STANDARD_DIALECT_URL;
+import static org.thymeleaf.extras.idea.dialect.ThymeleafDefaultDialectsProvider.*;
 
 /**
  * Provide the mapping (dialect namespace URI -> dialect descriptor file) for use with code completion,
@@ -46,7 +45,8 @@ public class DialectDescriptorsHolder {
     static {
         mergedDialects.putValues(STANDARD_DIALECT_URL, Arrays.asList(
                 SPRING_STANDARD_DIALECT_URL,
-                STANDARD_DIALECT_URL
+                STANDARD_DIALECT_URL,
+                FIX_SPRING_STANDARD_DIALECT_URL
         ));
     }
 
@@ -137,7 +137,9 @@ public class DialectDescriptorsHolder {
     public XmlFile getDialectSchemaFile(String schemaUrl, Module module, PsiFile context) {
         // TODO Directly get the XML file, without creating an intermediate dialect DOM tree
         // TODO This is a hack (get(0))
-        final Dialect dialect = getDialectForSchemaUrl(schemaUrl, module, context).getDialects().get(0);
+        final DialectModel model = getDialectForSchemaUrl(schemaUrl, module, context);
+        if (model == null) return null;
+        final Dialect dialect = model.getDialects().get(0);
         if (dialect == null || !dialect.isValid()) return null;
         return DomUtil.getFile(dialect);
     }

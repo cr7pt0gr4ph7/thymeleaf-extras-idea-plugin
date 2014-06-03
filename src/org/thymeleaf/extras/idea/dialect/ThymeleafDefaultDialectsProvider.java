@@ -18,12 +18,16 @@ public class ThymeleafDefaultDialectsProvider implements StandardResourceProvide
     public static final String SPRING_SECURITY_DIALECT_URL = "http://www.thymeleaf.org/extras/spring-security";
     public static final String TILES_DIALECT_URL = "http://www.thymeleaf.org/extras/tiles";
 
+    public static final String FIX_SPRING_STANDARD_DIALECT_URL = "http://www.thymeleaf.org/spring/custom-fix";
+
     @Override
     public void registerResources(ResourceRegistrar registrar) {
         registrar.addStdResource(STANDARD_DIALECT_URL, "/resources/dialects/Standard-Dialect.xml", getClass());
         registrar.addStdResource(SPRING_STANDARD_DIALECT_URL, "/resources/dialects/Spring-Standard-Dialect.xml", getClass());
         registrar.addStdResource(SPRING_SECURITY_DIALECT_URL, "/resources/dialects/Spring-Security-Dialect.xml", getClass());
         registrar.addStdResource(TILES_DIALECT_URL, "/resources/dialects/Tiles-Dialect.xml", getClass());
+
+        registrar.addStdResource(FIX_SPRING_STANDARD_DIALECT_URL, "/resources/dialects/Fix-Spring-Standard-Dialect.xml", getClass());
     }
 
     @Nullable
