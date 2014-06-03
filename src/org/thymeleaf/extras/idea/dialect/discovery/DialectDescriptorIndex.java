@@ -7,6 +7,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.NullableFunction;
+import com.intellij.util.containers.Convertor;
+import com.intellij.util.containers.MultiMap;
 import com.intellij.util.indexing.DataIndexer;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.intellij.util.indexing.FileContent;
@@ -18,6 +20,7 @@ import com.intellij.xml.util.XmlUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.thymeleaf.extras.idea.util.MyContainerUtil;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -61,13 +64,14 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
         return module.getModuleWithDependenciesAndLibrariesScope(/*includeTests: */ false);
     }
 
-    public static List<IndexedRelevantResource<String, DialectInfo>> getAllResources(final Module module, final PsiFile context) {
+    @NotNull
+    public static List<IndexedRelevantResource<String, DialectInfo>> getAllResources(@NotNull final Module module, @Nullable final PsiFile context) {
         // TODO Should we use DumbService.isDumb() here?
         if (DumbService.isDumb(module.getProject()) || (context != null && XmlUtil.isStubBuilding())) {
             return Collections.emptyList();
         }
 
-        return IndexedRelevantResource.getAllResources(NAME, module, module.getProject(), new NullableFunction<List<IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo>>, IndexedRelevantResource<String, DialectInfo>>() {
+        return IndexedRelevantResource.getAllResources(NAME, module, module.getProject(), new NullableFunction<List<IndexedRelevantResource<String, DialectInfo>>, IndexedRelevantResource<String, DialectInfo>>() {
             @Nullable
             @Override
             public IndexedRelevantResource<String, DialectInfo> fun
@@ -76,6 +80,18 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
                 return resources.isEmpty() ? null : Collections.max(resources);
             }
         });
+    }
+
+    private static final Convertor<IndexedRelevantResource<String, DialectInfo>, String> INDEXED_RELEVANT_RESOURCE_KEY_CONVERTOR = new Convertor<IndexedRelevantResource<String, DialectInfo>, String>() {
+        @Override
+        public String convert(IndexedRelevantResource<String, DialectInfo> o) {
+            return o.getKey();
+        }
+    };
+
+    @NotNull
+    public static MultiMap<String, IndexedRelevantResource<String, DialectInfo>> getAllResourcesByKey(@NotNull final Module scope, @Nullable final PsiFile context) {
+        return MyContainerUtil.groupByAndSort(getAllResources(scope, context).iterator(), INDEXED_RELEVANT_RESOURCE_KEY_CONVERTOR);
     }
 
     @Override
