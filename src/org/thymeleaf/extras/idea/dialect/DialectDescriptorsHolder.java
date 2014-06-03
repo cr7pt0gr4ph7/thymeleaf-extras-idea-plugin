@@ -57,7 +57,7 @@ public class DialectDescriptorsHolder {
     public Dialect getDialectForSchemaUrl(@NotNull String schemaUrl, @Nullable Module module, @Nullable PsiFile context) {
         if (module != null && context != null) {
             final List<IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo>> candidates =
-                    DialectDescriptorIndex.getDialectDescriptorFiles(schemaUrl, module, context);
+                    DialectDescriptorIndex.getResourcesByNamespace(schemaUrl, module, context);
 
             for (final IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo> candidate : candidates) {
                 final VirtualFile file = candidate.getFile();

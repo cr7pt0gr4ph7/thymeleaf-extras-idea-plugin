@@ -3,7 +3,6 @@ package org.thymeleaf.extras.idea.dialect.discovery;
 import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -34,8 +33,16 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
     public static final ID<String, DialectInfo> NAME = ID.create("thymeleafDialectUris");
     private static final int INDEX_VERSION = 10;
 
-    // TODO Rename to getResourcesByNamespace
-    public static List<IndexedRelevantResource<String, DialectInfo>> getDialectDescriptorFiles(String namespace, @NotNull Module module, @Nullable PsiFile context) {
+    /**
+     * Retrieves all indexed resources for the given dialect {@code namespace}
+     * which are reachable from {@code module}.
+     *
+     * @param namespace the namespace url to search for
+     * @param module    the module to use as the search scope
+     * @param context   the {@code PsiElement} used to compute additional search scopes
+     * @return a list of resources for the specified dialect
+     */
+    public static List<IndexedRelevantResource<String, DialectInfo>> getResourcesByNamespace(String namespace, @NotNull Module module, @Nullable PsiFile context) {
         // TODO Should we use DumbService.isDumb() here?
         if (DumbService.isDumb(module.getProject()) || (context != null && XmlUtil.isStubBuilding())) {
             return Collections.emptyList();
@@ -54,17 +61,17 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
         return module.getModuleWithDependenciesAndLibrariesScope(/*includeTests: */ false);
     }
 
-    // TODO Rename to getAllResources
-    public static List<IndexedRelevantResource<String, DialectInfo>> getDialectDescriptorFiles(final Module module, final PsiFile context) {
+    public static List<IndexedRelevantResource<String, DialectInfo>> getAllResources(final Module module, final PsiFile context) {
         // TODO Should we use DumbService.isDumb() here?
         if (DumbService.isDumb(module.getProject()) || (context != null && XmlUtil.isStubBuilding())) {
             return Collections.emptyList();
         }
 
         return IndexedRelevantResource.getAllResources(NAME, module, module.getProject(), new NullableFunction<List<IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo>>, IndexedRelevantResource<String, DialectInfo>>() {
+            @Nullable
             @Override
-            public IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo> fun
-                    (final List<IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo>> resources) {
+            public IndexedRelevantResource<String, DialectInfo> fun
+                    (final List<IndexedRelevantResource<String, DialectInfo>> resources) {
                 // TODO TldProcessorFactory.getFactory(context).processResources(resources);
                 return resources.isEmpty() ? null : Collections.max(resources);
             }
@@ -111,12 +118,12 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
         return new DataExternalizer<DialectInfo>() {
             @Override
             @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
-            public void save(DataOutput out, DialectInfo value) throws IOException {
+            public void save(@NotNull DataOutput out, DialectInfo value) throws IOException {
                 out.writeUTF(value.prefix);
             }
 
             @Override
-            public DialectInfo read(DataInput in) throws IOException {
+            public DialectInfo read(@NotNull DataInput in) throws IOException {
                 return new DialectInfo(in.readUTF());
             }
         };
