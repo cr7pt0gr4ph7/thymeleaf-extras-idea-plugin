@@ -46,7 +46,8 @@ public class DialectDescriptorsHolder {
         mergedDialects.putValues(STANDARD_DIALECT_URL, Arrays.asList(
                 SPRING_STANDARD_DIALECT_URL,
                 STANDARD_DIALECT_URL,
-                FIX_SPRING_STANDARD_DIALECT_URL
+                FIX_SPRING_STANDARD_DIALECT_URL,
+                "http://jcdm.it.dh-karlsruhe.de/thymeleaf/util  "
         ));
     }
 
