@@ -1,6 +1,7 @@
 package org.thymeleaf.extras.idea.dialect.discovery;
 
 import com.intellij.ide.highlighter.XmlFileType;
+import com.intellij.openapi.graph.util.Comparators;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -25,7 +26,9 @@ import org.thymeleaf.extras.idea.util.MyContainerUtil;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -54,9 +57,25 @@ public class DialectDescriptorIndex extends XmlIndex<DialectDescriptorIndex.Dial
         final GlobalSearchScope scope = computeAdditionalScope(module, context);
         final List<IndexedRelevantResource<String, DialectInfo>> resources = IndexedRelevantResource.getResources(NAME, namespace, module, module.getProject(), scope);
 
-        Collections.sort(resources);
+        Collections.sort(resources, REVERSE_COMPARABLE_COMPARATOR);
         // TldProcessorFactory.getFactory(context).processResources(resources);
         return resources;
+    }
+
+    private static final Comparator<Comparable<?>> REVERSE_COMPARABLE_COMPARATOR = new ReverseComparator<Comparable<?>>(Comparators.Statics.createComparableComparator());
+
+    private static class ReverseComparator<T> implements Comparator<T>, Serializable {
+        private static final long serialVersionUID = -7133070942669254445L;
+        private Comparator<? super T> wrapped;
+
+        private ReverseComparator(@NotNull Comparator<? super T> wrapped) {
+            this.wrapped = wrapped;
+        }
+
+        @Override
+        public int compare(T t, T t2) {
+            return (-wrapped.compare(t, t2));
+        }
     }
 
     @Nullable

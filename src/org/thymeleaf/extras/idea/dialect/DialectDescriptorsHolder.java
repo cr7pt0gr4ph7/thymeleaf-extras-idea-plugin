@@ -85,7 +85,7 @@ public class DialectDescriptorsHolder {
 
     @Nullable
     private Dialect getDialectForSchemaUrlCore(@NotNull String schemaUrl, @Nullable Module module, @Nullable PsiFile context) {
-        if (module != null && context != null) {
+        if (module != null) {
             final List<IndexedRelevantResource<String, DialectDescriptorIndex.DialectInfo>> candidates =
                     DialectDescriptorIndex.getResourcesByNamespace(schemaUrl, module, context);
 
