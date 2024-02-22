@@ -1,0 +1,22 @@
+FROM Token.isTokenChar(context, pos):
+    /*
+     * TOKEN chars: A-Za-z0-9[]._ (and '-' in some contexts)
+     * (additionally, also, a series of internationalized characters: accents, other alphabets, etc.)
+     *
+     * '-' can also be a numeric operator, so it will only be considered a token char if:
+     * * there are immediately previous chars which we can consider a token, but not a numeric token
+     * * there are immediately following chars which we can consider a token, but not a numeric token
+     *
+     */
+token     ::=   {[a-zA-Z0-9\[\]\.\_\-]}+
+protected-token
+number-token
+boolean-token
+null-token
+generic-token
+placeholder-expression ::= `§` number `§`
+
+each-expr ::=   id [`,` id] `:` expr
+with-expr ::=   
+
+#START# 

@@ -1,0 +1,37 @@
+{
+  parserClass="org.thymeleaf.extras.idea.lang.fragment.signature.parser.FragmentSignatureParser"
+  parserUtilClass="org.thymeleaf.extras.idea.lang.fragment.signature.parser.FragmentSignatureParserUtil"
+
+  psiPackage="org.thymeleaf.extras.idea.lang.fragment.signature.psi"
+  psiImplPackage="org.thymeleaf.extras.idea.lang.fragment.signature.psi.impl"
+  // psiImplUtilClass="org.thymeleaf.extras.idea.fragments.selection.psi.impl.GrammarPsiImplUtil"
+
+  elementTypeHolderClass="org.thymeleaf.extras.idea.lang.fragment.signature.parser.FragmentSignatureElementTypes"
+  elementTypeClass="org.thymeleaf.extras.idea.lang.fragment.signature.parser.FragmentSignatureCompositeElementType"
+  tokenTypeClass="org.thymeleaf.extras.idea.lang.fragment.signature.parser.FragmentSignatureElementType"
+
+  implements="org.thymeleaf.extras.idea.lang.fragment.signature.psi.FragmentSignaturePsiCompositeElement"
+  extends="org.thymeleaf.extras.idea.lang.fragment.signature.psi.impl.FragmentSignaturePsiCompositeElementImpl"
+
+  tokens=[
+    OPEN_PARENS='('
+    CLOSE_PARENS=')'
+    COMMA=','
+
+    string='regexp:([^ \n:(),]+)'
+  ]
+
+  mixin("fragment_parameter")="org.thymeleaf.extras.idea.lang.fragment.signature.psi.impl.FragmentParameterImplMixin"
+  mixin("fragment_name")="org.thymeleaf.extras.idea.lang.fragment.signature.psi.impl.FragmentNameImplMixin"
+
+  name(".*expression")='expression'
+  name("fragment_name")='fragment name'
+}
+
+root ::= fragment_signature_expression
+
+fragment_signature_expression ::=  fragment_name [fragment_paramlist]
+fragment_name      ::= string
+fragment_parameter ::= string
+
+private fragment_paramlist    ::= '(' fragment_parameter (',' fragment_parameter)* ')' {pin=1}

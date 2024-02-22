@@ -1,0 +1,9 @@
+-- Standard
+#{simple}
+#{multi.segment.path}
+
+-- Nested expressions
+#{salute}
+#{salute(${user.firstName})}
+#{salute(*{user.firstName})}
+#{salute((*{user.firstName} + ' Jr.'))}

@@ -1,0 +1,9 @@
+ThymeleafExpressionFile: add_04_with_number_and_token.thel
+  PlusExprImpl(PLUS_EXPR)
+    TokenExprImpl(TOKEN_EXPR)
+      PsiElement(token)('60')
+    PsiWhiteSpace(' ')
+    PsiElement(+)('+')
+    PsiWhiteSpace(' ')
+    TokenExprImpl(TOKEN_EXPR)
+      PsiElement(token)('now')

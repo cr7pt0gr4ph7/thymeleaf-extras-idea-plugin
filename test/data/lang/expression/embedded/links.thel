@@ -1,0 +1,6 @@
+@{/}
+@{simple}
+@{/context/relative.html}
+@{~/server/relative.html}
+@{//protocol/relative}
+@{http://www.absolute.com/path.html}

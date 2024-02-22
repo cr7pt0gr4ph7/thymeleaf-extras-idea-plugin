@@ -1,0 +1,135 @@
+-- Welcome.html
+fragments/headTag :: headTag
+@{/webjars/bootstrap/2.3.0/css/bootstrap.min.css}
+@{/resources/css/petclinic.css}
+@{/webjars/jquery/1.9.0/jquery.js}
+@{/webjars/jquery-ui/1.9.2/js/jquery-ui-1.9.2.custom.js}
+@{/webjars/jquery-ui/1.9.2/css/smoothness/jquery-ui-1.9.2.custom.css}
+tag
+fragments/bodyHeader
+@{/resources/images/banner-graphic.png}
+@{/}
+@{/owners/find.html}
+@{/vets.html}
+@{/oups.html}
+#{welcome}
+@{/resources/images/pets.png}
+fragments/footer :: footer
+@{/resources/images/springsource-logo.png}
+-- owners/createOrUpdateOwnerForm.html
+
+-- More
+-- literalsubst
+|${onevar} ${twovar}|
+
+-- simplevalue
+<div th:type="${one}">..</div>
+<div th:type="'hello'">..</div>
+<div th:type="${null}">..</div>
+<div th:type="''">..</div>
+
+<div type="old" th:type="${one}">..</div>
+<div type="old" th:type="'hello'">..</div>
+<div type="old" th:type="${null}">..</div>
+<div type="old" th:type="''">..</div>
+
+<
+-- expression01.thtest
+%EXTENDS ../html5.01.common
+# ------------------------------------------------------------
+%INPUT
+<p th:text="true">...</p>
+<p th:text="false">...</p>
+<p th:text="!true">...</p>
+<p th:text="!false">...</p>
+
+<p th:text="((2 == 2) == true)">...</p>
+<p th:text="((2 == 2) != true)">...</p>
+<p th:text="((2 == 2) == false)">...</p>
+<p th:text="((2 == 2) != false)">...</p>
+<p th:text="((2 > 2) == true)">...</p>
+<p th:text="((2 > 2) != true)">...</p>
+<p th:text="((2 > 2) == false)">...</p>
+<p th:text="((2 > 2) != false)">...</p>
+
+<p th:text="((2 == 2) ==true )">...</p>
+<p th:text="((2 == 2) !=true )">...</p>
+<p th:text="((2 == 2) ==false )">...</p>
+<p th:text="((2 == 2) !=false )">...</p>
+<p th:text="((2 > 2) ==true )">...</p>
+<p th:text="((2 > 2) !=true )">...</p>
+<p th:text="((2 > 2) ==false )">...</p>
+<p th:text="((2 > 2) !=false )">...</p>
+# ------------------------------------------------------------
+%OUTPUT
+<p>true</p>
+<p>false</p>
+<p>false</p>
+<p>true</p>
+
+<p>true</p>
+<p>false</p>
+<p>false</p>
+<p>true</p>
+<p>false</p>
+<p>true</p>
+<p>true</p>
+<p>false</p>
+
+<p>true</p>
+<p>false</p>
+<p>false</p>
+<p>true</p>
+<p>false</p>
+<p>true</p>
+<p>true</p>
+<p>false</p>
+
+-- expression02.thtest
+<p th:text="null">...</p>
+
+<p th:text="null == null">...</p>
+<p th:text="'a' == null">...</p>
+<p th:text="'a' != null">...</p>
+<p th:text="${somevar} != null">...</p>
+<p th:text="${somevar} == null">...</p>
+
+<p th:text="null eq null">...</p>
+<p th:text="'a' eq null">...</p>
+<p th:text="'a' neq null">...</p>
+<p th:text="'a' ne null">...</p>
+<p th:text="${somevar} ne null">...</p>
+<p th:text="${somevar} neq null">...</p>
+<p th:text="${somevar} eq null">...</p>
+# ------------------------------------------------------------
+%OUTPUT
+<p></p>
+
+<p>true</p>
+<p>false</p>
+<p>true</p>
+<p>false</p>
+<p>true</p>
+
+<p>true</p>
+<p>false</p>
+<p>true</p>
+<p>true</p>
+<p>false</p>
+<p>false</p>
+<p>true</p>
+
+-- expression03.thtest
+<p th:text="'00__${size}__00'">...</p>
+<p th:text="'00\_\_${size}\_\_00'">...</p>
+<p th:text="'00__${size}00'">...</p>
+<p th:text="'00__'something'__00'">...</p>
+<p th:text="'00__something__00'">...</p>
+# ------------------------------------------------------------
+%OUTPUT
+<p>0012300</p>
+<p>00__${size}__00</p>
+<p>00__${size}00</p>
+<p>00something00</p>
+<p>00something00</p>
+
